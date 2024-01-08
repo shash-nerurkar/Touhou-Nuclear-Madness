@@ -45,10 +45,6 @@
       </li>
   </ul>   
 
-
-  <br />
-
-  
   <h1> Co-author </h1>
   <p>
       <a href='https://github.com/RobinTheHoo'> RobinTheHoo </a>
