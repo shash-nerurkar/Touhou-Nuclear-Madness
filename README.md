@@ -1,17 +1,21 @@
 # Touhou - Nuclear Madness
-  This game was made as a submission to the <a href='https://itch.io/jam/touhou-jam-12'>Touhou Fan Game Jam - 12</a>.
-  <br />
-  <br />
-  <a href=''>Trailer</a> (Doesn't exist yet)
-  <br />
-  <a href='https://stashatstake.itch.io/touhou-nuclear-madness'>Link to play</a>
-  
 
   <img src="Assets/Documentation/Cover-Image.png" alt="intro" width='auto' height='100%'/>
   <p align='justify'>
       A side-scrolling, bullet-hell, shooter game. Assume the roles of two characters: the Lunarian goddess, Sagume Kishin, and the sharp-eyed tengu reporter, Aya Shameimaru.
   </p>
+
   
+  <br />
+
+  
+  <p>
+  This game was made as a submission to the <a href='https://itch.io/jam/touhou-jam-12'>Touhou Fan Game Jam - 12</a>.
+  </p>
+  <br />
+  <a href=''>Trailer</a> (Doesn't exist yet)
+  <br />
+  <a href='https://stashatstake.itch.io/touhou-nuclear-madness'>Link to play</a>
   
   <br />
 
