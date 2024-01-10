@@ -24,7 +24,7 @@ public class InGamePanel : MonoBehaviour
 
     #region Fields
 
-    private List<GameObject> playerHealthBarElements;
+    private List<GameObject> playerHealthBarElements = new List<GameObject> ( );
 
     private Timer controlsTutorialShowTimer;
 
@@ -32,10 +32,6 @@ public class InGamePanel : MonoBehaviour
 
 
     #region Methods
-
-    private void Awake ( ) {
-        playerHealthBarElements = new List<GameObject> ( );
-    }
     
     public void SetPanelValues ( float playerHealth, float enemyHealth ) {
         UpdatePlayerHealth ( playerHealth );

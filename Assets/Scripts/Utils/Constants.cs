@@ -71,49 +71,49 @@ public class Constants {
     #region Dialogue Sequences
 
     public static Dialogue [ ] DIALOGUE_SEQUENCE_MAIN_MENU = new Dialogue [ ] {
-        new ( "Hello! This is a story about how Sagume, the Lunarian goddess, wreaked havoc in Utsuho Reiuji's nuclear power plant.", Speakers.Narrator ),
+        new ( "Hello! This is a story about how Sagume, the Lunarian goddess, wreaked havoc in Utsuho Reiuji's nuclear power plant.", Characters.Narrator ),
     };
 
     public static Dialogue [ ] DIALOGUE_SEQUENCE_1 = new Dialogue [ ] {
-        new ( "Sagume is quietly soaring above the power plant. Aya spots her, and tails her. Utsuho, perched atop the plant, spots her too.", Speakers.Narrator ),
-        new ( "... What a peculiar facility ... Looks quite secure ...", Speakers.Sagume ),
-        new ( "... Oops", Speakers.Sagume ),
+        new ( "Sagume is quietly soaring above the power plant. Aya spots her, and tails her. Utsuho, perched atop the plant, spots her too.", Characters.Narrator ),
+        new ( "... What a peculiar facility ... Looks quite secure ...", Characters.Sagume ),
+        new ( "... Oops", Characters.Sagume ),
     };
 
     public static Dialogue [ ] DIALOGUE_SEQUENCE_2 = new Dialogue [ ] {
-        new ( "!!!!", Speakers.Aya ),
-        new ( "AAARRRRGGHHHH!!!!! WHO ?!? WHAT ?!? C'MERE YOU!!!", Speakers.Utsuho ),
-        new ( "... ... ... ...", Speakers.Sagume ),
-        new ( "ANY LAST WORDS, LUNARIAN ?", Speakers.Utsuho ),
-        new ( "... ... ... ...", Speakers.Sagume ),
+        new ( "!!!!", Characters.Aya ),
+        new ( "AAARRRRGGHHHH!!!!! WHO ?!? WHAT ?!? C'MERE YOU!!!", Characters.Utsuho ),
+        new ( "... ... ... ...", Characters.Sagume ),
+        new ( "ANY LAST WORDS, LUNARIAN ?", Characters.Utsuho ),
+        new ( "... ... ... ...", Characters.Sagume ),
     };
     
     public static Dialogue [ ] DIALOGUE_SEQUENCE_3_1 = new Dialogue [ ] {
-        new ( "Good riddance", Speakers.Utsuho ),
-        new ( "(≽^╥⩊╥^≼)", Speakers.SagumeCry ),
-        new ( "ufufu … This will make a nice story surely!", Speakers.Aya ),
+        new ( "Good riddance", Characters.Utsuho ),
+        new ( "(˚ ˃̣̣̥ - ˂̣̣̥ )", Characters.SagumeCry ),
+        new ( "ufufu … This will make a nice story!", Characters.Aya ),
     };
 
     public static Dialogue [ ] DIALOGUE_SEQUENCE_3_2 = new Dialogue [ ] {
-        new ( "... weak", Speakers.Sagume ),
-        new ( "(╬≖_≖) I WILL GET YOU FOR THIS. Run, Aya!", Speakers.UtsuhoCry ),
-        new ( "... ... ... ...", Speakers.Sagume ),
-        new ( "I have to report this!", Speakers.Aya ),
-        new ( "... ... ... ...", Speakers.Sagume ),
+        new ( "... weak", Characters.Sagume ),
+        new ( "(,,>_<,,) I WILL GET YOU FOR THIS. Run, Aya!", Characters.UtsuhoCry ),
+        new ( "... ... ... ...", Characters.Sagume ),
+        new ( "I have to report this!", Characters.Aya ),
+        new ( "... ... ... ...", Characters.Sagume ),
     };
 
     public static Dialogue [ ] DIALOGUE_SEQUENCE_4_1 = new Dialogue [ ] {
-        new ( "... ... ... ... weak", Speakers.Sagume ),
-        new ( "(≽^╥⩊╥^≼)", Speakers.AyaCry ),
+        new ( "... ... ... ... weak", Characters.Sagume ),
+        new ( "(˚ ˃̣̣̥ - ˂̣̣̥ )", Characters.AyaCry ),
     };
 
     public static Dialogue [ ] DIALOGUE_SEQUENCE_4_2 = new Dialogue [ ] {
-        new ( "ʱªʱªʱª(ᕑᗢूᓫ∗) This is a huge scoop!", Speakers.Aya ),
-        new ( "(≽^╥⩊╥^≼)", Speakers.SagumeCry ),
+        new ( "o( ˶^-^˶ )o  This is a huge scoop!", Characters.Aya ),
+        new ( "(╥ ω ╥)", Characters.SagumeCry ),
     };
 
     public static Dialogue [ ] DIALOGUE_SEQUENCE_GAME_ENDED = new Dialogue [ ] {
-        new ( "In the next day's Bunbunmaru..", Speakers.Narrator ),
+        new ( "In the next day's Bunbunmaru..", Characters.Narrator ),
     };
 
     #endregion
@@ -148,10 +148,10 @@ public class Dialogue {
     public string Text { get => text; }
     private string text;
 
-    public Speakers Speaker { get => speaker; }
-    private Speakers speaker;
+    public Characters Speaker { get => speaker; }
+    private Characters speaker;
 
-    public Dialogue ( string text, Speakers speaker ) {
+    public Dialogue ( string text, Characters speaker ) {
         this.text = text;
         this.speaker = speaker;
     }
@@ -166,7 +166,7 @@ public class Dialogue {
     Curve,
 }
 
-[ Serializable ] public enum Speakers {
+[ Serializable ] public enum Characters {
     Narrator,
     Sagume,
     Utsuho,
@@ -180,7 +180,8 @@ public class Dialogue {
     MainMenu,
     Playing,
     Chatting,
-    Ended
+    Ended,
+    Animating
 }
 
 [ Serializable ] public enum InGameState {

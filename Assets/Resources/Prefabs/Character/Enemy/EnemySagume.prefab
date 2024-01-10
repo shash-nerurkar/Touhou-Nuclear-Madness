@@ -158,7 +158,7 @@ MonoBehaviour:
   animator: {fileID: 984305539162467713}
   pivot: {fileID: 7500465037446004838}
   speed: 3
-  health: 1300
+  health: 110
   onHitIDuration: 0.1
   moveCooldownTime: 8
   moveDistanceRange: 1.2

@@ -21,11 +21,23 @@ public class ParticleSystemsManager : MonoBehaviour
 
     #region Methods
 
+
+    #region Event Subscriptions
+
     private void Awake ( ) {
         SceneManager.OnGameStateChanged += OnGameStateChanged;
 
-        HUD.OnBackgroundSceneChanged += OnBackgroundSceneChanged;
+        SceneManager.ChangeBackgroundScene += OnBackgroundSceneChanged;
     }
+
+    private void OnDestroy ( ) {
+        SceneManager.OnGameStateChanged -= OnGameStateChanged;
+
+        SceneManager.ChangeBackgroundScene -= OnBackgroundSceneChanged;
+    }
+
+    #endregion
+    
 
     private void OnGameStateChanged ( GameState gameState ) {
         if ( gameState == GameState.MainMenu ) {
@@ -46,12 +58,6 @@ public class ParticleSystemsManager : MonoBehaviour
             scene01ParticleSystem.Stop ( );
             scene02ParticleSystem.Play ( );
         }
-    }
-
-    private void OnDestroy ( ) {
-        SceneManager.OnGameStateChanged -= OnGameStateChanged;
-
-        HUD.OnBackgroundSceneChanged -= OnBackgroundSceneChanged;
     }
 
     #endregion

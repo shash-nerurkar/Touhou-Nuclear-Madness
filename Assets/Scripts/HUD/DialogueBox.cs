@@ -27,62 +27,65 @@ public class DialogueBox : MonoBehaviour
     #region Methods
 
     public void Show ( Dialogue dialogue ) {
+        gameObject.SetActive ( true );
+
         if ( dialogue.Text == null ) return;
 
         dialogueLabel.text = dialogue.Text;
+        
         switch ( dialogue.Speaker ) {
-            case Speakers.Narrator:
+            case Characters.Narrator:
                 boxBackgroundImage.color = Constants.COLOR_DEFAULT;
                 speakerPortrait.sprite = narratorPortrait;
                 speakerNameLabel.text = Constants.NARRATOR_NAME;
                 break;
             
-            case Speakers.Sagume:
+            case Characters.Sagume:
                 boxBackgroundImage.color = Constants.COLOR_SAGUME;
                 speakerPortrait.sprite = sagumePortrait;
                 speakerNameLabel.text = Constants.SAGUME_NAME;
                 break;
             
-            case Speakers.Utsuho:
+            case Characters.Utsuho:
                 boxBackgroundImage.color = Constants.COLOR_UTSUHO;
                 speakerPortrait.sprite = utsuhoPortrait;
                 speakerNameLabel.text = Constants.UTSUHO_NAME;
                 break;
             
-            case Speakers.Aya:
+            case Characters.Aya:
                 boxBackgroundImage.color = Constants.COLOR_AYA;
                 speakerPortrait.sprite = ayaPortrait;
                 speakerNameLabel.text = Constants.AYA_NAME;
                 break;
             
-            case Speakers.SagumeCry:
+            case Characters.SagumeCry:
                 boxBackgroundImage.color = Constants.COLOR_SAGUME;
                 speakerPortrait.sprite = sagumeCryPortrait;
                 speakerNameLabel.text = Constants.SAGUME_NAME;
                 break;
             
-            case Speakers.UtsuhoCry:
+            case Characters.UtsuhoCry:
                 boxBackgroundImage.color = Constants.COLOR_UTSUHO;
                 speakerPortrait.sprite = utsuhoCryPortrait;
                 speakerNameLabel.text = Constants.UTSUHO_NAME;
                 break;
             
-            case Speakers.AyaCry:
+            case Characters.AyaCry:
                 boxBackgroundImage.color = Constants.COLOR_AYA;
                 speakerPortrait.sprite = ayaCryPortrait;
                 speakerNameLabel.text = Constants.AYA_NAME;
                 break;
             
         }
-        // speakerNameLabel.color = boxBackgroundImage.color;
         
-        gameObject.SetActive ( true );
+        // speakerNameLabel.color = boxBackgroundImage.color;
     }
 
     public void Hide ( ) {
+        gameObject.SetActive ( false );
+        
         dialogueLabel.text = "";
         boxBackgroundImage.color = Constants.COLOR_DEFAULT;
-        gameObject.SetActive ( false );
     }
 
     #endregion

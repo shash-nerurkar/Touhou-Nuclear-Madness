@@ -18,13 +18,28 @@ public class Camera : MonoBehaviour
 
     #region Methods
 
-    private void Awake ( ) {
-        HUD.ShakeCamera += ShakeCamera;
 
-        shakeTimer = gameObject.AddComponent<Timer> ( );
+    #region Event Subscriptions
+    
+    private void Awake ( ) {
+        SceneManager.ShakeCamera += ShakeCamera;   
+    }
+    
+    private void OnDestroy ( ) {
+        SceneManager.ShakeCamera -= ShakeCamera;
     }
 
-    private void Start ( ) => originalPosition = transform.position;
+    #endregion
+
+
+    private void Start ( ) {
+        shakeTimer = gameObject.AddComponent<Timer> ( );
+
+        originalPosition = transform.position;
+    }
+
+
+    #region Shake Handlers
 
     private void Update ( ) {
         if ( isCameraShaking )
@@ -42,9 +57,8 @@ public class Camera : MonoBehaviour
         } );
     }
 
-    private void OnDestroy ( ) {
-        HUD.ShakeCamera -= ShakeCamera;
-    }
+    #endregion
+
 
     #endregion
 }

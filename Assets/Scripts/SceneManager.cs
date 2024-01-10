@@ -19,17 +19,25 @@ public class SceneManager : MonoBehaviour
 
     #region Fields
 
-    public static GameState CurrentGameState;
+    private GameState CurrentGameState;
 
-    public static InGameState CurrentInGameState;
-
-    public static Vector3 PlayerPosition;
+    private InGameState CurrentInGameState;
 
     private Player currentPlayer;
 
     private Enemy currentEnemy;
 
-    private List<Character> otherCharacters;
+    private int currentFightIndex;
+
+    private List<Character> otherCharacters = new List<Character> ( );
+
+    
+    #region AI Cheats
+
+    public static Vector3 PlayerPosition;
+
+    #endregion
+
 
     #endregion
 
@@ -39,6 +47,10 @@ public class SceneManager : MonoBehaviour
     public static event Action<GameState> OnGameStateChanged;
 
     public static event Action<InGameState> OnInGameStateChanged;
+
+    public static event Action PlayExplosion;
+
+    public static event Action ShowTutorial;
 
     public static event Action<float, float> OnFightStarted;
 
@@ -50,108 +62,270 @@ public class SceneManager : MonoBehaviour
 
     public static event Action HideDialogueBox;
 
+    public static event Action<int> ChangeBackgroundScene;
+
+    public static event Action TransitionFadeIn;
+
+    public static event Action TransitionFadeOut;
+
+    public static event Action<Characters> TransitionSetNextPlayerCharacter;
+
+    public static event Action TransitionRemoveNextPlayerCharacter;
+
+    public static event Action<float, float> ShakeCamera;
+
+    public static event Action<string> PlaySound;
+
+    public static event Action<string> StopSound;
+
+    public static event Action<int> OnEndGame;
+
     #endregion
 
 
     #region Methods
 
-    private void Awake ( ) {
-        otherCharacters = new List<Character> ( );
-        
-        InputManager.PopDialogueAction += OnDialoguePopped;
-
-        HUD.OnExplosionComplete += OnExplosionComplete;
-        HUD.OnPostExplosionSequenceComplete += () => { StartFight ( 0 ); };
-        HUD.OnTransitionFadeInComplete += OnTransitionFadeIn;
-        HUD.OnTransitionFadeOutComplete += OnTransitionFadeOut;
-        HUD.EndGame += EndGame;
-    }
-
-    private void Start ( ) {
-        ChangeGameState ( newState: GameState.MainMenu );
-    }
+    private void Start ( ) => ChangeGameState ( newState: GameState.MainMenu );
 
     private void Update ( ) {
         if ( currentPlayer != null )
             PlayerPosition = currentPlayer.transform.position;
     }
 
-    private void OnDialoguePopped ( ) {
-        SoundManager.instance.Play ( Constants.ON_DIALOGUE_POP_SOUND );
+
+    #region Event Subscriptions
+
+    private void Awake ( ) {
+        InputManager.PopDialogueAction += OnDialoguePopped;
+
+        BackgroundImage.OnExplosionAnimationComplete += OnExplosionComplete;
+
+        Transition.OnFadeInBeginning += OnTransitionFadeInStart;
+        Transition.OnFadeInCompleted += OnTransitionFadeInEnd;
+        Transition.OnFadeOutBeginning += OnTransitionFadeOutStart;
+        Transition.OnFadeOutCompleted += OnTransitionFadeOutEnd;
+
+        HUD.OnDialogueSequenceCompleted += OnDialogueSequenceComplete;
+    }
+
+    private void OnDestroy ( ) {
+        InputManager.PopDialogueAction -= OnDialoguePopped;
+
+        BackgroundImage.OnExplosionAnimationComplete -= OnExplosionComplete;
+
+        Transition.OnFadeInBeginning -= OnTransitionFadeInStart;
+        Transition.OnFadeInCompleted -= OnTransitionFadeInEnd;
+        Transition.OnFadeOutBeginning -= OnTransitionFadeOutStart;
+        Transition.OnFadeOutCompleted -= OnTransitionFadeOutEnd;
+
+        HUD.OnDialogueSequenceCompleted -= OnDialogueSequenceComplete;
+    }
+
+    #endregion
+
+
+    #region State Handlers
+
+    private void ChangeGameState ( GameState newState ) {
+        CurrentGameState = newState;
 
         switch ( CurrentGameState ) {
             case GameState.MainMenu:
+                currentFightIndex = 0;
+
+                break;
+
+            case GameState.Chatting:
+                HideDialogueBox?.Invoke ( );
+                
+                break;
+        }
+
+        OnGameStateChanged?.Invoke ( CurrentGameState );
+    }
+
+    private void ChangeInGameState ( InGameState newState ) {
+        CurrentInGameState = newState;
+
+        switch ( CurrentInGameState ) {
+            case InGameState.PreExplosion:
+                ChangeBackgroundScene?.Invoke ( 0 );
+                break;
+        }
+
+        OnInGameStateChanged?.Invoke ( CurrentInGameState );
+    }
+    
+    #endregion
+
+
+    #region Transition
+
+    private void OnTransitionFadeInStart ( ) { }
+
+    private void OnTransitionFadeInEnd ( ) {
+        switch ( CurrentGameState ) {
+            case GameState.MainMenu:
                 ChangeGameState ( newState: GameState.Chatting );
-                SoundManager.instance.Play ( Constants.CHATTING_MUSIC );
 
-                GameObject playerSagumeInstance = Instantiate ( playerSagumeObject, Constants.BASE_POSITION_PLAYER, Quaternion.identity );
-                currentPlayer = playerSagumeInstance.GetComponent<Player> ( );
-                if ( currentPlayer != null ) {
-                    currentPlayer.OnLose += ( ) => { OnFightComplete ( didWin: false, fightIndex: 0 ); };
-                    currentPlayer.OnPlayerShoot += CurrentPlayerShoot;
-                    currentPlayer.OnHit += CurrentPlayerHit;
-                }
+                PlaySound?.Invoke ( Constants.CHATTING_MUSIC );
 
-                GameObject enemyUtsuhoInstance = Instantiate ( enemyUtsuhoObject, Constants.BASE_POSITION_ENEMY, Quaternion.identity );
-                currentEnemy = enemyUtsuhoInstance.GetComponent<Enemy> ( );
-                if ( currentEnemy != null ) {
-                    currentEnemy.OnLose += ( ) => { OnFightComplete ( didWin: true, fightIndex: 0 ); };
-                    currentEnemy.OnHit += CurrentEnemyHit;
-                }
-
-                AddBystanderAya ( );
+                AddPlayer ( playerSagumeObject );
+                AddEnemy ( enemyUtsuhoObject );
+                AddBystander1 ( playerAyaObject );
 
                 ChangeInGameState ( newState: InGameState.PreExplosion );
+
                 break;
-                
+
+            case GameState.Playing:
             case GameState.Chatting:
-                ContinueDialogueSequence?.Invoke ( );
+                StopSound?.Invoke ( Constants.SCENE_01_MUSIC );
+
+                ClearAllCharacters ( );
+                AddPlayer ( playerAyaObject );
+                AddEnemy ( enemySagumeObject );
+
+                ChangeBackgroundScene?.Invoke ( 1 );
+                
                 break;
 
             case GameState.Ended:
-                SoundManager.instance.Stop ( Constants.ON_END_GAME_LOSS_SOUND );
-                SoundManager.instance.Stop ( Constants.ON_END_GAME_WIN_SOUND );
                 ChangeGameState ( newState: GameState.MainMenu );
+                
+                StopSound?.Invoke ( Constants.ON_END_GAME_LOSS_SOUND );
+                StopSound?.Invoke ( Constants.ON_END_GAME_WIN_SOUND );
+
+                break;
+        }
+
+        TransitionFadeOut?.Invoke ( );
+    }
+
+    private void OnTransitionFadeOutStart ( ) { }
+
+    private void OnTransitionFadeOutEnd ( ) {
+        switch ( CurrentInGameState ) {
+            case InGameState.PostFight1Branch2: 
+                StartNextFight ( );
+                
                 break;
         }
     }
 
-    private void OnExplosionComplete ( ) {
-        ChangeInGameState ( newState: InGameState.PostExplosion );
+    private void StartTransition ( ) {
+        // ChangeGameState ( GameState.Transitioning );
+
+        TransitionRemoveNextPlayerCharacter?.Invoke ( );
+
+        TransitionFadeIn?.Invoke ( );
     }
 
-    private void OnTransitionFadeIn ( ) {
-        SoundManager.instance.Stop( Constants.SCENE_01_MUSIC );
+    private void StartTransition ( Characters nextPlayerCharacter ) {
+        // ChangeGameState ( GameState.Transitioning );
 
-        ClearAllCharacters ( );
+        TransitionSetNextPlayerCharacter?.Invoke ( nextPlayerCharacter );
 
-        GameObject playerAyaInstance = Instantiate ( playerAyaObject, Constants.BASE_POSITION_PLAYER, Quaternion.identity );
-        currentPlayer = playerAyaInstance.GetComponent<Player> ( );
-        if ( currentPlayer != null ) {
-            currentPlayer.OnLose += ( ) => { OnFightComplete ( didWin: false, fightIndex: 1 ); };
-            currentPlayer.OnPlayerShoot += CurrentPlayerShoot;
-            currentPlayer.OnHit += CurrentPlayerHit;
+        TransitionFadeIn?.Invoke ( );
+    }
+
+    #endregion
+
+
+    #region Dialogue Handlers
+
+    private void OnDialoguePopped ( ) {
+        switch ( CurrentGameState ) {
+            case GameState.MainMenu:
+                PlaySound?.Invoke ( Constants.ON_DIALOGUE_POP_SOUND );
+
+                StartTransition ( );
+
+                break;
+                
+            case GameState.Chatting:
+                PlaySound?.Invoke ( Constants.ON_DIALOGUE_POP_SOUND );
+
+                ContinueDialogueSequence?.Invoke ( );
+
+                break;
+
+            case GameState.Ended:
+                PlaySound?.Invoke ( Constants.ON_DIALOGUE_POP_SOUND );
+
+                StartTransition ( );
+
+                break;
         }
-        
-        GameObject enemySagumeInstance = Instantiate ( enemySagumeObject, Constants.BASE_POSITION_ENEMY, Quaternion.identity );
-        currentEnemy = enemySagumeInstance.GetComponent<Enemy> ( );
-        if ( currentEnemy != null ) {
-            currentEnemy.OnLose += ( ) => { OnFightComplete ( didWin: true, fightIndex: 1 ); };
-            currentEnemy.OnHit += CurrentEnemyHit;
+    }
+
+    private void OnDialogueSequenceComplete ( ) {
+        switch ( CurrentInGameState ) {
+            case InGameState.PreExplosion:
+                StopSound?.Invoke ( Constants.CHATTING_MUSIC );
+
+                StartExplosion ( );
+
+                break;
+
+            case InGameState.PostExplosion:
+                StartNextFight ( );
+                
+                break;
+            
+            case InGameState.PostFight1Branch1:
+                StopSound?.Invoke ( Constants.SCENE_01_MUSIC );
+                PlaySound?.Invoke ( Constants.ON_END_GAME_LOSS_SOUND );
+
+                EndGame ( endingIndex: 0 );
+
+                break;
+            
+            case InGameState.PostFight1Branch2:
+                StartTransition ( nextPlayerCharacter: Characters.Aya );
+                
+                break;
+            
+            case InGameState.PostFight2Branch1:
+                StopSound?.Invoke ( Constants.SCENE_02_MUSIC );
+                PlaySound?.Invoke ( Constants.ON_END_GAME_LOSS_SOUND );
+
+                EndGame ( endingIndex: 1 );
+
+                break;
+            
+            case InGameState.PostFight2Branch2:
+                StopSound?.Invoke ( Constants.SCENE_02_MUSIC );
+                PlaySound?.Invoke ( Constants.ON_END_GAME_WIN_SOUND );
+
+                EndGame ( endingIndex: 2 );
+
+                break;
         }
     }
 
-    private void OnTransitionFadeOut ( ) {
-        StartFight ( 1 );
-    }
+    #endregion
 
-    private void StartFight ( int fightIndex ) {
+
+    #region Fight Handlers
+
+    private void StartNextFight ( ) {
         ChangeGameState ( newState: GameState.Playing );
-        SoundManager.instance.Play( fightIndex == 0 ? Constants.SCENE_01_MUSIC : Constants.SCENE_02_MUSIC );
 
         foreach ( Character character in otherCharacters )
             Destroy ( character.gameObject );
         otherCharacters.Clear ( );
+
+        switch ( currentFightIndex ) {
+            case 0:
+                ShowTutorial?.Invoke ( );
+                PlaySound?.Invoke ( Constants.SCENE_01_MUSIC );
+                break;
+
+            case 1:
+                PlaySound?.Invoke ( Constants.SCENE_02_MUSIC );
+                break;
+        }
 
         currentPlayer.SetSelected ( true );
         currentEnemy.SetActive ( true );
@@ -159,33 +333,112 @@ public class SceneManager : MonoBehaviour
         OnFightStarted ( currentPlayer.Health, currentEnemy.Health );
     }
 
-    private void OnFightComplete ( bool didWin, int fightIndex ) {
+    private void OnFightComplete ( bool didWin ) {
         ChangeGameState ( newState: GameState.Chatting );
+
+        switch ( currentFightIndex ) {
+            case 0:
+                if ( didWin )
+                    ChangeInGameState ( newState: InGameState.PostFight1Branch2 );
+                else
+                    ChangeInGameState ( newState: InGameState.PostFight1Branch1 );
+                
+                AddBystander1 ( playerAyaObject );
+                
+                break;
+                
+            case 1:
+                if ( didWin )
+                    ChangeInGameState ( newState: InGameState.PostFight2Branch2 );
+                else
+                    ChangeInGameState ( newState: InGameState.PostFight2Branch1 );
+                
+                break;
+        }
+
+        ++currentFightIndex;
 
         currentPlayer.SetSelected ( false );
         currentEnemy.SetActive ( false );
-
-        if ( fightIndex == 0 )
-            AddBystanderAya ( );
-        else if ( fightIndex == 1 )
-            SoundManager.instance.Stop( Constants.SCENE_02_MUSIC );
-
-        if ( didWin )
-            ChangeInGameState ( newState: fightIndex == 0 ? InGameState.PostFight1Branch2 : InGameState.PostFight2Branch2 );
-        else 
-            ChangeInGameState ( newState: fightIndex == 0 ? InGameState.PostFight1Branch1 : InGameState.PostFight2Branch1 );
-
-        currentEnemy.OnLose -= ( ) => { OnFightComplete ( didWin: true, fightIndex: fightIndex ); };
+        currentEnemy.OnLose -= ( ) => { OnFightComplete ( didWin: true ); };
         currentEnemy.OnHit -= CurrentEnemyHit;
-        currentPlayer.OnLose -= ( ) => { OnFightComplete ( didWin: false,  fightIndex: fightIndex ); };
+        currentPlayer.OnLose -= ( ) => { OnFightComplete ( didWin: false ); };
         currentPlayer.OnPlayerShoot -= CurrentPlayerShoot;
         currentPlayer.OnHit -= CurrentPlayerHit;
     }
 
-    private void EndGame ( ) {
-        ChangeGameState ( newState: GameState.Ended );
+    private void CurrentPlayerShoot ( ) {
+        PlaySound?.Invoke ( Constants.ON_PLAYER_SHOOT_SOUND );
+    }
+
+    private void CurrentPlayerHit ( float health ) {
+        PlaySound?.Invoke ( Constants.ON_PLAYER_HIT_SOUND );
+
+        OnCurrentPlayerHit?.Invoke ( health );
+    }
+
+    private void CurrentEnemyHit ( float health ) {
+        OnCurrentEnemyHit?.Invoke ( health );
+    }
+  
+    #endregion
+
+
+    #region Explosion Handlers
+
+    private void StartExplosion ( ) {
+        ChangeGameState ( GameState.Animating );
+
+        PlaySound?.Invoke ( Constants.ON_EXPLOSION_SOUND );
         
-        ClearAllCharacters ( );
+        ShakeCamera?.Invoke ( 0.5f, 0.5f );
+
+        PlayExplosion?.Invoke ( );
+    }
+
+    private void OnExplosionComplete ( ) {
+        ChangeGameState ( GameState.Chatting );
+
+        ChangeInGameState ( newState: InGameState.PostExplosion );
+    }
+  
+    #endregion
+
+
+    #region Character Managers
+
+    private Player AddPlayer ( GameObject playerObject ) {
+        GameObject playerInstance = Instantiate ( playerObject, Constants.BASE_POSITION_PLAYER, Quaternion.identity );
+        
+        currentPlayer = playerInstance.GetComponent<Player> ( );
+        if ( currentPlayer != null ) {
+            currentPlayer.OnLose += ( ) => { OnFightComplete ( didWin: false ); };
+            currentPlayer.OnPlayerShoot += CurrentPlayerShoot;
+            currentPlayer.OnHit += CurrentPlayerHit;
+        }
+
+        return currentPlayer;
+    }
+
+    private Enemy AddEnemy ( GameObject enemyObject ) {
+        GameObject enemyInstance = Instantiate ( enemyObject, Constants.BASE_POSITION_ENEMY, Quaternion.identity );
+
+        currentEnemy = enemyInstance.GetComponent<Enemy> ( );
+        if ( currentEnemy != null ) {
+            currentEnemy.OnLose += ( ) => { OnFightComplete ( didWin: true ); };
+            currentEnemy.OnHit += CurrentEnemyHit;
+        }
+
+        return currentEnemy;
+    }
+
+    private Character AddBystander1 ( GameObject bystanderObject ) {
+        GameObject bystanderInstance = Instantiate ( bystanderObject, Constants.BASE_POSITION_BYSTANDER_1, Quaternion.identity );
+        Character bystander = bystanderInstance.GetComponent<Character> ( );
+        if ( bystander != null )
+            otherCharacters.Add ( bystander );
+
+        return bystander;
     }
 
     private void ClearAllCharacters ( ) {
@@ -200,50 +453,15 @@ public class SceneManager : MonoBehaviour
         currentEnemy = null;
     }
 
-    private void ChangeGameState ( GameState newState ) {
-        CurrentGameState = newState;
+    #endregion
 
-        switch ( CurrentGameState ) {
-            case GameState.Chatting:
-                HideDialogueBox?.Invoke ( );
-                break;
-        }
 
-        OnGameStateChanged?.Invoke ( CurrentGameState );
-    }
+    private void EndGame ( int endingIndex ) {
+        ChangeGameState ( newState: GameState.Ended );
+        
+        ClearAllCharacters ( );
 
-    private void ChangeInGameState ( InGameState newState ) {
-        CurrentInGameState = newState;
-
-        OnInGameStateChanged?.Invoke ( CurrentInGameState );
-    }
-
-    private void CurrentPlayerHit ( float health ) {
-        SoundManager.instance.Play ( Constants.ON_PLAYER_HIT_SOUND );
-        OnCurrentPlayerHit?.Invoke ( health );
-    }
-
-    private void CurrentPlayerShoot ( ) {
-        SoundManager.instance.Play ( Constants.ON_PLAYER_SHOOT_SOUND );
-    }
-
-    private void CurrentEnemyHit ( float health ) => OnCurrentEnemyHit?.Invoke ( health );
-    
-    private void AddBystanderAya ( ) {
-        GameObject bystanderAyaInstance = Instantiate ( playerAyaObject, Constants.BASE_POSITION_BYSTANDER_1, Quaternion.identity );
-        Character bystanderAya = bystanderAyaInstance.GetComponent<Character> ( );
-        if ( bystanderAya != null )
-            otherCharacters.Add ( bystanderAya );
-    }
-
-    private void OnDestroy ( ) {
-        InputManager.PopDialogueAction -= OnDialoguePopped;
-
-        HUD.OnExplosionComplete -= OnExplosionComplete;
-        HUD.OnPostExplosionSequenceComplete -= () => { StartFight ( 0 ); };
-        HUD.OnTransitionFadeInComplete -= OnTransitionFadeIn;
-        HUD.OnTransitionFadeOutComplete -= OnTransitionFadeOut;
-        HUD.EndGame -= EndGame;
+        OnEndGame?.Invoke ( endingIndex );
     }
 
     #endregion
