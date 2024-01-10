@@ -93,6 +93,9 @@ public class HUD : MonoBehaviour
     #region State Change Managers
 
     private void OnGameStateChanged ( GameState gameState ) {
+        if ( gameState == GameState.Transitioning )
+            return;
+
         mainMenuPanel.gameObject.SetActive ( gameState == GameState.MainMenu );
         inGamePanel.gameObject.SetActive ( gameState == GameState.Playing );
         endGamePanel.gameObject.SetActive ( gameState == GameState.Ended );

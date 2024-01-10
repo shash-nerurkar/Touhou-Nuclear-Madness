@@ -131,6 +131,7 @@ public class SceneManager : MonoBehaviour
 
         switch ( CurrentGameState ) {
             case GameState.MainMenu:
+                ChangeInGameState ( InGameState.MainMenu );
                 currentFightIndex = 0;
 
                 break;
@@ -138,6 +139,11 @@ public class SceneManager : MonoBehaviour
             case GameState.Chatting:
                 HideDialogueBox?.Invoke ( );
                 
+                break;
+                
+            case GameState.Ended:
+                ChangeInGameState ( InGameState.EndGame );
+
                 break;
         }
 
@@ -164,8 +170,8 @@ public class SceneManager : MonoBehaviour
     private void OnTransitionFadeInStart ( ) { }
 
     private void OnTransitionFadeInEnd ( ) {
-        switch ( CurrentGameState ) {
-            case GameState.MainMenu:
+        switch ( CurrentInGameState ) {
+            case InGameState.MainMenu:
                 ChangeGameState ( newState: GameState.Chatting );
 
                 PlaySound?.Invoke ( Constants.CHATTING_MUSIC );
@@ -178,8 +184,7 @@ public class SceneManager : MonoBehaviour
 
                 break;
 
-            case GameState.Playing:
-            case GameState.Chatting:
+            case InGameState.PostFight1Branch2:
                 StopSound?.Invoke ( Constants.SCENE_01_MUSIC );
 
                 ClearAllCharacters ( );
@@ -190,7 +195,7 @@ public class SceneManager : MonoBehaviour
                 
                 break;
 
-            case GameState.Ended:
+            case InGameState.EndGame:
                 ChangeGameState ( newState: GameState.MainMenu );
                 
                 StopSound?.Invoke ( Constants.ON_END_GAME_LOSS_SOUND );
@@ -214,7 +219,7 @@ public class SceneManager : MonoBehaviour
     }
 
     private void StartTransition ( ) {
-        // ChangeGameState ( GameState.Transitioning );
+        ChangeGameState ( GameState.Transitioning );
 
         TransitionRemoveNextPlayerCharacter?.Invoke ( );
 
@@ -222,7 +227,7 @@ public class SceneManager : MonoBehaviour
     }
 
     private void StartTransition ( Characters nextPlayerCharacter ) {
-        // ChangeGameState ( GameState.Transitioning );
+        ChangeGameState ( GameState.Transitioning );
 
         TransitionSetNextPlayerCharacter?.Invoke ( nextPlayerCharacter );
 
@@ -387,7 +392,7 @@ public class SceneManager : MonoBehaviour
     #region Explosion Handlers
 
     private void StartExplosion ( ) {
-        ChangeGameState ( GameState.Animating );
+        ChangeGameState ( GameState.Transitioning );
 
         PlaySound?.Invoke ( Constants.ON_EXPLOSION_SOUND );
         

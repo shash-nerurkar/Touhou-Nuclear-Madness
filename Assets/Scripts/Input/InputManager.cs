@@ -69,7 +69,7 @@ public class InputManager : MonoBehaviour
                 UIActions.Enable ( );
                 break;
             
-            case GameState.Animating:
+            case GameState.Transitioning:
                 FlyActions.Disable ( );
                 UIActions.Disable ( );
                 break;

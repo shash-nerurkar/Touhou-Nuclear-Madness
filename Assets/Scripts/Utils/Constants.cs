@@ -181,14 +181,16 @@ public class Dialogue {
     Playing,
     Chatting,
     Ended,
-    Animating
+    Transitioning
 }
 
 [ Serializable ] public enum InGameState {
+    MainMenu,
     PreExplosion,
     PostExplosion,
     PostFight1Branch1,
     PostFight1Branch2,
     PostFight2Branch1,
-    PostFight2Branch2
+    PostFight2Branch2,
+    EndGame
 }
