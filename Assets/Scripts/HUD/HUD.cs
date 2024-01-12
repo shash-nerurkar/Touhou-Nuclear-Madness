@@ -49,6 +49,8 @@ public class HUD : MonoBehaviour
         SceneManager.ShowTutorial += inGamePanel.ShowTutorial;
         SceneManager.OnFightStarted += inGamePanel.SetPanelValues;
         SceneManager.OnCurrentPlayerHit += inGamePanel.UpdatePlayerHealth;
+        SceneManager.OnCurrentPlayerFiredAbility1 += inGamePanel.UpdatePlayerAbility1;
+        SceneManager.OnCurrentPlayerFiredAbility2 += inGamePanel.UpdatePlayerAbility2;
         SceneManager.OnCurrentEnemyHit += inGamePanel.UpdateEnemyHealth;
         
         SceneManager.OnEndGame += endGamePanel.ChangeBackgroundScene;
@@ -72,6 +74,8 @@ public class HUD : MonoBehaviour
         SceneManager.ShowTutorial -= inGamePanel.ShowTutorial;
         SceneManager.OnFightStarted -= inGamePanel.SetPanelValues;
         SceneManager.OnCurrentPlayerHit -= inGamePanel.UpdatePlayerHealth;
+        SceneManager.OnCurrentPlayerFiredAbility1 -= inGamePanel.UpdatePlayerAbility1;
+        SceneManager.OnCurrentPlayerFiredAbility2 -= inGamePanel.UpdatePlayerAbility2;
         SceneManager.OnCurrentEnemyHit -= inGamePanel.UpdateEnemyHealth;
         
         SceneManager.OnEndGame -= endGamePanel.ChangeBackgroundScene;
@@ -156,6 +160,8 @@ public class HUD : MonoBehaviour
     }
 
     private void ContinueDialogueSequence ( ) {
+        if ( currentDialogues == null ) return;
+
         if ( currentDialogueIndex == currentDialogues.Length )
             OnDialogueSequenceComplete ( );
         else

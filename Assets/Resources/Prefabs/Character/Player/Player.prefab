@@ -125,6 +125,9 @@ MonoBehaviour:
   onHitIDuration: 1
   shootCooldown: 0.1
   bombCooldown: 1
+  ability2Cooldown: 1
+  bombCount: 3
+  ability2Count: 3
   unselectedMaterial: {fileID: 2100000, guid: 151aea5398b6dd640a6b8a579a443ecf, type: 2}
   selectedMaterial: {fileID: 2100000, guid: 1a16af73158826048921236a15177d0e, type: 2}
 --- !u!95 &2126825293904789195 stripped

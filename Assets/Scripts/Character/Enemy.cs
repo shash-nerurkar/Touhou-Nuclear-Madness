@@ -90,7 +90,9 @@ public abstract class Enemy : Character
         ChangeState ( State.Move );
     }
 
-    public void SetActive ( bool isActive ) => ChangeState ( isActive ? State.Idle : State.Chatting );
+    public void SetEnemyAsCurrent ( bool isActive ) {
+        ChangeState ( isActive ? State.Idle : State.Chatting );
+    }
 
     #endregion
 }

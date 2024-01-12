@@ -49,7 +49,7 @@ public class Bullet : MonoBehaviour
 
     #region Methods
 
-    public void Init ( BulletPathType pathType, Vector3 shootDir, int curveDir = 1, float angle = 0, int scale = 1, bool isDamping = false, float speedScale = 1 ) {
+    public virtual void Init ( BulletPathType pathType, Vector3 shootDir, int curveDir = 1, float angle = 0, int scale = 1, bool isDamping = false, float speedScale = 1 ) {
         isFlying = true;
 
         dampingBulletTimer = gameObject.AddComponent<Timer> ( );
@@ -129,22 +129,26 @@ public class Bullet : MonoBehaviour
         else if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_PLAYER ) ) {        
             collided.GetComponent<Player> ( )?.TakeDamage ( damage: damage );
             
-            SetHighlighted ( false );
+            OnHit ( );
         }
         else if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_ENEMY ) ) {        
             collided.GetComponent<Enemy> ( )?.TakeDamage ( damage: damage );
             
-            SetHighlighted ( false );
+            OnHit ( );
         }
     }
 
-    private void SetHighlighted ( bool isHighlighted ) {
-        spriteRenderer.material = isHighlighted ? highlightedMaterial : unhighlightedMaterial;
-        isFlying = isHighlighted;
-        animator.SetBool ( "isHit", !isHighlighted );
+    public void OnHit ( ) {
+        spriteRenderer.material = unhighlightedMaterial;
+        
+        isFlying = false;
+
+        animator.SetBool ( "isHit", true );
     }
 
-    public void OnHitAnimationComplete ( ) => Destroy ( gameObject );
+    public virtual void OnHitAnimationComplete ( ) {
+        Destroy ( gameObject );
+    }
 
     #endregion
 }

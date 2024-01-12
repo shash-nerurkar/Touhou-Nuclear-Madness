@@ -18,7 +18,9 @@ public class InputManager : MonoBehaviour
 
     public static event Action<bool> OnPlayerShootAction;
 
-    public static event Action<bool> OnPlayerBombAction;
+    public static event Action<bool> OnPlayerAbility1Action;
+
+    public static event Action<bool> OnPlayerAbility2Action;
 
     public static event Action PopDialogueAction;
 
@@ -37,6 +39,14 @@ public class InputManager : MonoBehaviour
 		UIActions.PopDialogue.performed += context => {
 			PopDialogueAction?.Invoke( );
 		};
+
+		FlyActions.Ability1.performed += context => {
+            OnPlayerAbility1Action?.Invoke ( true );
+		};
+
+		FlyActions.Ability2.performed += context => {
+			OnPlayerAbility2Action?.Invoke( true );
+		};
     }
 
     private void FixedUpdate() {
@@ -44,7 +54,9 @@ public class InputManager : MonoBehaviour
 
         OnPlayerShootAction?.Invoke ( FlyActions.Shoot.ReadValue<float>( ) != 0 );
 
-        OnPlayerBombAction?.Invoke ( FlyActions.Bomb.ReadValue<float>( ) != 0 );
+        // OnPlayerAbility1Action?.Invoke ( FlyActions.Ability1.ReadValue<float>( ) != 0 );
+
+        // OnPlayerAbility2Action?.Invoke ( FlyActions.Ability2.ReadValue<float>( ) != 0 );
     }
 
     private void OnGameStateChanged ( GameState gameState ) {

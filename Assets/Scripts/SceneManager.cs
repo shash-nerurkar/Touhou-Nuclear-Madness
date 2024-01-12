@@ -52,9 +52,13 @@ public class SceneManager : MonoBehaviour
 
     public static event Action ShowTutorial;
 
-    public static event Action<float, float> OnFightStarted;
+    public static event Action<float, int, int, float> OnFightStarted;
 
     public static event Action<float> OnCurrentPlayerHit;
+
+    public static event Action<int> OnCurrentPlayerFiredAbility1;
+
+    public static event Action<int> OnCurrentPlayerFiredAbility2;
 
     public static event Action<float> OnCurrentEnemyHit;
 
@@ -219,7 +223,7 @@ public class SceneManager : MonoBehaviour
     }
 
     private void StartTransition ( ) {
-        ChangeGameState ( GameState.Transitioning );
+        // ChangeGameState ( GameState.Transitioning );
 
         TransitionRemoveNextPlayerCharacter?.Invoke ( );
 
@@ -227,7 +231,7 @@ public class SceneManager : MonoBehaviour
     }
 
     private void StartTransition ( Characters nextPlayerCharacter ) {
-        ChangeGameState ( GameState.Transitioning );
+        // ChangeGameState ( GameState.Transitioning );
 
         TransitionSetNextPlayerCharacter?.Invoke ( nextPlayerCharacter );
 
@@ -332,10 +336,18 @@ public class SceneManager : MonoBehaviour
                 break;
         }
 
-        currentPlayer.SetSelected ( true );
-        currentEnemy.SetActive ( true );
+        currentPlayer.SetPlayerAsCurrent ( true );
+        currentPlayer.OnLose += ( ) => { OnFightComplete ( didWin: false ); };
+        currentPlayer.OnPlayerShoot += CurrentPlayerShoot;
+        currentPlayer.OnPlayerFiredAbility1 += CurrentPlayerFiredAbility1;
+        currentPlayer.OnPlayerFiredAbility2 += CurrentPlayerFiredAbility2;
+        currentPlayer.OnHit += CurrentPlayerHit;
+
+        currentEnemy.SetEnemyAsCurrent ( true );
+        currentEnemy.OnLose += ( ) => { OnFightComplete ( didWin: true ); };
+        currentEnemy.OnHit += CurrentEnemyHit;
         
-        OnFightStarted ( currentPlayer.Health, currentEnemy.Health );
+        OnFightStarted ( currentPlayer.Health, currentPlayer.BombCount, currentPlayer.Ability2Count, currentEnemy.Health );
     }
 
     private void OnFightComplete ( bool didWin ) {
@@ -363,17 +375,32 @@ public class SceneManager : MonoBehaviour
 
         ++currentFightIndex;
 
-        currentPlayer.SetSelected ( false );
-        currentEnemy.SetActive ( false );
-        currentEnemy.OnLose -= ( ) => { OnFightComplete ( didWin: true ); };
-        currentEnemy.OnHit -= CurrentEnemyHit;
+        currentPlayer.SetPlayerAsCurrent ( false );
         currentPlayer.OnLose -= ( ) => { OnFightComplete ( didWin: false ); };
         currentPlayer.OnPlayerShoot -= CurrentPlayerShoot;
+        currentPlayer.OnPlayerFiredAbility1 -= CurrentPlayerFiredAbility1;
+        currentPlayer.OnPlayerFiredAbility2 -= CurrentPlayerFiredAbility2;
         currentPlayer.OnHit -= CurrentPlayerHit;
+
+        currentEnemy.SetEnemyAsCurrent ( false );
+        currentEnemy.OnLose -= ( ) => { OnFightComplete ( didWin: true ); };
+        currentEnemy.OnHit -= CurrentEnemyHit;
     }
 
     private void CurrentPlayerShoot ( ) {
         PlaySound?.Invoke ( Constants.ON_PLAYER_SHOOT_SOUND );
+    }
+
+    private void CurrentPlayerFiredAbility1 ( int abilityCount ) {
+        PlaySound?.Invoke ( Constants.ON_PLAYER_SHOOT_SOUND );
+
+        OnCurrentPlayerFiredAbility1?.Invoke ( abilityCount );
+    }
+
+    private void CurrentPlayerFiredAbility2 ( int abilityCount ) {
+        PlaySound?.Invoke ( Constants.ON_PLAYER_SHOOT_SOUND );
+
+        OnCurrentPlayerFiredAbility2?.Invoke ( abilityCount );
     }
 
     private void CurrentPlayerHit ( float health ) {
@@ -416,12 +443,6 @@ public class SceneManager : MonoBehaviour
         GameObject playerInstance = Instantiate ( playerObject, Constants.BASE_POSITION_PLAYER, Quaternion.identity );
         
         currentPlayer = playerInstance.GetComponent<Player> ( );
-        if ( currentPlayer != null ) {
-            currentPlayer.OnLose += ( ) => { OnFightComplete ( didWin: false ); };
-            currentPlayer.OnPlayerShoot += CurrentPlayerShoot;
-            currentPlayer.OnHit += CurrentPlayerHit;
-        }
-
         return currentPlayer;
     }
 
@@ -429,19 +450,14 @@ public class SceneManager : MonoBehaviour
         GameObject enemyInstance = Instantiate ( enemyObject, Constants.BASE_POSITION_ENEMY, Quaternion.identity );
 
         currentEnemy = enemyInstance.GetComponent<Enemy> ( );
-        if ( currentEnemy != null ) {
-            currentEnemy.OnLose += ( ) => { OnFightComplete ( didWin: true ); };
-            currentEnemy.OnHit += CurrentEnemyHit;
-        }
-
         return currentEnemy;
     }
 
     private Character AddBystander1 ( GameObject bystanderObject ) {
         GameObject bystanderInstance = Instantiate ( bystanderObject, Constants.BASE_POSITION_BYSTANDER_1, Quaternion.identity );
+        
         Character bystander = bystanderInstance.GetComponent<Character> ( );
-        if ( bystander != null )
-            otherCharacters.Add ( bystander );
+        otherCharacters.Add ( bystander );
 
         return bystander;
     }
