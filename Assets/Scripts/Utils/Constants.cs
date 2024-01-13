@@ -217,3 +217,10 @@ public class Dialogue {
     PostFight2Branch2,
     EndGame
 }
+
+[ Serializable ] public enum Ending {
+    UtsuhoWin,
+    SagumeWin,
+    AyaWin,
+    NarratorWin
+}

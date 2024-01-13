@@ -4923,7 +4923,7 @@ Rigidbody2D:
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 0
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 4
 --- !u!58 &8501833110549046333
 CircleCollider2D:
@@ -4979,6 +4979,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3572921346626859728, guid: 5880f9fab9caece458770c9400ee90b6, type: 3}
       propertyPath: m_BodyType
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3572921346626859728, guid: 5880f9fab9caece458770c9400ee90b6, type: 3}
+      propertyPath: m_CollisionDetection
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7754593602325135165, guid: 5880f9fab9caece458770c9400ee90b6, type: 3}
@@ -5075,17 +5079,9 @@ MonoBehaviour:
   pivot: {fileID: 8663788566805746476}
   unselectedMaterial: {fileID: 2100000, guid: 151aea5398b6dd640a6b8a579a443ecf, type: 2}
   selectedMaterial: {fileID: 2100000, guid: 1a16af73158826048921236a15177d0e, type: 2}
-  speed: 5
-  health: 3
-  onHitIDuration: 1
-  bulletObjects: []
-  shootCooldown: 0.1
+  data: {fileID: 0}
   grazeDetector: {fileID: 7718684391948640161}
-  bombCooldown: 1
   bombParticleSystem: {fileID: 8461008767146765047}
-  bombCount: 100
-  ability2Cooldown: 1
-  ability2Count: 3
 --- !u!4 &1377679275152227348 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7754593602325135165, guid: 5880f9fab9caece458770c9400ee90b6, type: 3}

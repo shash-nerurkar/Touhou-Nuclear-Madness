@@ -16,12 +16,15 @@ MonoBehaviour:
   character: 3
   color: {r: 0.6431373, g: 0.0627451, b: 0, a: 1}
   sprite: {fileID: 1386449446, guid: 54970427ccee2304a84719b8ccff4904, type: 3}
-  speed: 8
   health: 3
+  speed: 7
+  acceleration: 1
   onHitIDuration: 1
   bulletObjects:
   - {fileID: 2423667156141439865, guid: 36ed8164093c76e42b6db3f1cf75ee34, type: 3}
   shootCooldown: 0.1
+  bulletSpeed: 15
+  bulletDamage: 10
   bombCooldown: 1
   bombCount: 100
   ability2Cooldown: 1

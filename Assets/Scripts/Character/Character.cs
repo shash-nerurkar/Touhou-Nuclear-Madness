@@ -29,6 +29,7 @@ public abstract class Character : MonoBehaviour
     protected float speed;
 
     protected float health;
+    public float Health { get => health; }
 
     protected float onHitIDuration;
 

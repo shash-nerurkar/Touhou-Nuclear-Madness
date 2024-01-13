@@ -99,7 +99,7 @@ public class SceneManager : MonoBehaviour
 
     public static event Action<string> StopSound;
 
-    public static event Action<int> OnEndGame;
+    public static event Action<Ending, float> OnEndGame;
 
     public static event Action ClearAllBullets;
 
@@ -329,7 +329,7 @@ public class SceneManager : MonoBehaviour
                 StopSound?.Invoke ( Constants.SCENE_01_MUSIC );
                 PlaySound?.Invoke ( Constants.ON_END_GAME_LOSS_MUSIC );
 
-                EndGame ( endingIndex: 0 );
+                EndGame ( ending: Ending.UtsuhoWin );
 
                 break;
             
@@ -347,7 +347,7 @@ public class SceneManager : MonoBehaviour
                 StopSound?.Invoke ( Constants.SCENE_02_MUSIC );
                 PlaySound?.Invoke ( Constants.ON_END_GAME_LOSS_MUSIC );
 
-                EndGame ( endingIndex: 1 );
+                EndGame ( ending: Ending.SagumeWin );
 
                 break;
             
@@ -355,7 +355,7 @@ public class SceneManager : MonoBehaviour
                 StopSound?.Invoke ( Constants.SCENE_02_MUSIC );
                 PlaySound?.Invoke ( Constants.ON_END_GAME_WIN_MUSIC );
 
-                EndGame ( endingIndex: 2 );
+                EndGame ( ending: Ending.AyaWin );
 
                 break;
 
@@ -542,14 +542,33 @@ public class SceneManager : MonoBehaviour
     #endregion
 
 
-    private void EndGame ( int endingIndex ) {
+    private void EndGame ( Ending ending ) {
         ChangeGameState ( newState: GameState.Ended );
+
+        float winnerHP;
+        switch ( ending ) {
+            case Ending.UtsuhoWin:
+                winnerHP = currentEnemy.Health;
+                break;
+            
+            case Ending.SagumeWin:
+                winnerHP = currentEnemy.Health;
+                break;
+            
+            case Ending.AyaWin:
+                winnerHP = currentPlayer.Health;
+                break;
+
+            default:
+                winnerHP = -1;
+                break;
+        }
+
+        OnEndGame?.Invoke ( ending, winnerHP );
         
         ClearAllCharacters ( );
 
         ClearAllBullets?.Invoke ( );
-
-        OnEndGame?.Invoke ( endingIndex );
     }
 
     #endregion
