@@ -1,17 +1,20 @@
+using System.Collections;
 using UnityEngine;
 
 public class Camera : MonoBehaviour
 {
     #region Fields
 
+    private float shakeDuration;
+    
     private float shakeIntensity;
+
+    private const float minShakeIntensity = 0.01f;
 
     private Vector3 originalPosition;
 
     private bool isCameraShaking;
     public bool IsCameraShaking { get => isCameraShaking; }
-
-    private Timer shakeTimer;
 
     #endregion
 
@@ -32,33 +35,47 @@ public class Camera : MonoBehaviour
     #endregion
 
 
-    private void Start ( ) {
-        shakeTimer = gameObject.AddComponent<Timer> ( );
-
-        originalPosition = transform.position;
-    }
+    private void Start ( ) => originalPosition = transform.position;
 
 
     #region Shake Handlers
+
+    public void ShakeCamera ( float shakeDuration, float shakeIntensity ) {
+        this.shakeDuration = shakeDuration;
+        this.shakeIntensity = shakeIntensity;
+
+        isCameraShaking = true;
+        StartCoroutine ( TweenShakeIntensity ( shakeIntensity, minShakeIntensity ) );
+    }
 
     private void Update ( ) {
         if ( isCameraShaking )
             transform.position = originalPosition + Random.insideUnitSphere * shakeIntensity;
         else
-            transform.position = originalPosition; // + Random.insideUnitSphere * 0.05f;
-    }
-
-    public void ShakeCamera ( float shakeDuration = 0.5f, float shakeIntensity = 0.1f ) {
-        this.shakeIntensity = shakeIntensity;
-
-        isCameraShaking = true;
-        shakeTimer.StartTimer ( maxTime: shakeDuration, onTimerFinish: ( ) => {
-            isCameraShaking = false;
-        } );
+            transform.position = originalPosition;
     }
 
     #endregion
 
+
+    public IEnumerator TweenShakeIntensity( float startValue, float endValue )
+    {
+        float elapsed = 0f;
+
+        while ( elapsed < shakeDuration )
+        {
+            float t = elapsed / shakeDuration;
+            shakeIntensity = Mathf.Lerp(startValue, endValue, t);
+
+            elapsed += Time.deltaTime;
+            
+            yield return null;
+        }
+
+        shakeIntensity = endValue;
+
+        isCameraShaking = false;
+    }
 
     #endregion
 }

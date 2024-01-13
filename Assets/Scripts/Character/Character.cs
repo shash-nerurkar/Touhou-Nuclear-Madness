@@ -5,32 +5,32 @@ public abstract class Character : MonoBehaviour
 {
     #region Serialized Fields
 
-    [ SerializeField ] protected GameObject [ ] bulletObjects;
-    
-    [ SerializeField ] protected Rigidbody2D rb;
-
-    [ SerializeField ] protected Collider2D cd;
-
     [ SerializeField ] protected SpriteRenderer spriteRenderer;
 
     [ SerializeField ] protected Animator animator;
 
-    [ SerializeField ] protected Transform pivot;
+    [ SerializeField ] protected Collider2D cd;
     
-    [ SerializeField ] protected int speed;
+    [ SerializeField ] protected Rigidbody2D rb;
 
-    [ SerializeField ] private float health;
+    [ SerializeField ] protected Transform pivot;
 
-    [ SerializeField ] protected float onHitIDuration;
+    [ SerializeField ] protected Material unselectedMaterial;
 
+    [ SerializeField ] protected Material selectedMaterial;
+    
     #endregion
 
 
     #region Fields
 
     private Timer onHitTimer;
+    
+    protected float speed;
 
-    public float Health { get => health; }
+    protected float health;
+
+    protected float onHitIDuration;
 
     #endregion
 
@@ -51,9 +51,9 @@ public abstract class Character : MonoBehaviour
     }
     
     public void TakeDamage ( float damage ) {
-        health = Mathf.Clamp ( Health - damage, 0, Health - damage );
+        health = Mathf.Clamp ( health - damage, 0, health - damage );
 
-        if ( Health == 0 ) {
+        if ( health == 0 ) {
             animator.SetBool ( "isLose", true );
             OnLoseFight ( );
         }
@@ -77,6 +77,12 @@ public abstract class Character : MonoBehaviour
 
     private void OnHitTimerFinish ( ) {
         animator.SetBool ( "isHit", false );
+    }
+
+    public virtual void ToggleAsCurrent ( bool isCurrent ) {
+        spriteRenderer.material = isCurrent ? selectedMaterial : unselectedMaterial;
+
+        cd.enabled = isCurrent;
     }
 
     #endregion

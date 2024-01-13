@@ -12,6 +12,20 @@ public class BulletsContainer : MonoBehaviour
 
     #region Methods
 
+
+    #region Event Subscriptions
+
+    protected virtual void Awake ( ) {
+        SceneManager.ClearAllBullets += ClearAllBullets;
+    }
+
+    protected virtual void OnDestroy ( ) {
+        SceneManager.ClearAllBullets -= ClearAllBullets;
+    }
+
+    #endregion
+
+
     protected void AddBullet ( Bullet bullet ) {
         bullet.transform.SetParent ( transform );
 

@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6431666f9d3c17244af587c3fbdf9ddd, type: 3}
+  m_Name: EnemyDataUtsuho
+  m_EditorClassIdentifier: 
+  name: Utsuho
+  character: 2
+  color: {r: 0.13725491, g: 0.5176471, b: 0.09019608, a: 1}
+  sprite: {fileID: 1622488842, guid: 09891654692d6204086d9b77896518e3, type: 3}
+  speed: 8
+  health: 80
+  onHitIDuration: 0.1
+  bulletObjects:
+  - {fileID: 302041270312899223, guid: 3c0cf8bf7da44754e9c5ef2f10163857, type: 3}
+  moveCooldownTime: 0
+  moveDistanceRange: 3.5

@@ -5,19 +5,16 @@ public class Player : Character
 {
     #region Serialized Fields
 
-    [ SerializeField ] private float shootCooldown;
+    [ SerializeField ] private PlayerData data;
+    public PlayerData Data { get => data; }
 
-    [ SerializeField ] private float bombCooldown;
 
-    [ SerializeField ] private float ability2Cooldown;
+    [ Header ("Player graze") ]
+    [ SerializeField ] private PlayerGrazeDetector grazeDetector;
 
-    [ SerializeField ] private int bombCount;
 
-    [ SerializeField ] private int ability2Count;
-
-    [ SerializeField ] private Material unselectedMaterial;
-
-    [ SerializeField ] private Material selectedMaterial;
+    [ Header ("Player ability 1: Bomb") ]
+    [ SerializeField ] private ParticleSystem bombParticleSystem;
 
     #endregion
 
@@ -36,9 +33,11 @@ public class Player : Character
 
     private Timer ability2CooldownTimer;
 
-    public int BombCount { get => bombCount; }
+    private int ability1Count;
 
-    public int Ability2Count { get => ability2Count; }
+    private int ability2Count;
+
+    private int grazeCount;
 
     #endregion
 
@@ -52,6 +51,8 @@ public class Player : Character
     public event Action<int> OnPlayerFiredAbility2;
 
     public static event Action FireAbility1Event;
+
+    public event Action<int> OnGrazed;
 
     #endregion
 
@@ -69,16 +70,26 @@ public class Player : Character
         InputManager.OnPlayerAbility1Action += OnAbility1;
         InputManager.OnPlayerAbility2Action += OnAbility2;
 
+        grazeDetector.OnGrazed += OnGetGrazed;
+
+        speed = Data.Speed;
+        health = Data.Health;
+        onHitIDuration = Data.OnHitIDuration;
+        ability1Count = Data.BombCount;
+        ability2Count = Data.Ability2Count;
+
         shootCooldownTimer = gameObject.AddComponent<Timer> ( );
         ability1CooldownTimer = gameObject.AddComponent<Timer> ( );
         ability2CooldownTimer = gameObject.AddComponent<Timer> ( );
     }
 
-    private void OnDestroy ( ) {
+    protected virtual void OnDestroy ( ) {
         InputManager.OnPlayerMoveAction -= OnMove;
         InputManager.OnPlayerShootAction -= OnShoot;
         InputManager.OnPlayerAbility1Action -= OnAbility1;
         InputManager.OnPlayerAbility2Action -= OnAbility2;
+
+        grazeDetector.OnGrazed -= OnGetGrazed;
     }
 
     #endregion
@@ -101,7 +112,7 @@ public class Player : Character
             Shoot ( );
 
             canShoot = false;
-            shootCooldownTimer.StartTimer ( maxTime: shootCooldown, onTimerFinish: () => {
+            shootCooldownTimer.StartTimer ( maxTime: Data.ShootCooldown, onTimerFinish: () => {
                 canShoot = true;
             } );
 
@@ -110,7 +121,7 @@ public class Player : Character
     }
 
     public void Shoot ( ) {
-        GameObject bulletInstance = Instantiate ( original: bulletObjects [ UnityEngine.Random.Range ( 0, bulletObjects.Length ) ], position: pivot.position, rotation: Quaternion.identity );
+        GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ UnityEngine.Random.Range ( 0, Data.BulletObjects.Length ) ], position: pivot.position, rotation: Quaternion.identity );
 
         Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
         bullet?.Init ( BulletPathType.Straight, shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ) );
@@ -119,23 +130,36 @@ public class Player : Character
     #endregion
 
 
+    #region Graze related
+
+    protected virtual void OnGetGrazed ( Collider2D collided ) {
+        ++grazeCount;
+
+        OnGrazed?.Invoke ( grazeCount );
+    }
+
+    #endregion
+
+
     #region Ability1 related
 
     private void OnAbility1 ( bool isFiringAbility1 ) {
-        if ( isFiringAbility1 && canFireAbility1 && bombCount > 0 ) {
+        if ( isFiringAbility1 && canFireAbility1 && ability1Count > 0 ) {
             FireAbility1 ( );
             
             canFireAbility1 = false;
-            ability1CooldownTimer.StartTimer ( maxTime: bombCooldown, onTimerFinish: () => {
+            ability1CooldownTimer.StartTimer ( maxTime: Data.BombCooldown, onTimerFinish: () => {
                 canFireAbility1 = true;
             } );
 
-            OnPlayerFiredAbility1?.Invoke ( bombCount );
+            OnPlayerFiredAbility1?.Invoke ( ability1Count );
         }
     }
 
     private void FireAbility1 ( ) {
-        --bombCount;
+        --ability1Count;
+        
+        bombParticleSystem.Play ( );
 
         FireAbility1Event?.Invoke ( );
     }
@@ -150,7 +174,7 @@ public class Player : Character
             FireAbility2 ( );
             
             canFireAbility2 = false;
-            ability2CooldownTimer.StartTimer ( maxTime: ability2Cooldown, onTimerFinish: () => {
+            ability2CooldownTimer.StartTimer ( maxTime: Data.Ability2Cooldown, onTimerFinish: () => {
                 canFireAbility2 = true;
             } );
 
@@ -165,9 +189,16 @@ public class Player : Character
     #endregion
 
 
-    public void SetPlayerAsCurrent ( bool isSelected ) {
-        spriteRenderer.material = isSelected ? selectedMaterial : unselectedMaterial;
-        cd.enabled = isSelected;
+    public override void ToggleAsCurrent ( bool isCurrent ) {
+        base.ToggleAsCurrent ( isCurrent );
+        
+        grazeDetector.ToggleEnabled ( isCurrent );
+    }
+ 
+    protected override void OnLoseFight ( ) {
+        grazeDetector.ToggleEnabled ( false );
+
+        base.OnLoseFight ( );
     }
 
     #endregion

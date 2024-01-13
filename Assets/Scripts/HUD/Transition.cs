@@ -13,10 +13,11 @@ public class Transition : MonoBehaviour
 
     [ SerializeField ] private Image nextPlayerCharacterImage;
 
-    [ SerializeField ] private Sprite sagumeCharacterSprite;
-    [ SerializeField ] private Sprite ayaCharacterSprite;
-    [ SerializeField ] private Sprite utsuhoCharacterSprite;
-    [ SerializeField ] private Sprite narratorCharacterSprite;
+    [ SerializeField ] private GameObject nextPlayerCharacterStats;
+
+    [ SerializeField ] private TextMeshProUGUI healthValueLabel;
+
+    [ SerializeField ] private TextMeshProUGUI speedValueLabel;
 
     #endregion
 
@@ -42,35 +43,21 @@ public class Transition : MonoBehaviour
     public void SetNextPlayerCharacter ( ) {
         infoTextLabel.gameObject.SetActive ( false );
         nextPlayerCharacterImage.gameObject.SetActive ( false );
+        nextPlayerCharacterStats.SetActive ( false );
     }
 
-    public void SetNextPlayerCharacter ( Characters character ) {
+    public void SetNextPlayerCharacter ( PlayerData playerCharacterData ) {
         infoTextLabel.gameObject.SetActive ( true );
         nextPlayerCharacterImage.gameObject.SetActive ( true );
+        nextPlayerCharacterStats.SetActive ( true );
 
-        infoTextLabel.text = "You will now play as ";
+        infoTextLabel.text = "You are " + playerCharacterData.Name;
 
-        switch ( character ) {
-            case Characters.Sagume:
-                infoTextLabel.text += "Sagume";
-                nextPlayerCharacterImage.sprite = sagumeCharacterSprite;
-                break;
+        nextPlayerCharacterImage.sprite = playerCharacterData.Sprite;
 
-            case Characters.Aya:
-                infoTextLabel.text += "Aya";
-                nextPlayerCharacterImage.sprite = ayaCharacterSprite;
-                break;
-
-            case Characters.Utsuho:
-                infoTextLabel.text += "Utsuho";
-                nextPlayerCharacterImage.sprite = utsuhoCharacterSprite;
-                break;
-
-            case Characters.Narrator:
-                infoTextLabel.text += "Narrator";
-                nextPlayerCharacterImage.sprite = narratorCharacterSprite;
-                break;
-        }
+        healthValueLabel.text = ( ( int ) playerCharacterData.Health ).ToString ( );
+        
+        speedValueLabel.text = ( ( int ) playerCharacterData.Speed ).ToString ( );
     }
 
     #endregion

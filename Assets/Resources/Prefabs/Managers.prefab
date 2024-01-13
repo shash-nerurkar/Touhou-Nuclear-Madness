@@ -45,9 +45,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerSagumeObject: {fileID: 5708694090066587813, guid: 16218b42f8a1df348a38414d5d3503bb, type: 3}
+  playerSagumeData: {fileID: 11400000, guid: 76c3253534c0ffc44a5029970dc32d4a, type: 2}
   enemyUtsuhoObject: {fileID: 8337879637977827542, guid: 62ddac7424aaced498d0c448ed584d5e, type: 3}
+  enemyUtsuhoData: {fileID: 11400000, guid: 2ee3f8253ec26fe4e954785d635e6c84, type: 2}
   playerAyaObject: {fileID: 3541868044913191785, guid: 3fc2ce7b13d38fb468979db0adae8bbb, type: 3}
+  playerAyaData: {fileID: 11400000, guid: 6f0d415d045c4d647b6d8bf7b1779df0, type: 2}
   enemySagumeObject: {fileID: 2244175846184237243, guid: 154d43f8c9cef3d4b9ed7fc612025e24, type: 3}
+  enemySagumeData: {fileID: 11400000, guid: 5be56902115eede4d8c42748d37de86b, type: 2}
 --- !u!1 &5450365046920253025
 GameObject:
   m_ObjectHideFlags: 0
@@ -14644,26 +14648,44 @@ MonoBehaviour:
     pitch: 1
     isLoop: 0
     source: {fileID: 0}
+  - name: On Player Grazed Sound
+    clip: {fileID: 8300000, guid: 1787be2458cd5b740a47d47d81f0a03c, type: 3}
+    volume: 0.5
+    pitch: 1
+    isLoop: 0
+    source: {fileID: 0}
+  - name: On Player Bomb Sound
+    clip: {fileID: 8300000, guid: 1787be2458cd5b740a47d47d81f0a03c, type: 3}
+    volume: 0.5
+    pitch: 1
+    isLoop: 0
+    source: {fileID: 0}
+  - name: On Player Ability2 Sound
+    clip: {fileID: 8300000, guid: 1787be2458cd5b740a47d47d81f0a03c, type: 3}
+    volume: 0.5
+    pitch: 1
+    isLoop: 0
+    source: {fileID: 0}
   - name: On Explosion
     clip: {fileID: 8300000, guid: e01827b0181e8c34991ccf7095a81390, type: 3}
     volume: 0.5
     pitch: 1
     isLoop: 0
     source: {fileID: 0}
-  - name: On End Game Loss
+  - name: On Wind
+    clip: {fileID: 8300000, guid: c683461f7c308e34790f062b7f9acd9d, type: 3}
+    volume: 0.5
+    pitch: 1
+    isLoop: 0
+    source: {fileID: 0}
+  - name: On End Game Loss Music
     clip: {fileID: 8300000, guid: dce3e95229b56744980e9f79166b9f6d, type: 3}
     volume: 0.5
     pitch: 1
     isLoop: 0
     source: {fileID: 0}
-  - name: On End Game Win
+  - name: On End Game Win Music
     clip: {fileID: 8300000, guid: 336483fd58e6e5f4a9bc6289b2f93697, type: 3}
-    volume: 0.5
-    pitch: 1
-    isLoop: 0
-    source: {fileID: 0}
-  - name: On Wind
-    clip: {fileID: 8300000, guid: c683461f7c308e34790f062b7f9acd9d, type: 3}
     volume: 0.5
     pitch: 1
     isLoop: 0

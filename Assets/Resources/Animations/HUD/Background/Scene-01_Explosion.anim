@@ -55,7 +55,7 @@ AnimationClip:
       value: {fileID: -1600766598, guid: 343716aad5aa2ec4cb04e2615410859d, type: 3}
     - time: 1.2
       value: {fileID: -1245835815, guid: 343716aad5aa2ec4cb04e2615410859d, type: 3}
-    - time: 1.4
+    - time: 1.4166666
       value: {fileID: 977538743, guid: 343716aad5aa2ec4cb04e2615410859d, type: 3}
     attribute: m_Sprite
     path: 
@@ -100,7 +100,7 @@ AnimationClip:
     m_AdditiveReferencePoseClip: {fileID: 0}
     m_AdditiveReferencePoseTime: 0
     m_StartTime: 0
-    m_StopTime: 1.4166666
+    m_StopTime: 1.75
     m_OrientationOffsetY: 0
     m_Level: 0
     m_CycleOffset: 0
@@ -120,7 +120,7 @@ AnimationClip:
   m_HasGenericRootTransform: 0
   m_HasMotionFloatCurves: 0
   m_Events:
-  - time: 1.4166666
+  - time: 1.75
     functionName: OnExplosionComplete
     data: 
     objectReferenceParameter: {fileID: 0}

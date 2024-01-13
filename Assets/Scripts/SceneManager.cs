@@ -6,13 +6,28 @@ public class SceneManager : MonoBehaviour
 {
     #region Serialized Fields
 
+    [ Header ( "Player Sagume" ) ]
     [ SerializeField ] private GameObject playerSagumeObject;
 
+    [ SerializeField ] private PlayerData playerSagumeData;
+
+
+    [ Header ( "Enemy Utsuho" ) ]
     [ SerializeField ] private GameObject enemyUtsuhoObject;
 
+    [ SerializeField ] private EnemyData enemyUtsuhoData;
+
+
+    [ Header ( "Player Aya" ) ]
     [ SerializeField ] private GameObject playerAyaObject;
 
+    [ SerializeField ] private PlayerData playerAyaData;
+
+
+    [ Header ( "Enemy Sagume" ) ]
     [ SerializeField ] private GameObject enemySagumeObject;
+
+    [ SerializeField ] private EnemyData enemySagumeData;
 
     #endregion
 
@@ -52,9 +67,11 @@ public class SceneManager : MonoBehaviour
 
     public static event Action ShowTutorial;
 
-    public static event Action<float, int, int, float> OnFightStarted;
+    public static event Action<float, int, int, int, float> OnFightStarted;
 
     public static event Action<float> OnCurrentPlayerHit;
+
+    public static event Action<int> OnCurrentPlayerGrazed;
 
     public static event Action<int> OnCurrentPlayerFiredAbility1;
 
@@ -72,7 +89,7 @@ public class SceneManager : MonoBehaviour
 
     public static event Action TransitionFadeOut;
 
-    public static event Action<Characters> TransitionSetNextPlayerCharacter;
+    public static event Action<PlayerData> TransitionSetNextPlayerCharacter;
 
     public static event Action TransitionRemoveNextPlayerCharacter;
 
@@ -83,6 +100,8 @@ public class SceneManager : MonoBehaviour
     public static event Action<string> StopSound;
 
     public static event Action<int> OnEndGame;
+
+    public static event Action ClearAllBullets;
 
     #endregion
 
@@ -136,6 +155,7 @@ public class SceneManager : MonoBehaviour
         switch ( CurrentGameState ) {
             case GameState.MainMenu:
                 ChangeInGameState ( InGameState.MainMenu );
+
                 currentFightIndex = 0;
 
                 break;
@@ -173,6 +193,8 @@ public class SceneManager : MonoBehaviour
 
     private void OnTransitionFadeInStart ( ) { }
 
+    private void OnTransitionFadeOutStart ( ) { }
+
     private void OnTransitionFadeInEnd ( ) {
         switch ( CurrentInGameState ) {
             case InGameState.MainMenu:
@@ -202,8 +224,8 @@ public class SceneManager : MonoBehaviour
             case InGameState.EndGame:
                 ChangeGameState ( newState: GameState.MainMenu );
                 
-                StopSound?.Invoke ( Constants.ON_END_GAME_LOSS_SOUND );
-                StopSound?.Invoke ( Constants.ON_END_GAME_WIN_SOUND );
+                StopSound?.Invoke ( Constants.ON_END_GAME_LOSS_MUSIC );
+                StopSound?.Invoke ( Constants.ON_END_GAME_WIN_MUSIC );
 
                 break;
         }
@@ -211,19 +233,29 @@ public class SceneManager : MonoBehaviour
         TransitionFadeOut?.Invoke ( );
     }
 
-    private void OnTransitionFadeOutStart ( ) { }
-
     private void OnTransitionFadeOutEnd ( ) {
         switch ( CurrentInGameState ) {
-            case InGameState.PostFight1Branch2: 
-                StartNextFight ( );
+            case InGameState.MainMenu:
+                ChangeGameState ( newState: GameState.MainMenu );
+                
+                break;
+
+            case InGameState.PostFight1Branch2:
+                ChangeGameState ( newState: GameState.Chatting );
+
+                ChangeInGameState ( newState: InGameState.PreFight2 );
+                
+                break;
+                
+            case InGameState.EndGame:
+                ChangeGameState ( newState: GameState.Ended );
                 
                 break;
         }
     }
 
     private void StartTransition ( ) {
-        // ChangeGameState ( GameState.Transitioning );
+        ChangeGameState ( newState: GameState.Transitioning );
 
         TransitionRemoveNextPlayerCharacter?.Invoke ( );
 
@@ -231,9 +263,34 @@ public class SceneManager : MonoBehaviour
     }
 
     private void StartTransition ( Characters nextPlayerCharacter ) {
-        // ChangeGameState ( GameState.Transitioning );
+        ChangeGameState ( newState: GameState.Transitioning );
 
-        TransitionSetNextPlayerCharacter?.Invoke ( nextPlayerCharacter );
+        float nextPlayerHealth, nextPlayerSpeed;
+        switch ( nextPlayerCharacter ) {
+            case Characters.Sagume:
+                nextPlayerHealth = playerSagumeData.Health;
+                nextPlayerSpeed = playerSagumeData.Speed;
+
+                TransitionSetNextPlayerCharacter?.Invoke ( playerSagumeData );
+                
+                break;
+
+            case Characters.Aya:
+                nextPlayerHealth = playerAyaData.Health;
+                nextPlayerSpeed = playerAyaData.Speed;
+
+                TransitionSetNextPlayerCharacter?.Invoke ( playerAyaData );
+                
+                break;
+            
+            default:
+                nextPlayerHealth = 0;
+                nextPlayerSpeed = 0;
+
+                TransitionRemoveNextPlayerCharacter?.Invoke ( );
+                
+                break;
+        }
 
         TransitionFadeIn?.Invoke ( );
     }
@@ -244,32 +301,18 @@ public class SceneManager : MonoBehaviour
     #region Dialogue Handlers
 
     private void OnDialoguePopped ( ) {
-        switch ( CurrentGameState ) {
-            case GameState.MainMenu:
-                PlaySound?.Invoke ( Constants.ON_DIALOGUE_POP_SOUND );
+        PlaySound?.Invoke ( Constants.ON_DIALOGUE_POP_SOUND );
 
-                StartTransition ( );
-
-                break;
-                
-            case GameState.Chatting:
-                PlaySound?.Invoke ( Constants.ON_DIALOGUE_POP_SOUND );
-
-                ContinueDialogueSequence?.Invoke ( );
-
-                break;
-
-            case GameState.Ended:
-                PlaySound?.Invoke ( Constants.ON_DIALOGUE_POP_SOUND );
-
-                StartTransition ( );
-
-                break;
-        }
+        ContinueDialogueSequence?.Invoke ( );
     }
 
     private void OnDialogueSequenceComplete ( ) {
         switch ( CurrentInGameState ) {
+            case InGameState.MainMenu:
+                StartTransition ( nextPlayerCharacter: Characters.Sagume );
+                
+                break;
+
             case InGameState.PreExplosion:
                 StopSound?.Invoke ( Constants.CHATTING_MUSIC );
 
@@ -284,7 +327,7 @@ public class SceneManager : MonoBehaviour
             
             case InGameState.PostFight1Branch1:
                 StopSound?.Invoke ( Constants.SCENE_01_MUSIC );
-                PlaySound?.Invoke ( Constants.ON_END_GAME_LOSS_SOUND );
+                PlaySound?.Invoke ( Constants.ON_END_GAME_LOSS_MUSIC );
 
                 EndGame ( endingIndex: 0 );
 
@@ -295,9 +338,14 @@ public class SceneManager : MonoBehaviour
                 
                 break;
             
+            case InGameState.PreFight2:
+                StartNextFight ( );
+                
+                break;
+            
             case InGameState.PostFight2Branch1:
                 StopSound?.Invoke ( Constants.SCENE_02_MUSIC );
-                PlaySound?.Invoke ( Constants.ON_END_GAME_LOSS_SOUND );
+                PlaySound?.Invoke ( Constants.ON_END_GAME_LOSS_MUSIC );
 
                 EndGame ( endingIndex: 1 );
 
@@ -305,10 +353,15 @@ public class SceneManager : MonoBehaviour
             
             case InGameState.PostFight2Branch2:
                 StopSound?.Invoke ( Constants.SCENE_02_MUSIC );
-                PlaySound?.Invoke ( Constants.ON_END_GAME_WIN_SOUND );
+                PlaySound?.Invoke ( Constants.ON_END_GAME_WIN_MUSIC );
 
                 EndGame ( endingIndex: 2 );
 
+                break;
+
+            case InGameState.EndGame:
+                StartTransition ( );
+                
                 break;
         }
     }
@@ -325,6 +378,8 @@ public class SceneManager : MonoBehaviour
             Destroy ( character.gameObject );
         otherCharacters.Clear ( );
 
+        ClearAllBullets?.Invoke ( );
+
         switch ( currentFightIndex ) {
             case 0:
                 ShowTutorial?.Invoke ( );
@@ -336,18 +391,19 @@ public class SceneManager : MonoBehaviour
                 break;
         }
 
-        currentPlayer.SetPlayerAsCurrent ( true );
+        currentPlayer.ToggleAsCurrent ( true );
         currentPlayer.OnLose += ( ) => { OnFightComplete ( didWin: false ); };
         currentPlayer.OnPlayerShoot += CurrentPlayerShoot;
         currentPlayer.OnPlayerFiredAbility1 += CurrentPlayerFiredAbility1;
         currentPlayer.OnPlayerFiredAbility2 += CurrentPlayerFiredAbility2;
         currentPlayer.OnHit += CurrentPlayerHit;
+        currentPlayer.OnGrazed += CurrentPlayerGrazed;
 
-        currentEnemy.SetEnemyAsCurrent ( true );
+        currentEnemy.ToggleAsCurrent ( true );
         currentEnemy.OnLose += ( ) => { OnFightComplete ( didWin: true ); };
         currentEnemy.OnHit += CurrentEnemyHit;
         
-        OnFightStarted ( currentPlayer.Health, currentPlayer.BombCount, currentPlayer.Ability2Count, currentEnemy.Health );
+        OnFightStarted ( currentPlayer.Data.Health, currentPlayer.Data.BombCount, currentPlayer.Data.BombCount, 0, currentEnemy.Data.Health );
     }
 
     private void OnFightComplete ( bool didWin ) {
@@ -375,14 +431,15 @@ public class SceneManager : MonoBehaviour
 
         ++currentFightIndex;
 
-        currentPlayer.SetPlayerAsCurrent ( false );
+        currentPlayer.ToggleAsCurrent ( false );
         currentPlayer.OnLose -= ( ) => { OnFightComplete ( didWin: false ); };
         currentPlayer.OnPlayerShoot -= CurrentPlayerShoot;
         currentPlayer.OnPlayerFiredAbility1 -= CurrentPlayerFiredAbility1;
         currentPlayer.OnPlayerFiredAbility2 -= CurrentPlayerFiredAbility2;
         currentPlayer.OnHit -= CurrentPlayerHit;
+        currentPlayer.OnGrazed -= CurrentPlayerGrazed;
 
-        currentEnemy.SetEnemyAsCurrent ( false );
+        currentEnemy.ToggleAsCurrent ( false );
         currentEnemy.OnLose -= ( ) => { OnFightComplete ( didWin: true ); };
         currentEnemy.OnHit -= CurrentEnemyHit;
     }
@@ -392,13 +449,15 @@ public class SceneManager : MonoBehaviour
     }
 
     private void CurrentPlayerFiredAbility1 ( int abilityCount ) {
-        PlaySound?.Invoke ( Constants.ON_PLAYER_SHOOT_SOUND );
+        PlaySound?.Invoke ( Constants.ON_PLAYER_ABILITY1_SOUND );
+
+        ShakeCamera?.Invoke ( 0.4f, 0.2f );
 
         OnCurrentPlayerFiredAbility1?.Invoke ( abilityCount );
     }
 
     private void CurrentPlayerFiredAbility2 ( int abilityCount ) {
-        PlaySound?.Invoke ( Constants.ON_PLAYER_SHOOT_SOUND );
+        PlaySound?.Invoke ( Constants.ON_PLAYER_ABILITY2_SOUND );
 
         OnCurrentPlayerFiredAbility2?.Invoke ( abilityCount );
     }
@@ -407,6 +466,12 @@ public class SceneManager : MonoBehaviour
         PlaySound?.Invoke ( Constants.ON_PLAYER_HIT_SOUND );
 
         OnCurrentPlayerHit?.Invoke ( health );
+    }
+
+    private void CurrentPlayerGrazed ( int grazeCount ) {
+        PlaySound?.Invoke ( Constants.ON_PLAYER_GRAZED_SOUND );
+
+        OnCurrentPlayerGrazed?.Invoke ( grazeCount );
     }
 
     private void CurrentEnemyHit ( float health ) {
@@ -419,17 +484,17 @@ public class SceneManager : MonoBehaviour
     #region Explosion Handlers
 
     private void StartExplosion ( ) {
-        ChangeGameState ( GameState.Transitioning );
+        ChangeGameState ( newState: GameState.Transitioning );
 
         PlaySound?.Invoke ( Constants.ON_EXPLOSION_SOUND );
         
-        ShakeCamera?.Invoke ( 0.5f, 0.5f );
+        ShakeCamera?.Invoke ( 1.75f, 0.5f );
 
         PlayExplosion?.Invoke ( );
     }
 
     private void OnExplosionComplete ( ) {
-        ChangeGameState ( GameState.Chatting );
+        ChangeGameState ( newState: GameState.Chatting );
 
         ChangeInGameState ( newState: InGameState.PostExplosion );
     }
@@ -481,6 +546,8 @@ public class SceneManager : MonoBehaviour
         ChangeGameState ( newState: GameState.Ended );
         
         ClearAllCharacters ( );
+
+        ClearAllBullets?.Invoke ( );
 
         OnEndGame?.Invoke ( endingIndex );
     }

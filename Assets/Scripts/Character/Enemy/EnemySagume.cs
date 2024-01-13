@@ -5,12 +5,16 @@ public class EnemySagume : Enemy
 {
     #region Serialized Fields
 
+    [ Header ("Sagume Attack stats") ]
     [ SerializeField ] protected float legendAttackCooldownTime;
 
+    [ Header ("Attack type 1: Legend 1") ]
     [ SerializeField ] protected float legend1AttackBulletCount;
 
+    [ Header ("Attack type 2: Legend 2") ]
     [ SerializeField ] protected float legend2AttackBulletCount;
 
+    [ Header ("Attack type 1: Legend 3") ]
     [ SerializeField ] protected float legend3AttackBulletCount;
 
     [ SerializeField ] protected float legend3AttackDelayInSeconds;
@@ -80,7 +84,7 @@ public class EnemySagume : Enemy
 
     IEnumerator ReleaseLegend1Attack (  ) {
         for ( int i = 0; i < legend1AttackBulletCount; i++ ) {
-            GameObject bulletInstance = Instantiate ( original: bulletObjects [ 1 ], position: pivot.position, rotation: Quaternion.identity );
+            GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 1 ], position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
             bullet?.Init ( BulletPathType.Straight, shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ), isDamping: true );
 
@@ -97,7 +101,7 @@ public class EnemySagume : Enemy
                 curveDir = Random.Range ( 0, 2 ) == 1 ? 1 : -1;
             float curveInitialAngle = Random.Range ( -22.5f, 22.5f );
 
-            GameObject bulletInstance = Instantiate ( original: bulletObjects [ 3 ], position: pivot.position, rotation: Quaternion.identity );
+            GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 3 ], position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
             bullet?.Init ( BulletPathType.Curve, shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ), curveDir: curveDir, angle: curveInitialAngle );
 
@@ -113,7 +117,7 @@ public class EnemySagume : Enemy
             else
                 shootDirY = Random.Range ( 0, 2 ) == 1 ? 1 : -1;
 
-            GameObject bulletInstance = Instantiate ( original: bulletObjects [ 2 ], position: pivot.position, rotation: Quaternion.identity );
+            GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 2 ], position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
             bullet?.Init ( BulletPathType.Straight, shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), shootDirY * Random.Range ( 0, legend3AttackSpread ), 0 ), isDamping: true, speedScale: legend3SpeedScale );
 

@@ -35,7 +35,7 @@ public class DialogueBox : MonoBehaviour
         
         switch ( dialogue.Speaker ) {
             case Characters.Narrator:
-                boxBackgroundImage.color = Constants.COLOR_DEFAULT;
+                boxBackgroundImage.color = Constants.COLOR_NARRATOR;
                 speakerPortrait.sprite = narratorPortrait;
                 speakerNameLabel.text = Constants.NARRATOR_NAME;
                 break;
@@ -85,7 +85,7 @@ public class DialogueBox : MonoBehaviour
         gameObject.SetActive ( false );
         
         dialogueLabel.text = "";
-        boxBackgroundImage.color = Constants.COLOR_DEFAULT;
+        boxBackgroundImage.color = Constants.COLOR_NARRATOR;
     }
 
     #endregion

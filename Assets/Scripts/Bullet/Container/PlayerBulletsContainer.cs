@@ -8,12 +8,16 @@ public class PlayerBulletsContainer : BulletsContainer
 
     #region Event Subscriptions
 
-    protected virtual void Awake ( ) {
+    protected override void Awake ( ) {
+        base.Awake ( );
+
         PlayerBullet.OnCreated += AddBullet;
         PlayerBullet.OnDestroyed += RemoveBullet;
     }
 
-    protected virtual void OnDestroy ( ) {
+    protected override void OnDestroy ( ) {
+        base.OnDestroy ( );
+
         PlayerBullet.OnCreated -= AddBullet;
         PlayerBullet.OnDestroyed -= RemoveBullet;
     }

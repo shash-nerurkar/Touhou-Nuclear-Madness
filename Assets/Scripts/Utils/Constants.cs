@@ -17,6 +17,9 @@ public class Constants {
     public const string COLLISION_LAYER_SCREEN_BORDER = "Screen border";
     public const string COLLISION_LAYER_PLAYER = "Player";
     public const string COLLISION_LAYER_ENEMY  = "Enemy";
+    public const string COLLISION_LAYER_PLAYER_WEAPON  = "Player weapon";
+    public const string COLLISION_LAYER_ENEMY_WEAPON  = "Enemy weapon";
+    public const string COLLISION_LAYER_PLAYER_GRAZE  = "Player graze";
     
     #endregion
 
@@ -57,12 +60,19 @@ public class Constants {
 
     #region Colors
 
-    public static Color COLOR_DEFAULT = new ( 0.219f, 0.219f, 0.219f );
+    // 383838
+    public static Color COLOR_NARRATOR = new ( 0.219f, 0.219f, 0.219f );
 
+    // 40C9FF
+    public static Color COLOR_PLAYER_UI = new ( 0.251f, 0.788f, 1.000f );
+
+    // 8c5aa3
     public static Color COLOR_SAGUME = new ( 0.549f, 0.353f, 0.639f );
 
+    // 238417
     public static Color COLOR_UTSUHO = new ( 0.137f, 0.518f, 0.090f );
 
+    // a41000
     public static Color COLOR_AYA    = new ( 0.643f, 0.063f, 0.000f );
 
     #endregion
@@ -102,12 +112,18 @@ public class Constants {
         new ( "... ... ... ...", Characters.Sagume ),
     };
 
-    public static Dialogue [ ] DIALOGUE_SEQUENCE_4_1 = new Dialogue [ ] {
+    public static Dialogue [ ] DIALOGUE_SEQUENCE_4 = new Dialogue [ ] {
+        new ( "Aya tries to flee back to the office, but Sagume manages to corner her before she reaches.", Characters.Narrator ),
+        new ( "... ready?", Characters.Sagume ),
+        new ( "For the truth!", Characters.Aya ),
+    };
+
+    public static Dialogue [ ] DIALOGUE_SEQUENCE_5_1 = new Dialogue [ ] {
         new ( "... ... ... ... weak", Characters.Sagume ),
         new ( "(˚ ˃̣̣̥ - ˂̣̣̥ )", Characters.AyaCry ),
     };
 
-    public static Dialogue [ ] DIALOGUE_SEQUENCE_4_2 = new Dialogue [ ] {
+    public static Dialogue [ ] DIALOGUE_SEQUENCE_5_2 = new Dialogue [ ] {
         new ( "o( ˶^-^˶ )o  This is a huge scoop!", Characters.Aya ),
         new ( "(╥ ω ╥)", Characters.SagumeCry ),
     };
@@ -127,19 +143,25 @@ public class Constants {
 
     public const string ON_PLAYER_SHOOT_SOUND = "On Player Shoot Sound";
 
-    public const string CHATTING_MUSIC = "Chatting Music";
+    public const string ON_PLAYER_ABILITY1_SOUND = "On Player Bomb Sound";
 
-    public const string SCENE_01_MUSIC = "Scene-01 Combat Music";
+    public const string ON_PLAYER_ABILITY2_SOUND = "On Player Ability2 Sound";
 
-    public const string SCENE_02_MUSIC = "Scene-02 Combat Music";
+    public const string ON_PLAYER_GRAZED_SOUND = "On Player Grazed Sound";
 
     public const string ON_EXPLOSION_SOUND = "On Explosion";
 
     public const string ON_WIND_SOUND = "On Wind";
 
-    public const string ON_END_GAME_LOSS_SOUND = "On End Game Loss";
+    public const string ON_END_GAME_LOSS_MUSIC = "On End Game Loss Music";
 
-    public const string ON_END_GAME_WIN_SOUND = "On End Game Win";
+    public const string ON_END_GAME_WIN_MUSIC = "On End Game Win Music";
+
+    public const string CHATTING_MUSIC = "Chatting Music";
+
+    public const string SCENE_01_MUSIC = "Scene-01 Combat Music";
+
+    public const string SCENE_02_MUSIC = "Scene-02 Combat Music";
 
     #endregion
 }
@@ -190,6 +212,7 @@ public class Dialogue {
     PostExplosion,
     PostFight1Branch1,
     PostFight1Branch2,
+    PreFight2,
     PostFight2Branch1,
     PostFight2Branch2,
     EndGame

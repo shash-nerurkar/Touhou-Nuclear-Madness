@@ -5,6 +5,15 @@ public class EnemyUtsuho : Enemy
 {
     #region Serialized Fields
 
+    [ Header ("Attack type 1: Basic") ]
+    [ SerializeField ] protected float basicAttackCooldownTime;
+
+    [ SerializeField ] protected float basicAttackBurstBulletCount;
+
+    [ SerializeField ] protected float basicAttackBurstDelayInSeconds;
+
+
+    [ Header ("Attack type 2: Sun") ]
     [ SerializeField ] protected float sunAttackCooldownTime;
 
     [ SerializeField ] protected float sunAttackBulletCount;
@@ -12,12 +21,6 @@ public class EnemyUtsuho : Enemy
     [ SerializeField ] protected float sunAttackFirstBulletDelay;
 
     [ SerializeField ] protected float sunAttackSpreadRange;
-
-    [ SerializeField ] protected float basicAttackCooldownTime;
-
-    [ SerializeField ] protected float basicAttackBurstBulletCount;
-
-    [ SerializeField ] protected float basicAttackBurstDelayInSeconds;
 
     #endregion
 
@@ -73,7 +76,7 @@ public class EnemyUtsuho : Enemy
 
     IEnumerator ReleaseBasicAttack (  ) {
         for ( int i = 0; i < basicAttackBurstBulletCount; i++ ) {
-            GameObject randomBulletObject = bulletObjects [ Random.Range ( 0, bulletObjects.Length ) ];
+            GameObject randomBulletObject = Data.BulletObjects [ Random.Range ( 0, Data.BulletObjects.Length ) ];
             
             GameObject bulletInstance = Instantiate ( original: randomBulletObject, position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
@@ -94,7 +97,7 @@ public class EnemyUtsuho : Enemy
     }
 
     IEnumerator ReleaseSunAttack (  ) {
-        GameObject randomBulletObject = bulletObjects [ Random.Range ( 0, bulletObjects.Length ) ];
+        GameObject randomBulletObject = Data.BulletObjects [ Random.Range ( 0, Data.BulletObjects.Length ) ];
 
         GameObject bulletInstance = Instantiate ( original: randomBulletObject, position: pivot.position, rotation: Quaternion.identity );
         Bullet bullet = bulletInstance.GetComponent<Bullet> ( );

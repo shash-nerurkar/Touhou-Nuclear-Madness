@@ -49,6 +49,7 @@ public class HUD : MonoBehaviour
         SceneManager.ShowTutorial += inGamePanel.ShowTutorial;
         SceneManager.OnFightStarted += inGamePanel.SetPanelValues;
         SceneManager.OnCurrentPlayerHit += inGamePanel.UpdatePlayerHealth;
+        SceneManager.OnCurrentPlayerGrazed += inGamePanel.UpdatePlayerGraze;
         SceneManager.OnCurrentPlayerFiredAbility1 += inGamePanel.UpdatePlayerAbility1;
         SceneManager.OnCurrentPlayerFiredAbility2 += inGamePanel.UpdatePlayerAbility2;
         SceneManager.OnCurrentEnemyHit += inGamePanel.UpdateEnemyHealth;
@@ -74,6 +75,7 @@ public class HUD : MonoBehaviour
         SceneManager.ShowTutorial -= inGamePanel.ShowTutorial;
         SceneManager.OnFightStarted -= inGamePanel.SetPanelValues;
         SceneManager.OnCurrentPlayerHit -= inGamePanel.UpdatePlayerHealth;
+        SceneManager.OnCurrentPlayerGrazed -= inGamePanel.UpdatePlayerGraze;
         SceneManager.OnCurrentPlayerFiredAbility1 -= inGamePanel.UpdatePlayerAbility1;
         SceneManager.OnCurrentPlayerFiredAbility2 -= inGamePanel.UpdatePlayerAbility2;
         SceneManager.OnCurrentEnemyHit -= inGamePanel.UpdateEnemyHealth;
@@ -94,7 +96,7 @@ public class HUD : MonoBehaviour
     #endregion
 
 
-    #region State Change Managers
+    #region On-States-Changed Managers
 
     private void OnGameStateChanged ( GameState gameState ) {
         if ( gameState == GameState.Transitioning )
@@ -103,20 +105,14 @@ public class HUD : MonoBehaviour
         mainMenuPanel.gameObject.SetActive ( gameState == GameState.MainMenu );
         inGamePanel.gameObject.SetActive ( gameState == GameState.Playing );
         endGamePanel.gameObject.SetActive ( gameState == GameState.Ended );
-        
-        switch ( gameState ) {
-            case GameState.MainMenu:
-                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_MAIN_MENU );
-                break;
-            
-            case GameState.Ended:
-                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_GAME_ENDED );
-                break;
-        }
     }
  
     private void OnInGameStateChanged ( InGameState inGameState ) {
         switch ( inGameState ) {
+            case InGameState.MainMenu:
+                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_MAIN_MENU );
+                break;
+
             case InGameState.PreExplosion:
                 BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_1 );
                 break;
@@ -133,12 +129,20 @@ public class HUD : MonoBehaviour
                 BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_3_2 );
                 break;
             
+            case InGameState.PreFight2:
+                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_4 );
+                break;
+            
             case InGameState.PostFight2Branch1:
-                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_4_1 );
+                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_5_1 );
                 break;
             
             case InGameState.PostFight2Branch2:
-                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_4_2 );
+                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_5_2 );
+                break;
+                
+            case InGameState.EndGame:
+                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_GAME_ENDED );
                 break;
         }
     }

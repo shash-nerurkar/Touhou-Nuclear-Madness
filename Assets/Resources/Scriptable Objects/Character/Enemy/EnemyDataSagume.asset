@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6431666f9d3c17244af587c3fbdf9ddd, type: 3}
+  m_Name: EnemyDataSagume
+  m_EditorClassIdentifier: 
+  name: Sagume
+  character: 1
+  color: {r: 0.54901963, g: 0.3529412, b: 0.6392157, a: 1}
+  sprite: {fileID: -1356597432, guid: fa2c34c3f933a30409f27f6713bdc10c, type: 3}
+  speed: 3
+  health: 110
+  onHitIDuration: 0.1
+  bulletObjects:
+  - {fileID: 2719529840377004858, guid: 9bf8a05dbbf2bf248b89e2afcf0240ac, type: 3}
+  - {fileID: 2719529840377004858, guid: e9b71552a645c5544ae472e5bb442315, type: 3}
+  - {fileID: 2719529840377004858, guid: db4be9d027d4ab648a2a3ba75899a62d, type: 3}
+  - {fileID: 2719529840377004858, guid: 08b425b35c7bb83459b15b916fc1b1ab, type: 3}
+  moveCooldownTime: 8
+  moveDistanceRange: 1.5

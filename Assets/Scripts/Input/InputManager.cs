@@ -53,10 +53,6 @@ public class InputManager : MonoBehaviour
         OnPlayerMoveAction?.Invoke ( FlyActions.Movement.ReadValue<Vector2>( ) );
 
         OnPlayerShootAction?.Invoke ( FlyActions.Shoot.ReadValue<float>( ) != 0 );
-
-        // OnPlayerAbility1Action?.Invoke ( FlyActions.Ability1.ReadValue<float>( ) != 0 );
-
-        // OnPlayerAbility2Action?.Invoke ( FlyActions.Ability2.ReadValue<float>( ) != 0 );
     }
 
     private void OnGameStateChanged ( GameState gameState ) {
