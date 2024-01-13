@@ -14,10 +14,19 @@ public class EnemyBullet : Bullet
 
     #region Methods
 
-    public override void Init ( BulletPathType pathType, Vector3 shootDir, int curveDir = 1, float angle = 0, int scale = 1, bool isDamping = false, float speedScale = 1 ) {
+    public override void Init ( 
+        BulletPathType pathType, 
+        Vector3 shootDir, 
+        float speed, 
+        float damage, 
+        int scale = 1, 
+        int curveDir = 1, 
+        float angle = 0, 
+        bool isDamping = false
+    ) {
         OnCreated?. Invoke ( this );
 
-        base.Init ( pathType, shootDir, curveDir, angle, scale, isDamping, speedScale );
+        base.Init ( pathType, shootDir, speed, damage, scale, curveDir, angle, isDamping );
     }
 
     public override void OnHitAnimationComplete ( ) {

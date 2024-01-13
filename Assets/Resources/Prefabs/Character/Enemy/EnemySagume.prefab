@@ -164,12 +164,17 @@ MonoBehaviour:
   selectedMaterial: {fileID: 2100000, guid: e1a7b4a7e4e8b5444a616165ae0dec83, type: 2}
   data: {fileID: 11400000, guid: 5be56902115eede4d8c42748d37de86b, type: 2}
   legendAttackCooldownTime: 2
+  legend1BulletSpeed: 10
+  legend1BulletDamage: 1
   legend1AttackBulletCount: 50
+  legend2BulletSpeed: 10
+  legend2BulletDamage: 1
   legend2AttackBulletCount: 15
+  legend3BulletSpeed: 25
+  legend3BulletDamage: 1
   legend3AttackBulletCount: 8
   legend3AttackDelayInSeconds: 0.2
   legend3AttackSpread: 0.5
-  legend3SpeedScale: 2.5
 --- !u!50 &6429517634263638707 stripped
 Rigidbody2D:
   m_CorrespondingSourceObject: {fileID: 3857657374961954189, guid: 76fb2f30d7dad5b4e8cff0725f64d2f7, type: 3}

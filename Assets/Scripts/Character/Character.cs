@@ -32,6 +32,8 @@ public abstract class Character : MonoBehaviour
 
     protected float onHitIDuration;
 
+    protected bool isCurrent;
+
     #endregion
 
 
@@ -80,9 +82,11 @@ public abstract class Character : MonoBehaviour
     }
 
     public virtual void ToggleAsCurrent ( bool isCurrent ) {
-        spriteRenderer.material = isCurrent ? selectedMaterial : unselectedMaterial;
+        this.isCurrent = isCurrent;
+        
+        spriteRenderer.material = this.isCurrent ? selectedMaterial : unselectedMaterial;
 
-        cd.enabled = isCurrent;
+        cd.enabled = this.isCurrent;
     }
 
     #endregion

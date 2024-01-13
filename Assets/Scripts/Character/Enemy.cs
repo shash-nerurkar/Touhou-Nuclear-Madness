@@ -96,7 +96,7 @@ public abstract class Enemy : Character
     public override void ToggleAsCurrent ( bool isCurrent ) {
         base.ToggleAsCurrent ( isCurrent );
 
-        ChangeState ( isCurrent ? State.Idle : State.Chatting );
+        ChangeState ( this.isCurrent ? State.Idle : State.Chatting );
     }
 
     #endregion

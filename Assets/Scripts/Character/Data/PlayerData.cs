@@ -5,11 +5,19 @@ using UnityEngine;
 public class PlayerData : CharacterData
 {
     [ Header ("Player shoot") ]
+
     [ SerializeField ] private float shootCooldown;
     public float ShootCooldown { get => shootCooldown; }
+    
+    [ SerializeField ] private float bulletSpeed;
+    public float BulletSpeed { get => bulletSpeed; }
+    
+    [ SerializeField ] private float bulletDamage;
+    public float BulletDamage { get => bulletDamage; }
 
 
     [ Header ("Player ability 1: Bomb") ]
+
     [ SerializeField ] private float bombCooldown;
     public float BombCooldown { get => bombCooldown; }
 
@@ -18,6 +26,7 @@ public class PlayerData : CharacterData
 
 
     [ Header ("Player ability 2: ") ]
+    
     [ SerializeField ] private float ability2Cooldown;
     public float Ability2Cooldown { get => ability2Cooldown; }
 

@@ -4,6 +4,7 @@ using UnityEngine;
 public abstract class CharacterData : ScriptableObject
 {
     [ Header ( "Info" ) ]
+    
     [ SerializeField ] private new string name;
     public string Name { get => name; }
 
@@ -18,11 +19,15 @@ public abstract class CharacterData : ScriptableObject
 
 
     [ Header ( "Stats" ) ]
-    [ SerializeField ] private float speed;
-    public float Speed { get => speed; }
 
     [ SerializeField ] private float health;
     public float Health { get => health; }
+    
+    [ SerializeField ] private float speed;
+    public float Speed { get => speed; }
+    
+    [ SerializeField ] private float acceleration;
+    public float Acceleration { get => acceleration; }
 
     [ SerializeField ] private float onHitIDuration;
     public float OnHitIDuration { get => onHitIDuration; }

@@ -21,6 +21,8 @@ public class Player : Character
 
     #region Fields
 
+    private Vector3 moveDirection;
+
     private bool canShoot = true;
 
     private bool canFireAbility1 = true;
@@ -98,8 +100,22 @@ public class Player : Character
     #region Movement related
 
     private void OnMove ( Vector2 moveDirection ) {
-        rb.MovePosition( new Vector2 ( transform.position.x, transform.position.y ) + moveDirection.normalized * speed * Time.deltaTime );
-        animator.SetBool ( "isMoving", moveDirection.magnitude > 0 );
+        if ( moveDirection.magnitude == 0 ) {
+            speed = Mathf.Clamp ( speed - 1.0f, 0, Data.Acceleration + Data.Speed );
+
+            if ( speed == 0 )
+                this.moveDirection = moveDirection;
+        }
+        else {
+            speed = Mathf.Clamp ( speed + 1.0f, 0, Data.Acceleration + Data.Speed );
+
+            this.moveDirection = moveDirection;
+        }
+
+        Vector3 velocity = this.moveDirection.normalized * speed;
+        rb.MovePosition ( transform.position + velocity * Time.deltaTime );
+
+        animator.SetBool ( "isMoving", this.moveDirection.magnitude > 0 );
     }
 
     #endregion
@@ -124,7 +140,12 @@ public class Player : Character
         GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ UnityEngine.Random.Range ( 0, Data.BulletObjects.Length ) ], position: pivot.position, rotation: Quaternion.identity );
 
         Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
-        bullet?.Init ( BulletPathType.Straight, shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ) );
+        bullet.Init ( 
+            pathType: BulletPathType.Straight, 
+            shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ), 
+            speed: Data.BulletSpeed,
+            damage: Data.BulletDamage
+        );
     }
 
     #endregion
@@ -192,7 +213,7 @@ public class Player : Character
     public override void ToggleAsCurrent ( bool isCurrent ) {
         base.ToggleAsCurrent ( isCurrent );
         
-        grazeDetector.ToggleEnabled ( isCurrent );
+        grazeDetector.ToggleEnabled ( this.isCurrent );
     }
  
     protected override void OnLoseFight ( ) {

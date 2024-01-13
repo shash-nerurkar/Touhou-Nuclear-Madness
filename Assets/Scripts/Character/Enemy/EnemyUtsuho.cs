@@ -6,6 +6,11 @@ public class EnemyUtsuho : Enemy
     #region Serialized Fields
 
     [ Header ("Attack type 1: Basic") ]
+    
+    [ SerializeField ] private float basicAttackBulletSpeed;
+    
+    [ SerializeField ] private float basicAttackBulletDamage;
+
     [ SerializeField ] protected float basicAttackCooldownTime;
 
     [ SerializeField ] protected float basicAttackBurstBulletCount;
@@ -14,6 +19,11 @@ public class EnemyUtsuho : Enemy
 
 
     [ Header ("Attack type 2: Sun") ]
+    
+    [ SerializeField ] private float sunAttackBulletSpeed;
+    
+    [ SerializeField ] private float sunAttackBulletDamage;
+
     [ SerializeField ] protected float sunAttackCooldownTime;
 
     [ SerializeField ] protected float sunAttackBulletCount;
@@ -80,11 +90,21 @@ public class EnemyUtsuho : Enemy
             
             GameObject bulletInstance = Instantiate ( original: randomBulletObject, position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
-            bullet?.Init ( BulletPathType.Sinusoidal, shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ) );
+            bullet.Init ( 
+                BulletPathType.Sinusoidal, 
+                shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
+                speed: basicAttackBulletSpeed,
+                damage: basicAttackBulletDamage
+            );
 
             GameObject bulletInstance2 = Instantiate ( original: randomBulletObject, position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet2 = bulletInstance2.GetComponent<Bullet> ( );
-            bullet2?.Init ( BulletPathType.Cosinusoidal, shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ) );
+            bullet2.Init ( 
+                BulletPathType.Cosinusoidal, 
+                shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
+                speed: basicAttackBulletSpeed,
+                damage: basicAttackBulletDamage
+            );
             
             yield return new WaitForSeconds ( basicAttackBurstDelayInSeconds );
         }
@@ -101,14 +121,26 @@ public class EnemyUtsuho : Enemy
 
         GameObject bulletInstance = Instantiate ( original: randomBulletObject, position: pivot.position, rotation: Quaternion.identity );
         Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
-        bullet?.Init ( BulletPathType.Straight, shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ), isDamping: true );
+        bullet.Init ( 
+            BulletPathType.Straight, 
+            shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
+            speed: sunAttackBulletSpeed,
+            damage: sunAttackBulletDamage,
+            isDamping: true
+        );
 
         yield return new WaitForSeconds ( sunAttackFirstBulletDelay );
         
         for ( int i = 0; i < sunAttackBulletCount; i++ ) {
             bulletInstance = Instantiate ( original: randomBulletObject, position: pivot.position, rotation: Quaternion.identity );
             bullet = bulletInstance.GetComponent<Bullet> ( );
-            bullet?.Init ( BulletPathType.Straight, shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), Random.Range ( -sunAttackSpreadRange, sunAttackSpreadRange ), 0 ), isDamping: true );
+            bullet.Init ( 
+                BulletPathType.Straight, 
+                shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), Random.Range ( -sunAttackSpreadRange, sunAttackSpreadRange ), 0 ),
+                speed: sunAttackBulletSpeed,
+                damage: sunAttackBulletDamage,
+                isDamping: true
+            );
         }
     }
 

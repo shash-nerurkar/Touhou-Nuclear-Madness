@@ -5,23 +5,40 @@ public class EnemySagume : Enemy
 {
     #region Serialized Fields
 
-    [ Header ("Sagume Attack stats") ]
+    [ Header ("Attack stats") ]
+
     [ SerializeField ] protected float legendAttackCooldownTime;
 
+
     [ Header ("Attack type 1: Legend 1") ]
+
+    [ SerializeField ] private float legend1BulletSpeed;
+    
+    [ SerializeField ] private float legend1BulletDamage;
+
     [ SerializeField ] protected float legend1AttackBulletCount;
 
+
     [ Header ("Attack type 2: Legend 2") ]
+    
+    [ SerializeField ] private float legend2BulletSpeed;
+    
+    [ SerializeField ] private float legend2BulletDamage;
+
     [ SerializeField ] protected float legend2AttackBulletCount;
 
+
     [ Header ("Attack type 1: Legend 3") ]
+    
+    [ SerializeField ] private float legend3BulletSpeed;
+    
+    [ SerializeField ] private float legend3BulletDamage;
+
     [ SerializeField ] protected float legend3AttackBulletCount;
 
     [ SerializeField ] protected float legend3AttackDelayInSeconds;
 
     [ SerializeField ] protected float legend3AttackSpread;
-
-    [ SerializeField ] protected float legend3SpeedScale;
 
     #endregion
 
@@ -86,7 +103,13 @@ public class EnemySagume : Enemy
         for ( int i = 0; i < legend1AttackBulletCount; i++ ) {
             GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 1 ], position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
-            bullet?.Init ( BulletPathType.Straight, shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ), isDamping: true );
+            bullet.Init ( 
+                BulletPathType.Straight, 
+                shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
+                speed: legend1BulletSpeed, 
+                damage: legend1BulletDamage, 
+                isDamping: true
+            );
 
             yield return null;
         }
@@ -103,7 +126,14 @@ public class EnemySagume : Enemy
 
             GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 3 ], position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
-            bullet?.Init ( BulletPathType.Curve, shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ), curveDir: curveDir, angle: curveInitialAngle );
+            bullet.Init ( 
+                BulletPathType.Curve, 
+                shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
+                speed: legend2BulletSpeed,  
+                damage: legend2BulletDamage, 
+                curveDir: curveDir, 
+                angle: curveInitialAngle
+            );
 
             yield return null;
         }
@@ -119,7 +149,13 @@ public class EnemySagume : Enemy
 
             GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 2 ], position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
-            bullet?.Init ( BulletPathType.Straight, shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), shootDirY * Random.Range ( 0, legend3AttackSpread ), 0 ), isDamping: true, speedScale: legend3SpeedScale );
+            bullet.Init ( 
+                BulletPathType.Straight, 
+                shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), shootDirY * Random.Range ( 0, legend3AttackSpread ), 0 ),
+                speed: legend3BulletSpeed, 
+                damage: legend3BulletDamage,
+                isDamping: true
+            );
 
             yield return new WaitForSeconds ( legend3AttackDelayInSeconds );
         }

@@ -12,10 +12,6 @@ public class Bullet : MonoBehaviour
 
     [ SerializeField ] private Animator animator;
 
-    [ SerializeField ] private float speed;
-
-    [ SerializeField ] private float damage;
-
     [ SerializeField ] private Material unhighlightedMaterial;
     [ SerializeField ] private Material highlightedMaterial;
 
@@ -23,6 +19,10 @@ public class Bullet : MonoBehaviour
 
 
     #region Fields
+
+    private float speed;
+
+    private float damage;
 
     private bool isFlying;
 
@@ -49,22 +49,31 @@ public class Bullet : MonoBehaviour
 
     #region Methods
 
-    public virtual void Init ( BulletPathType pathType, Vector3 shootDir, int curveDir = 1, float angle = 0, int scale = 1, bool isDamping = false, float speedScale = 1 ) {
+    public virtual void Init ( 
+        BulletPathType pathType, 
+        Vector3 shootDir, 
+        float speed, 
+        float damage, 
+        int scale = 1, 
+        int curveDir = 1, 
+        float angle = 0, 
+        bool isDamping = false
+    ) {
         isFlying = true;
+        startTime = Time.time;
 
-        dampingBulletTimer = gameObject.AddComponent<Timer> ( );
+        this.pathType = pathType;
+        this.shootDir = shootDir;
+        this.speed = speed;
+        this.damage = damage;
 
         transform.localScale = new Vector3 ( transform.localScale.x * shootDir.x, transform.localScale.y, transform.localScale.z );
         transform.localScale *= scale;
 
-        this.pathType = pathType;
-        this.shootDir = shootDir;
-        speed *= speedScale;
-
-        startTime = Time.time;
         this.angle = angle;
         this.curveDir = curveDir;
 
+        dampingBulletTimer = gameObject.AddComponent<Timer> ( );
         this.isDamping = isDamping;
         dampingValue = Random.Range ( 0.05f, 0.3f );
         lifetime = Random.Range ( 3.0f, 7.0f );
@@ -127,12 +136,12 @@ public class Bullet : MonoBehaviour
             OnHitAnimationComplete ( );
         }
         else if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_PLAYER ) ) {        
-            collided.GetComponent<Player> ( )?.TakeDamage ( damage: damage );
+            collided.GetComponent<Player> ( ).TakeDamage ( damage: damage );
             
             OnHit ( );
         }
         else if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_ENEMY ) ) {        
-            collided.GetComponent<Enemy> ( )?.TakeDamage ( damage: damage );
+            collided.GetComponent<Enemy> ( ).TakeDamage ( damage: damage );
             
             OnHit ( );
         }
