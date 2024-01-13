@@ -403,7 +403,7 @@ public class SceneManager : MonoBehaviour
         currentEnemy.OnLose += ( ) => { OnFightComplete ( didWin: true ); };
         currentEnemy.OnHit += CurrentEnemyHit;
         
-        OnFightStarted ( currentPlayer.Data.Health, currentPlayer.Data.BombCount, currentPlayer.Data.BombCount, 0, currentEnemy.Data.Health );
+        OnFightStarted ( currentPlayer.Data.Health, currentPlayer.Data.BombCount, currentPlayer.Data.Ability2Count, 0, currentEnemy.Data.Health );
     }
 
     private void OnFightComplete ( bool didWin ) {
