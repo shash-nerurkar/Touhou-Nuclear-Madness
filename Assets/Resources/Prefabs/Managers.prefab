@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99acb432c7ff0264da7d27b0a341a412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  transitionFadeOutDelay: 2
   playerSagumeObject: {fileID: 5708694090066587813, guid: 16218b42f8a1df348a38414d5d3503bb, type: 3}
   playerSagumeData: {fileID: 11400000, guid: 76c3253534c0ffc44a5029970dc32d4a, type: 2}
   enemyUtsuhoObject: {fileID: 8337879637977827542, guid: 62ddac7424aaced498d0c448ed584d5e, type: 3}
@@ -14632,7 +14633,7 @@ MonoBehaviour:
   sounds:
   - name: On Dialogue Pop Sound
     clip: {fileID: 8300000, guid: 62b552900f47f374d9635d0c09e13330, type: 3}
-    volume: 0.3
+    volume: 0.7
     pitch: 1
     isLoop: 0
     source: {fileID: 0}
@@ -14644,25 +14645,31 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: On Player Shoot Sound
     clip: {fileID: 8300000, guid: 1787be2458cd5b740a47d47d81f0a03c, type: 3}
-    volume: 0.5
+    volume: 1
     pitch: 1
     isLoop: 0
     source: {fileID: 0}
-  - name: On Player Grazed Sound
-    clip: {fileID: 8300000, guid: 1787be2458cd5b740a47d47d81f0a03c, type: 3}
-    volume: 0.5
+  - name: On Player Damage Multiplier Increased Sound
+    clip: {fileID: 8300000, guid: cf28d976f8bf0c84b9edd9017fcebffd, type: 3}
+    volume: 0.2
+    pitch: 1
+    isLoop: 0
+    source: {fileID: 0}
+  - name: On Player Damage Multiplier Decreased Sound
+    clip: {fileID: 8300000, guid: d1ebcffebffc88b488e7513c5cd9b5b3, type: 3}
+    volume: 0.2
     pitch: 1
     isLoop: 0
     source: {fileID: 0}
   - name: On Player Bomb Sound
-    clip: {fileID: 8300000, guid: 1787be2458cd5b740a47d47d81f0a03c, type: 3}
-    volume: 0.5
+    clip: {fileID: 8300000, guid: 5dfbd6454d93b3944905094ec15dd8f3, type: 3}
+    volume: 1
     pitch: 1
     isLoop: 0
     source: {fileID: 0}
   - name: On Player Ability2 Sound
     clip: {fileID: 8300000, guid: 1787be2458cd5b740a47d47d81f0a03c, type: 3}
-    volume: 0.5
+    volume: 1
     pitch: 1
     isLoop: 0
     source: {fileID: 0}
@@ -14672,27 +14679,15 @@ MonoBehaviour:
     pitch: 1
     isLoop: 0
     source: {fileID: 0}
-  - name: On Wind
+  - name: Main Menu Music
     clip: {fileID: 8300000, guid: c683461f7c308e34790f062b7f9acd9d, type: 3}
     volume: 0.5
     pitch: 1
-    isLoop: 0
-    source: {fileID: 0}
-  - name: On End Game Loss Music
-    clip: {fileID: 8300000, guid: dce3e95229b56744980e9f79166b9f6d, type: 3}
-    volume: 0.5
-    pitch: 1
-    isLoop: 0
-    source: {fileID: 0}
-  - name: On End Game Win Music
-    clip: {fileID: 8300000, guid: 336483fd58e6e5f4a9bc6289b2f93697, type: 3}
-    volume: 0.5
-    pitch: 1
-    isLoop: 0
+    isLoop: 1
     source: {fileID: 0}
   - name: Chatting Music
     clip: {fileID: 8300000, guid: a9bc392746a890c409d21c26e9c30371, type: 3}
-    volume: 0.5
+    volume: 0.7
     pitch: 1
     isLoop: 1
     source: {fileID: 0}
@@ -14707,6 +14702,18 @@ MonoBehaviour:
     volume: 0.5
     pitch: 1
     isLoop: 1
+    source: {fileID: 0}
+  - name: On End Game Loss Music
+    clip: {fileID: 8300000, guid: dce3e95229b56744980e9f79166b9f6d, type: 3}
+    volume: 0.5
+    pitch: 1
+    isLoop: 0
+    source: {fileID: 0}
+  - name: On End Game Win Music
+    clip: {fileID: 8300000, guid: 336483fd58e6e5f4a9bc6289b2f93697, type: 3}
+    volume: 0.5
+    pitch: 1
+    isLoop: 0
     source: {fileID: 0}
 --- !u!1 &6329026287091409879
 GameObject:

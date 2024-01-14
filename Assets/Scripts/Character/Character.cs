@@ -24,6 +24,8 @@ public abstract class Character : MonoBehaviour
 
     #region Fields
 
+    protected Vector3 basePosition;
+
     private Timer onHitTimer;
     
     protected float speed;
@@ -51,6 +53,8 @@ public abstract class Character : MonoBehaviour
     
     protected virtual void Awake ( ) { 
         onHitTimer = gameObject.AddComponent<Timer> ( );
+
+        basePosition = transform.position;
     }
     
     public void TakeDamage ( float damage ) {
@@ -69,17 +73,21 @@ public abstract class Character : MonoBehaviour
     protected virtual void OnGetHit ( ) {
         onHitTimer.StartTimer ( maxTime: onHitIDuration, onTimerFinish: OnHitTimerFinish );
 
+        cd.enabled = false;
+        
         OnHit?.Invoke ( health );
+    }
+
+    protected virtual void OnHitTimerFinish ( ) {
+        cd.enabled = true;
+
+        animator.SetBool ( "isHit", false );
     }
 
     protected virtual void OnLoseFight ( ) {
         cd.enabled = false;
 
         OnLose?.Invoke ( );
-    }
-
-    private void OnHitTimerFinish ( ) {
-        animator.SetBool ( "isHit", false );
     }
 
     public virtual void ToggleAsCurrent ( bool isCurrent ) {

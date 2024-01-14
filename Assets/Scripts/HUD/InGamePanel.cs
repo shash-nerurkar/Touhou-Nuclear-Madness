@@ -17,6 +17,8 @@ public class InGamePanel : MonoBehaviour
 
     [ SerializeField ] private TextMeshProUGUI playerGrazeCountLabel;
 
+    [ SerializeField ] private TextMeshProUGUI playerDamageMultiplierLabel;
+
     [ SerializeField ] private Slider enemyHealthBarSlider;
 
     [ SerializeField ] private TextMeshProUGUI enemyHealthBarText;
@@ -39,11 +41,12 @@ public class InGamePanel : MonoBehaviour
 
     #region Methods
 
-    public void SetPanelValues ( float playerHealth, int ability1Count, int ability2Count, int grazeCount, float enemyHealth ) {
+    public void SetPanelValues ( float playerHealth, int ability1Count, int ability2Count, int grazeCount, float damageMultiplier, float enemyHealth ) {
         UpdatePlayerHealth ( playerHealth );
         UpdatePlayerAbility1 ( ability1Count );
         UpdatePlayerAbility2 ( ability2Count );
         UpdatePlayerGraze ( grazeCount );
+        UpdatePlayerDamageMultiplier ( damageMultiplier );
 
         enemyHealthBarSlider.maxValue = enemyHealth;
         UpdateEnemyHealth ( enemyHealthBarSlider.maxValue );
@@ -70,6 +73,14 @@ public class InGamePanel : MonoBehaviour
 
     public void UpdatePlayerGraze ( int grazeCount ) {
         playerGrazeCountLabel.text = "Graze: " + grazeCount;
+    }
+
+    public void UpdatePlayerDamageMultiplier ( float damageMultiplier ) {
+        playerDamageMultiplierLabel.text = "Damage: " + damageMultiplier + "x";
+
+        float guessMultiplierCounts = Mathf.Log ( damageMultiplier, 2 );
+        float tValue = Mathf.Clamp01 ( 0.2f * guessMultiplierCounts );
+        playerDamageMultiplierLabel.color = Color.Lerp ( Constants.COLOR_PLAYER_UI, Color.blue, tValue );
     }
 
     public void UpdateEnemyHealth ( float health ) {

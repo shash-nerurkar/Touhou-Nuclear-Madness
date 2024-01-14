@@ -75,7 +75,7 @@ public abstract class Enemy : Character
         ChangeState ( State.Chatting );
     }
 
-    private void Update ( ) {
+    private void FixedUpdate ( ) {
         switch ( currentState ) {
             case State.Move:
                 rb.MovePosition( transform.position + ( moveDestination - transform.position ).normalized * speed * Time.deltaTime );
@@ -88,7 +88,7 @@ public abstract class Enemy : Character
     }
 
     private void OnMoveCooldownTimerFinished ( ) {
-        moveDestination = Constants.BASE_POSITION_ENEMY + new Vector3 ( Random.Range ( -0.5f, 0.5f ), Random.Range ( -Data.MoveDistanceRange, Data.MoveDistanceRange ) );
+        moveDestination = basePosition + new Vector3 ( Random.Range ( -0.5f, 0.5f ), Random.Range ( -Data.MoveDistanceRange, Data.MoveDistanceRange ) );
 
         ChangeState ( State.Move );
     }

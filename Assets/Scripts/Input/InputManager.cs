@@ -29,7 +29,7 @@ public class InputManager : MonoBehaviour
 
     #region Methods
 
-    private void Awake() {
+    private void Awake ( ) {
         PlayerInputActions playerInputActions = new PlayerInputActions();
         FlyActions = playerInputActions.PlayerFly;
         UIActions = playerInputActions.PlayerUI;
@@ -45,11 +45,11 @@ public class InputManager : MonoBehaviour
 		};
 
 		FlyActions.Ability2.performed += context => {
-			OnPlayerAbility2Action?.Invoke( true );
+			// OnPlayerAbility2Action?.Invoke( true );
 		};
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate ( ) {
         OnPlayerMoveAction?.Invoke ( FlyActions.Movement.ReadValue<Vector2>( ) );
 
         OnPlayerShootAction?.Invoke ( FlyActions.Shoot.ReadValue<float>( ) != 0 );

@@ -6,6 +6,17 @@ public class SceneManager : MonoBehaviour
 {
     #region Serialized Fields
 
+    [ Header ( "Transition" ) ]
+    [ SerializeField ] private float transitionFadeOutDelay;
+
+    [ Header ( "Combat" ) ]
+    [ SerializeField ] private static Vector3 BASE_POSITION_ENEMY  = new Vector2 ( 7.5f, 0f );
+    
+    [ SerializeField ] private static Vector3 BASE_POSITION_PLAYER = new Vector2 ( -7.5f, 0f );
+    
+    [ SerializeField ] private static Vector3 BASE_POSITION_BYSTANDER_1 = new Vector2 ( -7.5f, 3f );
+
+
     [ Header ( "Player Sagume" ) ]
     [ SerializeField ] private GameObject playerSagumeObject;
 
@@ -38,6 +49,8 @@ public class SceneManager : MonoBehaviour
 
     private InGameState CurrentInGameState;
 
+    private Timer transitionDelayTimer;
+
     private Player currentPlayer;
 
     private Enemy currentEnemy;
@@ -67,11 +80,13 @@ public class SceneManager : MonoBehaviour
 
     public static event Action ShowTutorial;
 
-    public static event Action<float, int, int, int, float> OnFightStarted;
+    public static event Action<float, int, int, int, float, float> OnFightStarted;
 
     public static event Action<float> OnCurrentPlayerHit;
 
     public static event Action<int> OnCurrentPlayerGrazed;
+
+    public static event Action<float> OnCurrentPlayerDamageMultiplierChanged;
 
     public static event Action<int> OnCurrentPlayerFiredAbility1;
 
@@ -110,7 +125,7 @@ public class SceneManager : MonoBehaviour
 
     private void Start ( ) => ChangeGameState ( newState: GameState.MainMenu );
 
-    private void Update ( ) {
+    private void FixedUpdate ( ) {
         if ( currentPlayer != null )
             PlayerPosition = currentPlayer.transform.position;
     }
@@ -129,6 +144,8 @@ public class SceneManager : MonoBehaviour
         Transition.OnFadeOutCompleted += OnTransitionFadeOutEnd;
 
         HUD.OnDialogueSequenceCompleted += OnDialogueSequenceComplete;
+
+        transitionDelayTimer = gameObject.AddComponent<Timer> ( );
     }
 
     private void OnDestroy ( ) {
@@ -155,7 +172,9 @@ public class SceneManager : MonoBehaviour
         switch ( CurrentGameState ) {
             case GameState.MainMenu:
                 ChangeInGameState ( InGameState.MainMenu );
-
+                
+                PlaySound?.Invoke ( Constants.MAIN_MENU_MUSIC );
+                
                 currentFightIndex = 0;
 
                 break;
@@ -198,26 +217,36 @@ public class SceneManager : MonoBehaviour
     private void OnTransitionFadeInEnd ( ) {
         switch ( CurrentInGameState ) {
             case InGameState.MainMenu:
-                ChangeGameState ( newState: GameState.Chatting );
+                StopSound?.Invoke ( Constants.MAIN_MENU_MUSIC );
 
-                PlaySound?.Invoke ( Constants.CHATTING_MUSIC );
+                transitionDelayTimer.StartTimer ( maxTime: transitionFadeOutDelay, onTimerFinish: ( ) => {
+                    ChangeGameState ( newState: GameState.Chatting );
 
-                AddPlayer ( playerSagumeObject );
-                AddEnemy ( enemyUtsuhoObject );
-                AddBystander1 ( playerAyaObject );
+                    PlaySound?.Invoke ( Constants.CHATTING_MUSIC );
 
-                ChangeInGameState ( newState: InGameState.PreExplosion );
+                    ChangeInGameState ( newState: InGameState.PreExplosion );
+
+                    AddPlayer ( playerSagumeObject );
+                    AddEnemy ( enemyUtsuhoObject );
+                    AddBystander1 ( playerAyaObject );
+
+                    TransitionFadeOut?.Invoke ( );
+                } );
 
                 break;
 
             case InGameState.PostFight1Branch2:
-                StopSound?.Invoke ( Constants.SCENE_01_MUSIC );
+                transitionDelayTimer.StartTimer ( maxTime: transitionFadeOutDelay, onTimerFinish: ( ) => {           
+                    StopSound?.Invoke ( Constants.SCENE_01_MUSIC );
 
-                ClearAllCharacters ( );
-                AddPlayer ( playerAyaObject );
-                AddEnemy ( enemySagumeObject );
+                    ChangeBackgroundScene?.Invoke ( 1 );
 
-                ChangeBackgroundScene?.Invoke ( 1 );
+                    ClearAllCharacters ( );
+                    AddPlayer ( playerAyaObject );
+                    AddEnemy ( enemySagumeObject );
+
+                    TransitionFadeOut?.Invoke ( );
+                } );
                 
                 break;
 
@@ -227,10 +256,11 @@ public class SceneManager : MonoBehaviour
                 StopSound?.Invoke ( Constants.ON_END_GAME_LOSS_MUSIC );
                 StopSound?.Invoke ( Constants.ON_END_GAME_WIN_MUSIC );
 
+                TransitionFadeOut?.Invoke ( );
+
                 break;
         }
 
-        TransitionFadeOut?.Invoke ( );
     }
 
     private void OnTransitionFadeOutEnd ( ) {
@@ -398,12 +428,14 @@ public class SceneManager : MonoBehaviour
         currentPlayer.OnPlayerFiredAbility2 += CurrentPlayerFiredAbility2;
         currentPlayer.OnHit += CurrentPlayerHit;
         currentPlayer.OnGrazed += CurrentPlayerGrazed;
+        currentPlayer.OnDamageMultiplierIncreased += OnCurrentPlayerDamageMultiplierIncreased;
+        currentPlayer.OnDamageMultiplierDecreased += OnCurrentPlayerDamageMultiplierDecreased;
 
         currentEnemy.ToggleAsCurrent ( true );
         currentEnemy.OnLose += ( ) => { OnFightComplete ( didWin: true ); };
         currentEnemy.OnHit += CurrentEnemyHit;
         
-        OnFightStarted ( currentPlayer.Data.Health, currentPlayer.Data.BombCount, currentPlayer.Data.Ability2Count, 0, currentEnemy.Data.Health );
+        OnFightStarted ( currentPlayer.Data.Health, currentPlayer.Data.BombCount, currentPlayer.Data.Ability2Count, 0, 1, currentEnemy.Data.Health );
     }
 
     private void OnFightComplete ( bool didWin ) {
@@ -438,6 +470,8 @@ public class SceneManager : MonoBehaviour
         currentPlayer.OnPlayerFiredAbility2 -= CurrentPlayerFiredAbility2;
         currentPlayer.OnHit -= CurrentPlayerHit;
         currentPlayer.OnGrazed -= CurrentPlayerGrazed;
+        currentPlayer.OnDamageMultiplierIncreased -= OnCurrentPlayerDamageMultiplierIncreased;
+        currentPlayer.OnDamageMultiplierDecreased -= OnCurrentPlayerDamageMultiplierDecreased;
 
         currentEnemy.ToggleAsCurrent ( false );
         currentEnemy.OnLose -= ( ) => { OnFightComplete ( didWin: true ); };
@@ -469,9 +503,21 @@ public class SceneManager : MonoBehaviour
     }
 
     private void CurrentPlayerGrazed ( int grazeCount ) {
-        PlaySound?.Invoke ( Constants.ON_PLAYER_GRAZED_SOUND );
-
         OnCurrentPlayerGrazed?.Invoke ( grazeCount );
+    }
+
+    private void OnCurrentPlayerDamageMultiplierIncreased ( float damageMultiplier ) {
+        StopSound?.Invoke ( Constants.ON_PLAYER_DAMAGE_MULTIPLIER_DECREASED_SOUND );
+        PlaySound?.Invoke ( Constants.ON_PLAYER_DAMAGE_MULTIPLIER_INCREASED_SOUND );
+
+        OnCurrentPlayerDamageMultiplierChanged?.Invoke ( damageMultiplier );
+    }
+
+    private void OnCurrentPlayerDamageMultiplierDecreased ( float damageMultiplier ) {
+        StopSound?.Invoke ( Constants.ON_PLAYER_DAMAGE_MULTIPLIER_INCREASED_SOUND );
+        PlaySound?.Invoke ( Constants.ON_PLAYER_DAMAGE_MULTIPLIER_DECREASED_SOUND );
+
+        OnCurrentPlayerDamageMultiplierChanged?.Invoke ( damageMultiplier );
     }
 
     private void CurrentEnemyHit ( float health ) {
@@ -505,21 +551,21 @@ public class SceneManager : MonoBehaviour
     #region Character Managers
 
     private Player AddPlayer ( GameObject playerObject ) {
-        GameObject playerInstance = Instantiate ( playerObject, Constants.BASE_POSITION_PLAYER, Quaternion.identity );
+        GameObject playerInstance = Instantiate ( playerObject, BASE_POSITION_PLAYER, Quaternion.identity );
         
         currentPlayer = playerInstance.GetComponent<Player> ( );
         return currentPlayer;
     }
 
     private Enemy AddEnemy ( GameObject enemyObject ) {
-        GameObject enemyInstance = Instantiate ( enemyObject, Constants.BASE_POSITION_ENEMY, Quaternion.identity );
+        GameObject enemyInstance = Instantiate ( enemyObject, BASE_POSITION_ENEMY, Quaternion.identity );
 
         currentEnemy = enemyInstance.GetComponent<Enemy> ( );
         return currentEnemy;
     }
 
     private Character AddBystander1 ( GameObject bystanderObject ) {
-        GameObject bystanderInstance = Instantiate ( bystanderObject, Constants.BASE_POSITION_BYSTANDER_1, Quaternion.identity );
+        GameObject bystanderInstance = Instantiate ( bystanderObject, BASE_POSITION_BYSTANDER_1, Quaternion.identity );
         
         Character bystander = bystanderInstance.GetComponent<Character> ( );
         otherCharacters.Add ( bystander );

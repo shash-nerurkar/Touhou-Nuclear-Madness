@@ -50,6 +50,7 @@ public class HUD : MonoBehaviour
         SceneManager.OnFightStarted += inGamePanel.SetPanelValues;
         SceneManager.OnCurrentPlayerHit += inGamePanel.UpdatePlayerHealth;
         SceneManager.OnCurrentPlayerGrazed += inGamePanel.UpdatePlayerGraze;
+        SceneManager.OnCurrentPlayerDamageMultiplierChanged += inGamePanel.UpdatePlayerDamageMultiplier;
         SceneManager.OnCurrentPlayerFiredAbility1 += inGamePanel.UpdatePlayerAbility1;
         SceneManager.OnCurrentPlayerFiredAbility2 += inGamePanel.UpdatePlayerAbility2;
         SceneManager.OnCurrentEnemyHit += inGamePanel.UpdateEnemyHealth;
@@ -76,6 +77,7 @@ public class HUD : MonoBehaviour
         SceneManager.OnFightStarted -= inGamePanel.SetPanelValues;
         SceneManager.OnCurrentPlayerHit -= inGamePanel.UpdatePlayerHealth;
         SceneManager.OnCurrentPlayerGrazed -= inGamePanel.UpdatePlayerGraze;
+        SceneManager.OnCurrentPlayerDamageMultiplierChanged -= inGamePanel.UpdatePlayerDamageMultiplier;
         SceneManager.OnCurrentPlayerFiredAbility1 -= inGamePanel.UpdatePlayerAbility1;
         SceneManager.OnCurrentPlayerFiredAbility2 -= inGamePanel.UpdatePlayerAbility2;
         SceneManager.OnCurrentEnemyHit -= inGamePanel.UpdateEnemyHealth;

@@ -9,7 +9,7 @@ public class Camera : MonoBehaviour
     
     private float shakeIntensity;
 
-    private const float minShakeIntensity = 0.01f;
+    private const float minShakeIntensity = 0;
 
     private Vector3 originalPosition;
 
@@ -48,7 +48,7 @@ public class Camera : MonoBehaviour
         StartCoroutine ( TweenShakeIntensity ( shakeIntensity, minShakeIntensity ) );
     }
 
-    private void Update ( ) {
+    private void FixedUpdate ( ) {
         if ( isCameraShaking )
             transform.position = originalPosition + Random.insideUnitSphere * shakeIntensity;
         else

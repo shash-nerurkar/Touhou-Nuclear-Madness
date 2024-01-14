@@ -2,15 +2,6 @@ using System;
 using UnityEngine;
 
 public class Constants {
-    #region Object Tags
-
-    public const string OBJECT_TAG_PLAYER = "Player";
-    public const string OBJECT_TAG_HUD = "HUD";
-    public const string OBJECT_TAG_MAIN_CAMERA = "MainCamera";
-    
-    #endregion
-
-
     #region Collision Layers
     
     public const string COLLISION_LAYER_GROUND = "Ground";
@@ -24,15 +15,7 @@ public class Constants {
     #endregion
 
 
-    #region Sounds
-    
-    public const string SOUND_WAX_CROSSBOW = "Wax Crossbow Sound";
-    public const string MUSIC_THE_CHASE = "The Chase Music";
-    
-    #endregion
-
-
-    #region Constant Strings
+    #region Strings
     
     public const string INFINITY_TEXT = "ꝏ";
     
@@ -44,17 +27,6 @@ public class Constants {
     
     public const string AYA_NAME = "Aya";
     
-    #endregion
-
-
-    #region Character Base Positions
-    
-    public static Vector3 BASE_POSITION_ENEMY  = new Vector2 ( 7.5f, 0f );
-    
-    public static Vector3 BASE_POSITION_PLAYER = new Vector2 ( -7.5f, 0f );
-    
-    public static Vector3 BASE_POSITION_BYSTANDER_1 = new Vector2 ( -7.5f, 3f );
-
     #endregion
 
 
@@ -74,6 +46,39 @@ public class Constants {
 
     // a41000
     public static Color COLOR_AYA    = new ( 0.643f, 0.063f, 0.000f );
+
+    #endregion
+
+
+    #region Sounds
+
+    public const string ON_DIALOGUE_POP_SOUND = "On Dialogue Pop Sound";
+
+    public const string ON_PLAYER_HIT_SOUND = "On Player Hit Sound";
+
+    public const string ON_PLAYER_SHOOT_SOUND = "On Player Shoot Sound";
+
+    public const string ON_PLAYER_ABILITY1_SOUND = "On Player Bomb Sound";
+
+    public const string ON_PLAYER_ABILITY2_SOUND = "On Player Ability2 Sound";
+
+    public const string ON_PLAYER_DAMAGE_MULTIPLIER_INCREASED_SOUND = "On Player Damage Multiplier Increased Sound";
+
+    public const string ON_PLAYER_DAMAGE_MULTIPLIER_DECREASED_SOUND = "On Player Damage Multiplier Decreased Sound";
+
+    public const string ON_EXPLOSION_SOUND = "On Explosion";
+
+    public const string ON_END_GAME_LOSS_MUSIC = "On End Game Loss Music";
+
+    public const string ON_END_GAME_WIN_MUSIC = "On End Game Win Music";
+
+    public const string MAIN_MENU_MUSIC = "Main Menu Music";
+
+    public const string CHATTING_MUSIC = "Chatting Music";
+
+    public const string SCENE_01_MUSIC = "Scene-01 Combat Music";
+
+    public const string SCENE_02_MUSIC = "Scene-02 Combat Music";
 
     #endregion
 
@@ -131,37 +136,6 @@ public class Constants {
     public static Dialogue [ ] DIALOGUE_SEQUENCE_GAME_ENDED = new Dialogue [ ] {
         new ( "In the next day's Bunbunmaru..", Characters.Narrator ),
     };
-
-    #endregion
-
-
-    #region Sounds
-
-    public const string ON_DIALOGUE_POP_SOUND = "On Dialogue Pop Sound";
-
-    public const string ON_PLAYER_HIT_SOUND = "On Player Hit Sound";
-
-    public const string ON_PLAYER_SHOOT_SOUND = "On Player Shoot Sound";
-
-    public const string ON_PLAYER_ABILITY1_SOUND = "On Player Bomb Sound";
-
-    public const string ON_PLAYER_ABILITY2_SOUND = "On Player Ability2 Sound";
-
-    public const string ON_PLAYER_GRAZED_SOUND = "On Player Grazed Sound";
-
-    public const string ON_EXPLOSION_SOUND = "On Explosion";
-
-    public const string ON_WIND_SOUND = "On Wind";
-
-    public const string ON_END_GAME_LOSS_MUSIC = "On End Game Loss Music";
-
-    public const string ON_END_GAME_WIN_MUSIC = "On End Game Win Music";
-
-    public const string CHATTING_MUSIC = "Chatting Music";
-
-    public const string SCENE_01_MUSIC = "Scene-01 Combat Music";
-
-    public const string SCENE_02_MUSIC = "Scene-02 Combat Music";
 
     #endregion
 }

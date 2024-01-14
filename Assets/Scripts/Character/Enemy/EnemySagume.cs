@@ -1,4 +1,5 @@
 using System.Collections;
+using TMPro;
 using UnityEngine;
 
 public class EnemySagume : Enemy
@@ -7,7 +8,11 @@ public class EnemySagume : Enemy
 
     [ Header ("Attack stats") ]
 
+    [ SerializeField ] protected TextMeshProUGUI legendDialogueLabel;
+
     [ SerializeField ] protected float legendAttackCooldownTime;
+
+    [ SerializeField ] protected float legendAttackDelayTime;
 
 
     [ Header ("Attack type 1: Legend 1") ]
@@ -18,6 +23,8 @@ public class EnemySagume : Enemy
 
     [ SerializeField ] protected float legend1AttackBulletCount;
 
+    [ SerializeField ] protected string legend1DialogueText;
+
 
     [ Header ("Attack type 2: Legend 2") ]
     
@@ -26,6 +33,8 @@ public class EnemySagume : Enemy
     [ SerializeField ] private float legend2BulletDamage;
 
     [ SerializeField ] protected float legend2AttackBulletCount;
+
+    [ SerializeField ] protected string legend2DialogueText;
 
 
     [ Header ("Attack type 1: Legend 3") ]
@@ -40,12 +49,16 @@ public class EnemySagume : Enemy
 
     [ SerializeField ] protected float legend3AttackSpread;
 
+    [ SerializeField ] protected string legend3DialogueText;
+
     #endregion
 
 
     #region Fields
 
     protected Timer legendAttackCooldownTimer;
+
+    protected Timer legendAttackDelayTimer;
 
     #endregion
 
@@ -56,6 +69,7 @@ public class EnemySagume : Enemy
         base.Awake ( );
 
         legendAttackCooldownTimer = gameObject.AddComponent<Timer> ( );
+        legendAttackDelayTimer = gameObject.AddComponent<Timer> ( );
     }
 
     protected override void ChangeState ( State newState ) {
@@ -64,6 +78,7 @@ public class EnemySagume : Enemy
         switch ( currentState ) {
             case State.Chatting:
                 legendAttackCooldownTimer.PauseTimer ( );
+                legendAttackDelayTimer.PauseTimer ( );
                 break;
 
             case State.Idle:
@@ -77,11 +92,36 @@ public class EnemySagume : Enemy
         base.OnLoseFight();
 
         legendAttackCooldownTimer.PauseTimer ( );
+        legendAttackDelayTimer.PauseTimer ( );
     }
 
     private void OnLegendAttackCooldownTimerFinished ( ) {
         int randomLegendIndex = Random.Range ( 0, 3 );
+
+        legendDialogueLabel.gameObject.SetActive ( true );
         switch ( randomLegendIndex ) {
+            case 0:
+                legendDialogueLabel.text = legend1DialogueText;
+                break;
+                
+            case 1:
+                legendDialogueLabel.text = legend2DialogueText;
+                break;
+                
+            case 2:
+                legendDialogueLabel.text = legend3DialogueText;
+                break;
+        }
+        
+        legendAttackDelayTimer.StartTimer ( maxTime: legendAttackDelayTime, onTimerFinish: () => {
+            OnLegendAttackDelayTimerFinished ( randomLegendIndex );
+        } );
+    }
+
+    private void OnLegendAttackDelayTimerFinished ( int chosenLegendIndex ) {
+        legendDialogueLabel.gameObject.SetActive ( false );
+
+        switch ( chosenLegendIndex ) {
             case 0:
                 StartCoroutine ( ReleaseLegend1Attack ( ) );
                 break;
@@ -94,7 +134,6 @@ public class EnemySagume : Enemy
                 StartCoroutine ( ReleaseLegend3Attack ( ) );
                 break;
         }
-
 
         legendAttackCooldownTimer.StartTimer ( maxTime: legendAttackCooldownTime, onTimerFinish: OnLegendAttackCooldownTimerFinished );
     }
@@ -124,7 +163,7 @@ public class EnemySagume : Enemy
                 curveDir = Random.Range ( 0, 2 ) == 1 ? 1 : -1;
             float curveInitialAngle = Random.Range ( -22.5f, 22.5f );
 
-            GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 3 ], position: pivot.position, rotation: Quaternion.identity );
+            GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 2 ], position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
             bullet.Init ( 
                 BulletPathType.Curve, 
@@ -147,7 +186,7 @@ public class EnemySagume : Enemy
             else
                 shootDirY = Random.Range ( 0, 2 ) == 1 ? 1 : -1;
 
-            GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 2 ], position: pivot.position, rotation: Quaternion.identity );
+            GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 3 ], position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
             bullet.Init ( 
                 BulletPathType.Straight, 

@@ -12,9 +12,17 @@ public class Player : Character
     [ Header ("Player graze") ]
     [ SerializeField ] private PlayerGrazeDetector grazeDetector;
 
+    [ SerializeField ] private ParticleSystem grazeIncreaseEffectParticleSystem;
+
+    [ SerializeField ] private ParticleSystem grazeDecreaseEffectParticleSystem;
+
+    [ SerializeField ] [ Range ( 1.25f, 3.0f ) ] private float grazeDamageMultiplier;
+
+    [ SerializeField ] private float grazeDamageMultiplierDuration;
+
 
     [ Header ("Player ability 1: Bomb") ]
-    [ SerializeField ] private ParticleSystem bombParticleSystem;
+    [ SerializeField ] private ParticleSystem bombEffectParticleSystem;
 
     #endregion
 
@@ -41,6 +49,12 @@ public class Player : Character
 
     private int grazeCount;
 
+    private Timer grazeDamageMultiplierTimer;
+
+    private float damageMultiplier;
+
+    private bool isGrazeDamageMultiplierActive;
+
     #endregion
 
 
@@ -55,6 +69,10 @@ public class Player : Character
     public static event Action FireAbility1Event;
 
     public event Action<int> OnGrazed;
+
+    public event Action<float> OnDamageMultiplierIncreased;
+
+    public event Action<float> OnDamageMultiplierDecreased;
 
     #endregion
 
@@ -75,6 +93,7 @@ public class Player : Character
         grazeDetector.OnGrazed += OnGetGrazed;
 
         speed = Data.Speed;
+        damageMultiplier = 1;
         health = Data.Health;
         onHitIDuration = Data.OnHitIDuration;
         ability1Count = Data.BombCount;
@@ -83,6 +102,7 @@ public class Player : Character
         shootCooldownTimer = gameObject.AddComponent<Timer> ( );
         ability1CooldownTimer = gameObject.AddComponent<Timer> ( );
         ability2CooldownTimer = gameObject.AddComponent<Timer> ( );
+        grazeDamageMultiplierTimer = gameObject.AddComponent<Timer> ( );
     }
 
     protected virtual void OnDestroy ( ) {
@@ -144,7 +164,7 @@ public class Player : Character
             pathType: BulletPathType.Straight, 
             shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ), 
             speed: Data.BulletSpeed,
-            damage: Data.BulletDamage
+            damage: Data.BulletDamage * damageMultiplier
         );
     }
 
@@ -155,6 +175,27 @@ public class Player : Character
 
     protected virtual void OnGetGrazed ( Collider2D collided ) {
         ++grazeCount;
+
+        if ( !isGrazeDamageMultiplierActive ) {
+            isGrazeDamageMultiplierActive = true;
+
+            damageMultiplier *= grazeDamageMultiplier;
+            
+            grazeDecreaseEffectParticleSystem.Stop ( );
+            grazeIncreaseEffectParticleSystem.Play ( );
+
+            OnDamageMultiplierIncreased?.Invoke ( damageMultiplier );
+        }
+        grazeDamageMultiplierTimer.StartTimer ( maxTime: grazeDamageMultiplierDuration, onTimerFinish: ( ) => { 
+            isGrazeDamageMultiplierActive = false;
+
+            damageMultiplier /= grazeDamageMultiplier;
+            
+            grazeIncreaseEffectParticleSystem.Stop ( );
+            grazeDecreaseEffectParticleSystem.Play ( );
+
+            OnDamageMultiplierDecreased?.Invoke ( damageMultiplier );
+        } );
 
         OnGrazed?.Invoke ( grazeCount );
     }
@@ -180,7 +221,7 @@ public class Player : Character
     private void FireAbility1 ( ) {
         --ability1Count;
         
-        bombParticleSystem.Play ( );
+        bombEffectParticleSystem.Play ( );
 
         FireAbility1Event?.Invoke ( );
     }
@@ -215,12 +256,24 @@ public class Player : Character
         
         grazeDetector.ToggleEnabled ( this.isCurrent );
     }
- 
+  
+    protected override void OnGetHit ( ) {
+        base.OnGetHit();
+        
+        grazeDetector.ToggleEnabled ( false );
+    }
+
+    protected override void OnHitTimerFinish ( ) {
+        base.OnHitTimerFinish();
+        
+        grazeDetector.ToggleEnabled ( true );
+    }
+
     protected override void OnLoseFight ( ) {
         grazeDetector.ToggleEnabled ( false );
 
         base.OnLoseFight ( );
     }
-
+   
     #endregion
 }

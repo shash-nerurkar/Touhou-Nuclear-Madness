@@ -12,23 +12,23 @@ public class Timer : MonoBehaviour
     int intParam = -1;
 
 
-    public void StartTimer( float maxTime, Action onTimerFinish ) {
+    public void StartTimer ( float maxTime, Action onTimerFinish ) {
         intParam = -1;
         TimeRemaining = maxTime;
         this.onTimerFinish = onTimerFinish;
         IsRunning = true;
     }
     
-    public void StartTimerWithIntParameter( float maxTime, Action<int> onTimerFinishWithIntParam, int intParam ) {
+    public void StartTimerWithIntParameter ( float maxTime, Action<int> onTimerFinishWithIntParam, int intParam ) {
         this.intParam = intParam;
         TimeRemaining = maxTime;
         this.onTimerFinishWithIntParam = onTimerFinishWithIntParam;
         IsRunning = true;
     }
 
-    public void PauseTimer() => IsRunning = false;
+    public void PauseTimer ( ) => IsRunning = false;
 
-    void FixedUpdate() {
+    void Update ( ) {
         if ( IsRunning ) {
             if ( TimeRemaining > 0 ) {
                 TimeRemaining -= Time.deltaTime;
@@ -44,7 +44,7 @@ public class Timer : MonoBehaviour
         }
     }
 
-    public static string DisplayTime( float timeToDisplay ) {
+    public static string DisplayTime ( float timeToDisplay ) {
         timeToDisplay += 1;
         float minutes = Mathf.FloorToInt( timeToDisplay / 60 ); 
         float seconds = Mathf.FloorToInt( timeToDisplay % 60 );
