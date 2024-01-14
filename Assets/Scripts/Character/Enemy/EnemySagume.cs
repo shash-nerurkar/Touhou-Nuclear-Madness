@@ -93,6 +93,7 @@ public class EnemySagume : Enemy
 
         legendAttackCooldownTimer.PauseTimer ( );
         legendAttackDelayTimer.PauseTimer ( );
+        legendDialogueLabel.gameObject.SetActive ( false );
     }
 
     private void OnLegendAttackCooldownTimerFinished ( ) {

@@ -98,7 +98,9 @@ public class Constants {
 
         #region SceneManager
 
-        public const int SCENEMANAGER_TRYHARD_MODE_RUN_COUNT_THRESHOLD = 10;
+        public const int SCENEMANAGER_EASY_MODE_RUN_COUNT_THRESHOLD = 1;
+
+        public const int SCENEMANAGER_SKIP_DIALOGUES_MODE_RUN_COUNT_THRESHOLD = 3;
 
         #endregion
 
@@ -177,8 +179,9 @@ public class Constants {
         DIALOGUE_SEQUENCE_5_2,
     };
 
-    public static List<Dialogue> DIALOGUES_CREATORS = new List<Dialogue> {
-        new ( "TRYHARD MODE UNLOCKED - All dialogues are now disabled. Hop right into battle!", Characters.Creators ),
+    public static Dictionary<Achievement, Dialogue> DIALOGUES_ACHIEVEMENTS = new Dictionary<Achievement, Dialogue> {
+        { Achievement.Easy_Difficulty, new Dialogue ( "MICKEY MOUSE MODE UNLOCKED - Damage multipliers stack. Toggle from the Main Menu!", Characters.Creators ) },
+        { Achievement.Skip_Dialogues_Mode, new Dialogue ( "TRYHARD MODE UNLOCKED - All dialogues are now disabled. Hop right into battle!", Characters.Creators ) },
     };
 
     #endregion
@@ -248,4 +251,16 @@ public class Dialogue {
     SagumeWin,
     AyaWin,
     NarratorWin
+}
+
+
+[ Serializable ] public enum GameDifficulty {
+    Default,
+    Easy,
+}
+
+
+[ Serializable ] public enum Achievement {
+    Easy_Difficulty,
+    Skip_Dialogues_Mode,
 }

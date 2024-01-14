@@ -176,9 +176,31 @@ public class Player : Character
     protected virtual void OnGetGrazed ( Collider2D collided ) {
         ++grazeCount;
 
-        if ( !isGrazeDamageMultiplierActive ) {
-            isGrazeDamageMultiplierActive = true;
+        if ( SceneManager.CurrentGameDifficulty == GameDifficulty.Easy ) {
+            ToggleDamageMultiplier ( true );
+            
+            Timer grazeDamageMultiplierInstanceTimer = gameObject.AddComponent<Timer> ( );
+            grazeDamageMultiplierInstanceTimer.StartTimer ( maxTime: grazeDamageMultiplierDuration, onTimerFinish: ( ) => {
+                ToggleDamageMultiplier ( false );
 
+                Destroy ( grazeDamageMultiplierInstanceTimer );
+            } );
+        }
+        else {
+            if ( !isGrazeDamageMultiplierActive )
+                ToggleDamageMultiplier ( true );
+            
+            grazeDamageMultiplierTimer.StartTimer ( maxTime: grazeDamageMultiplierDuration, onTimerFinish: ( ) => ToggleDamageMultiplier ( false ) );
+        }
+        
+
+        OnGrazed?.Invoke ( grazeCount );
+    }
+
+    private void ToggleDamageMultiplier ( bool toggleFlag ) {
+        isGrazeDamageMultiplierActive = toggleFlag;
+
+        if ( isGrazeDamageMultiplierActive ) {
             damageMultiplier *= grazeDamageMultiplier;
             
             grazeDecreaseEffectParticleSystem.Stop ( );
@@ -186,18 +208,14 @@ public class Player : Character
 
             OnDamageMultiplierIncreased?.Invoke ( damageMultiplier );
         }
-        grazeDamageMultiplierTimer.StartTimer ( maxTime: grazeDamageMultiplierDuration, onTimerFinish: ( ) => { 
-            isGrazeDamageMultiplierActive = false;
-
+        else {
             damageMultiplier /= grazeDamageMultiplier;
             
             grazeIncreaseEffectParticleSystem.Stop ( );
             grazeDecreaseEffectParticleSystem.Play ( );
 
             OnDamageMultiplierDecreased?.Invoke ( damageMultiplier );
-        } );
-
-        OnGrazed?.Invoke ( grazeCount );
+        }
     }
 
     #endregion

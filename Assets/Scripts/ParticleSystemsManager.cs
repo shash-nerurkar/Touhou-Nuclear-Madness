@@ -42,8 +42,8 @@ public class ParticleSystemsManager : MonoBehaviour
     private void OnGameStateChanged ( GameState gameState ) {
         if ( gameState == GameState.MainMenu ) {
             mainMenuParticleSystem.Play ( );
-            scene01ParticleSystem.Stop ( );
-            scene02ParticleSystem.Stop ( );
+            scene01ParticleSystem.Play ( );
+            scene02ParticleSystem.Play ( );
         }
     }
 

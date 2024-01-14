@@ -50,27 +50,40 @@ public class SceneManager : MonoBehaviour
 
     #region Fields
 
-    private GameState CurrentGameState;
-
-    private InGameState CurrentInGameState;
-
     private Timer transitionDelayTimer;
 
     private Timer delayTimer;
+
+
+    #region Current run data
+
+    private int currentFightIndex;
 
     private Player currentPlayer;
 
     private Enemy currentEnemy;
 
-    private int currentFightIndex;
+    private List<Character> currentOtherCharacters = new List<Character> ( );
 
-    private List<Character> otherCharacters = new List<Character> ( );
-
-    private int currentRunCount;
-
-    private bool hasPlayerReachedLastDialogueSequence = false;
-
+    #endregion
     
+
+    #region Current instance data
+
+    private GameState currentGameState;
+
+    private InGameState currentInGameState;
+
+    private int currentRunCount = 0;
+
+    private int currentWinCount = 0;
+
+    private static GameDifficulty currentGameDifficulty;
+    public static GameDifficulty CurrentGameDifficulty { get => currentGameDifficulty; }
+
+    #endregion
+
+
     #region AI Cheats
 
     public static Vector3 PlayerPosition;
@@ -127,26 +140,24 @@ public class SceneManager : MonoBehaviour
 
     public static event Action ClearAllBullets;
 
+    public static event Action OnEasyDifficultyUnlocked;
+
     #endregion
 
 
     #region Methods
 
-    private void Start ( ) {
-        currentRunCount = 0;
-        
-        ChangeGameState ( newState: GameState.MainMenu );
-    }
+    private void Start ( ) => ChangeGameState ( newState: GameState.MainMenu );
 
-    private void FixedUpdate ( ) {
-        if ( currentPlayer != null )
-            PlayerPosition = currentPlayer.transform.position;
-    }
+    private void FixedUpdate ( ) => PlayerPosition = currentPlayer != null ? currentPlayer.transform.position : BASE_POSITION_PLAYER;
 
 
     #region Event Subscriptions
 
     private void Awake ( ) {
+        transitionDelayTimer = gameObject.AddComponent<Timer> ( );
+        delayTimer = gameObject.AddComponent<Timer> ( );
+
         InputManager.PopDialogueAction += OnDialoguePopped;
 
         BackgroundImage.OnExplosionAnimationComplete += OnExplosionComplete;
@@ -158,8 +169,7 @@ public class SceneManager : MonoBehaviour
 
         HUD.OnDialogueSequenceCompleted += OnDialogueSequenceComplete;
 
-        transitionDelayTimer = gameObject.AddComponent<Timer> ( );
-        delayTimer = gameObject.AddComponent<Timer> ( );
+        MainMenuPanel.OnEasyDifficultyToggledAction += OnEasyDifficultyToggled;
     }
 
     private void OnDestroy ( ) {
@@ -173,6 +183,8 @@ public class SceneManager : MonoBehaviour
         Transition.OnFadeOutCompleted -= OnTransitionFadeOutEnd;
 
         HUD.OnDialogueSequenceCompleted -= OnDialogueSequenceComplete;
+
+        MainMenuPanel.OnEasyDifficultyToggledAction -= OnEasyDifficultyToggled;
     }
 
     #endregion
@@ -181,9 +193,9 @@ public class SceneManager : MonoBehaviour
     #region State Handlers
 
     private void ChangeGameState ( GameState newState ) {
-        CurrentGameState = newState;
+        currentGameState = newState;
 
-        switch ( CurrentGameState ) {
+        switch ( currentGameState ) {
             case GameState.MainMenu:
                 ChangeInGameState ( InGameState.MainMenu );
                 
@@ -199,25 +211,20 @@ public class SceneManager : MonoBehaviour
                 break;
         }
 
-        OnGameStateChanged?.Invoke ( CurrentGameState );
+        OnGameStateChanged?.Invoke ( currentGameState );
     }
 
     private void ChangeInGameState ( InGameState newState ) {
-        CurrentInGameState = newState;
+        currentInGameState = newState;
 
-        switch ( CurrentInGameState ) {
+        switch ( currentInGameState ) {
             case InGameState.PreExplosion:
                 ChangeBackgroundScene?.Invoke ( 0 );
 
                 break;
-            
-            case InGameState.PostFight2Branch2:
-                hasPlayerReachedLastDialogueSequence = true;
-
-                break;
         }
 
-        OnInGameStateChanged?.Invoke ( CurrentInGameState );
+        OnInGameStateChanged?.Invoke ( currentInGameState );
     }
     
     #endregion
@@ -230,7 +237,7 @@ public class SceneManager : MonoBehaviour
     private void OnTransitionFadeOutStart ( ) { }
 
     private void OnTransitionFadeInEnd ( ) {
-        switch ( CurrentInGameState ) {
+        switch ( currentInGameState ) {
             case InGameState.MainMenu:
                 StopSound?.Invoke ( Constants.MAIN_MENU_MUSIC );
 
@@ -279,7 +286,7 @@ public class SceneManager : MonoBehaviour
     }
 
     private void OnTransitionFadeOutEnd ( ) {
-        switch ( CurrentInGameState ) {
+        switch ( currentInGameState ) {
             case InGameState.MainMenu:
                 ChangeGameState ( newState: GameState.MainMenu );
                 
@@ -352,7 +359,7 @@ public class SceneManager : MonoBehaviour
     }
 
     private void OnDialogueSequenceComplete ( ) {
-        switch ( CurrentInGameState ) {
+        switch ( currentInGameState ) {
             case InGameState.MainMenu:
                 StartTransition ( nextPlayerCharacter: Characters.Sagume );
                 
@@ -419,9 +426,9 @@ public class SceneManager : MonoBehaviour
     private void StartNextFight ( ) {
         ChangeGameState ( newState: GameState.Playing );
 
-        foreach ( Character character in otherCharacters )
+        foreach ( Character character in currentOtherCharacters )
             Destroy ( character.gameObject );
-        otherCharacters.Clear ( );
+        currentOtherCharacters.Clear ( );
 
         ClearAllBullets?.Invoke ( );
 
@@ -583,15 +590,15 @@ public class SceneManager : MonoBehaviour
         GameObject bystanderInstance = Instantiate ( bystanderObject, BASE_POSITION_BYSTANDER_1, Quaternion.identity );
         
         Character bystander = bystanderInstance.GetComponent<Character> ( );
-        otherCharacters.Add ( bystander );
+        currentOtherCharacters.Add ( bystander );
 
         return bystander;
     }
 
     private void ClearAllCharacters ( ) {
-        foreach ( Character character in otherCharacters )
+        foreach ( Character character in currentOtherCharacters )
             Destroy ( character.gameObject );
-        otherCharacters.Clear ( );
+        currentOtherCharacters.Clear ( );
 
         Destroy ( currentPlayer.gameObject );
         currentPlayer = null;
@@ -603,39 +610,86 @@ public class SceneManager : MonoBehaviour
     #endregion
 
 
+    #region Achievements
+
+    private Dictionary<Achievement, bool> AchievementStatuses = new Dictionary<Achievement, bool> {
+        { Achievement.Easy_Difficulty, false },
+        { Achievement.Skip_Dialogues_Mode, false }
+    };
+
+    private Dictionary<Achievement, bool> AchievementUnlockableStatuses { get {
+        return new Dictionary<Achievement, bool> {
+            { 
+                Achievement.Easy_Difficulty, 
+                currentRunCount == Constants.SCENEMANAGER_EASY_MODE_RUN_COUNT_THRESHOLD && 
+                    !AchievementStatuses [ Achievement.Easy_Difficulty ]
+            },
+            { 
+                Achievement.Skip_Dialogues_Mode, 
+                currentRunCount >= Constants.SCENEMANAGER_SKIP_DIALOGUES_MODE_RUN_COUNT_THRESHOLD && 
+                    currentWinCount > 0 && 
+                        !AchievementStatuses [ Achievement.Skip_Dialogues_Mode ] 
+            },
+        };
+    } }
+    
+    private Dictionary<Achievement, Action> OnAchievementUnlockActions { get {
+        return new Dictionary<Achievement, Action> {
+            { 
+                Achievement.Easy_Difficulty, 
+                ( ) => { 
+                    OnEasyDifficultyUnlocked?.Invoke ( ); 
+                }
+            },
+            { 
+                Achievement.Skip_Dialogues_Mode, 
+                ( ) => {
+                    foreach ( List<Dialogue> dialogueSequence in Constants.INGAME_DIALOGUE_SEQUENCES )
+                        dialogueSequence.Clear ( );
+                    transitionFadeOutDelay = 0;
+                } 
+            },
+        };
+    } }
+
+    private void ShowAchievement ( Achievement achievement ) {
+        StopSound?.Invoke ( Constants.ON_END_GAME_LOSS_MUSIC );
+        StopSound?.Invoke ( Constants.ON_END_GAME_WIN_MUSIC );
+        PlaySound?.Invoke ( Constants.ON_ACHIEVEMENT_UNLOCKED_SOUND );
+        
+        Constants.DIALOGUE_SEQUENCE_GAME_ENDED.Insert ( 0, Constants.DIALOGUES_ACHIEVEMENTS [ achievement ] );
+
+        OnAchievementUnlockActions [ achievement ]?.Invoke ( );
+    }
+
+    private void HideAchievement ( Achievement achievement ) {
+        ChangeGameState ( newState: GameState.BlockingInput );
+        delayTimer.StartTimer (
+            maxTime: AchievementDialogueShowDelay, onTimerFinish: ( ) => { ChangeGameState ( newState: GameState.Ended ); }
+        );
+
+        Constants.DIALOGUE_SEQUENCE_GAME_ENDED.Remove ( Constants.DIALOGUES_ACHIEVEMENTS [ achievement ] );
+
+        AchievementStatuses [ achievement ] = true;
+    }
+
+    #endregion
+
+
+    private void OnEasyDifficultyToggled ( bool easyDifficultyToggleFlag ) {
+        currentGameDifficulty = easyDifficultyToggleFlag ? GameDifficulty.Easy : GameDifficulty.Default;
+    }
+
     private void EndGame ( Ending ending ) {
         ++currentRunCount;
-        switch ( currentRunCount ) {
-            case Constants.SCENEMANAGER_TRYHARD_MODE_RUN_COUNT_THRESHOLD:
-                if ( !hasPlayerReachedLastDialogueSequence ) break;
-                
-                StopSound?.Invoke ( Constants.ON_END_GAME_LOSS_MUSIC );
-                StopSound?.Invoke ( Constants.ON_END_GAME_WIN_MUSIC );
-                PlaySound?.Invoke ( Constants.ON_ACHIEVEMENT_UNLOCKED_SOUND );
 
-                Constants.DIALOGUE_SEQUENCE_GAME_ENDED.Insert ( 0, Constants.DIALOGUES_CREATORS [ 0 ] );
-                
-                foreach ( List<Dialogue> dialogueSequence in Constants.INGAME_DIALOGUE_SEQUENCES )
-                    dialogueSequence.Clear ( );
-                
-                transitionFadeOutDelay = 0;
-
-                break;
-        }
+        foreach ( KeyValuePair<Achievement, bool> achievement in AchievementUnlockableStatuses )
+            if ( achievement.Value ) ShowAchievement ( achievement.Key );
 
         ChangeGameState ( newState: GameState.Ended );
         
-        switch ( currentRunCount ) {
-            case Constants.SCENEMANAGER_TRYHARD_MODE_RUN_COUNT_THRESHOLD:
-                ChangeGameState ( newState: GameState.BlockingInput );
-                delayTimer.StartTimer (
-                    maxTime: AchievementDialogueShowDelay, onTimerFinish: ( ) => { ChangeGameState ( newState: GameState.Ended ); }
-                );
-
-                Constants.DIALOGUE_SEQUENCE_GAME_ENDED.Remove ( Constants.DIALOGUES_CREATORS [ 0 ] );
-                
-                break;
-        }
+        foreach ( KeyValuePair<Achievement, bool> achievement in AchievementUnlockableStatuses )
+            if ( achievement.Value ) HideAchievement ( achievement.Key );
 
         float winnerHP;
         switch ( ending ) {
@@ -648,6 +702,7 @@ public class SceneManager : MonoBehaviour
                 break;
             
             case Ending.AyaWin:
+                ++currentWinCount;
                 winnerHP = currentPlayer.Health;
                 break;
 

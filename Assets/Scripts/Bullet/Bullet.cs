@@ -50,14 +50,8 @@ public class Bullet : MonoBehaviour
     #region Methods
 
     public virtual void Init ( 
-        BulletPathType pathType, 
-        Vector3 shootDir, 
-        float speed, 
-        float damage, 
-        int scale = 1, 
-        int curveDir = 1, 
-        float angle = 0, 
-        bool isDamping = false
+        BulletPathType pathType, Vector3 shootDir, float speed, float damage, 
+        int scale = 1, int curveDir = 1, float angle = 0, bool isDamping = false
     ) {
         isFlying = true;
         startTime = Time.time;
