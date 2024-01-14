@@ -98,9 +98,9 @@ public class Constants {
 
         #region SceneManager
 
-        public const int SCENEMANAGER_EASY_MODE_RUN_COUNT_THRESHOLD = 1;
+        public const int SCENEMANAGER_EASY_MODE_RUN_COUNT_THRESHOLD = 7;
 
-        public const int SCENEMANAGER_SKIP_DIALOGUES_MODE_RUN_COUNT_THRESHOLD = 3;
+        public const int SCENEMANAGER_SKIP_DIALOGUES_MODE_RUN_COUNT_THRESHOLD = 10;
 
         #endregion
 
