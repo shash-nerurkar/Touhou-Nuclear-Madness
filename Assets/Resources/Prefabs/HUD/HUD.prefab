@@ -1272,6 +1272,7 @@ MonoBehaviour:
   boxBackgroundImage: {fileID: 487338122679861677}
   speakerPortrait: {fileID: 565877462}
   speakerNameLabel: {fileID: 2459735638015447916}
+  inputPrompt: {fileID: 487338123452338319}
   narratorPortrait: {fileID: 21300000, guid: 321b4ca8b70adcc479066b78fdefea24, type: 3}
   sagumePortrait: {fileID: 21300000, guid: a5b975ee58f7a4b48a4dc9b83aa9cb6a, type: 3}
   utsuhoPortrait: {fileID: 21300000, guid: 755aa36bb9f2d0044a8490053312370a, type: 3}
@@ -1279,6 +1280,7 @@ MonoBehaviour:
   sagumeCryPortrait: {fileID: 21300000, guid: 6b87ac77ad4908c4b860372e276adbd8, type: 3}
   utsuhoCryPortrait: {fileID: 21300000, guid: f39a522f07bc99d47812fd9d52647ec4, type: 3}
   ayaCryPortrait: {fileID: 21300000, guid: 1d9195b91ebdff14885359ef689d57ec, type: 3}
+  creatorsPortrait: {fileID: 21300000, guid: 9be8c6d3785285046a512c15d3a83b73, type: 3}
 --- !u!1 &487338122705356606
 GameObject:
   m_ObjectHideFlags: 0
@@ -1854,7 +1856,7 @@ GameObject:
   - component: {fileID: 487338123452338319}
   - component: {fileID: 487338123452338317}
   m_Layer: 5
-  m_Name: Button Indicator
+  m_Name: Input Prompt
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2813,7 +2815,7 @@ MonoBehaviour:
   m_lineSpacingMax: 0
   m_paragraphSpacing: 0
   m_charWidthMaxAdj: 0
-  m_enableWordWrapping: 1
+  m_enableWordWrapping: 0
   m_wordWrappingRatios: 0.4
   m_overflowMode: 0
   m_linkedTextComponent: {fileID: 0}

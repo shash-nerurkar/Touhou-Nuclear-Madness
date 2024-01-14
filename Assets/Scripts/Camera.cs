@@ -9,8 +9,6 @@ public class Camera : MonoBehaviour
     
     private float shakeIntensity;
 
-    private const float minShakeIntensity = 0;
-
     private Vector3 originalPosition;
 
     private bool isCameraShaking;
@@ -45,7 +43,7 @@ public class Camera : MonoBehaviour
         this.shakeIntensity = shakeIntensity;
 
         isCameraShaking = true;
-        StartCoroutine ( TweenShakeIntensity ( shakeIntensity, minShakeIntensity ) );
+        StartCoroutine ( TweenShakeIntensity ( shakeIntensity, Constants.CAMERA_MIN_SHAKE_INTENSITY ) );
     }
 
     private void FixedUpdate ( ) {

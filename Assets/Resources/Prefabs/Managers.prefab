@@ -14679,6 +14679,12 @@ MonoBehaviour:
     pitch: 1
     isLoop: 0
     source: {fileID: 0}
+  - name: On Achievement Unlocked
+    clip: {fileID: 8300000, guid: c8c169f53cef95f4794b2a4c684d94ca, type: 3}
+    volume: 1
+    pitch: 1
+    isLoop: 0
+    source: {fileID: 0}
   - name: Main Menu Music
     clip: {fileID: 8300000, guid: c683461f7c308e34790f062b7f9acd9d, type: 3}
     volume: 0.5

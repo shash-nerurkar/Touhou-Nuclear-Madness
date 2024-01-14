@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class HUD : MonoBehaviour
@@ -22,7 +23,7 @@ public class HUD : MonoBehaviour
     
     #region Fields
 
-    private Dialogue [ ] currentDialogues;
+    private List<Dialogue> currentDialogues;
 
     private int currentDialogueIndex;
 
@@ -64,8 +65,6 @@ public class HUD : MonoBehaviour
         SceneManager.TransitionFadeOut += transition.FadeOut;
         SceneManager.TransitionSetNextPlayerCharacter += transition.SetNextPlayerCharacter;
         SceneManager.TransitionRemoveNextPlayerCharacter += transition.SetNextPlayerCharacter;
-        
-        SceneManager.HideDialogueBox += dialogueBox.Hide;
     }
 
     private void OnDestroy ( ) {
@@ -91,8 +90,6 @@ public class HUD : MonoBehaviour
         SceneManager.TransitionFadeOut -= transition.FadeOut;
         SceneManager.TransitionSetNextPlayerCharacter -= transition.SetNextPlayerCharacter;
         SceneManager.TransitionRemoveNextPlayerCharacter -= transition.SetNextPlayerCharacter;
-        
-        SceneManager.HideDialogueBox -= dialogueBox.Hide;
     }
 
     #endregion
@@ -101,12 +98,16 @@ public class HUD : MonoBehaviour
     #region On-States-Changed Managers
 
     private void OnGameStateChanged ( GameState gameState ) {
-        if ( gameState == GameState.Transitioning )
-            return;
-
-        mainMenuPanel.gameObject.SetActive ( gameState == GameState.MainMenu );
-        inGamePanel.gameObject.SetActive ( gameState == GameState.Playing );
-        endGamePanel.gameObject.SetActive ( gameState == GameState.Ended );
+        if ( gameState == GameState.BlockingInput ) {
+            dialogueBox.ToggleInputPrompt ( false );
+        }
+        else {
+            dialogueBox.ToggleInputPrompt ( true );
+            
+            mainMenuPanel.gameObject.SetActive ( gameState == GameState.MainMenu );
+            inGamePanel.gameObject.SetActive ( gameState == GameState.Playing );
+            endGamePanel.gameObject.SetActive ( gameState == GameState.Ended );
+        }
     }
  
     private void OnInGameStateChanged ( InGameState inGameState ) {
@@ -154,8 +155,8 @@ public class HUD : MonoBehaviour
 
     #region Dialogue Sequence Managers
 
-    private void BeginDialogueSequence ( Dialogue [ ] dialogues ) {
-        if ( dialogues.Length == 0 ) {
+    private void BeginDialogueSequence ( List<Dialogue> dialogues ) {
+        if ( dialogues.Count == 0 ) {
             OnDialogueSequenceComplete ( );
         }
         else {
@@ -168,7 +169,7 @@ public class HUD : MonoBehaviour
     private void ContinueDialogueSequence ( ) {
         if ( currentDialogues == null ) return;
 
-        if ( currentDialogueIndex == currentDialogues.Length )
+        if ( currentDialogueIndex == currentDialogues.Count )
             OnDialogueSequenceComplete ( );
         else
             dialogueBox.Show ( currentDialogues [ currentDialogueIndex++ ] );

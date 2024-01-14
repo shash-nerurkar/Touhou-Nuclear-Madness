@@ -994,6 +994,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7082804130095859425, guid: af15cdb5c05438041957f1454af06ea0, type: 3}
+      propertyPath: AchievementDialogueShowDelay
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 7082804130095859425, guid: af15cdb5c05438041957f1454af06ea0, type: 3}
+      propertyPath: modeUnlockedDialogueShowDelay
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: af15cdb5c05438041957f1454af06ea0, type: 3}
 --- !u!1001 &7115257269528402401

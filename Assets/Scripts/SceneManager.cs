@@ -6,8 +6,13 @@ public class SceneManager : MonoBehaviour
 {
     #region Serialized Fields
 
+    [ Header ( "Dialogue" ) ]
+    [ SerializeField ] [ Range ( 2.0f, 5.0f ) ] private float AchievementDialogueShowDelay;
+
+
     [ Header ( "Transition" ) ]
-    [ SerializeField ] private float transitionFadeOutDelay;
+    [ SerializeField ] [ Range ( 0.0f, 4.0f ) ] private float transitionFadeOutDelay;
+
 
     [ Header ( "Combat" ) ]
     [ SerializeField ] private static Vector3 BASE_POSITION_ENEMY  = new Vector2 ( 7.5f, 0f );
@@ -51,6 +56,8 @@ public class SceneManager : MonoBehaviour
 
     private Timer transitionDelayTimer;
 
+    private Timer delayTimer;
+
     private Player currentPlayer;
 
     private Enemy currentEnemy;
@@ -58,6 +65,10 @@ public class SceneManager : MonoBehaviour
     private int currentFightIndex;
 
     private List<Character> otherCharacters = new List<Character> ( );
+
+    private int currentRunCount;
+
+    private bool hasPlayerReachedLastDialogueSequence = false;
 
     
     #region AI Cheats
@@ -96,8 +107,6 @@ public class SceneManager : MonoBehaviour
 
     public static event Action ContinueDialogueSequence;
 
-    public static event Action HideDialogueBox;
-
     public static event Action<int> ChangeBackgroundScene;
 
     public static event Action TransitionFadeIn;
@@ -123,7 +132,11 @@ public class SceneManager : MonoBehaviour
 
     #region Methods
 
-    private void Start ( ) => ChangeGameState ( newState: GameState.MainMenu );
+    private void Start ( ) {
+        currentRunCount = 0;
+        
+        ChangeGameState ( newState: GameState.MainMenu );
+    }
 
     private void FixedUpdate ( ) {
         if ( currentPlayer != null )
@@ -146,6 +159,7 @@ public class SceneManager : MonoBehaviour
         HUD.OnDialogueSequenceCompleted += OnDialogueSequenceComplete;
 
         transitionDelayTimer = gameObject.AddComponent<Timer> ( );
+        delayTimer = gameObject.AddComponent<Timer> ( );
     }
 
     private void OnDestroy ( ) {
@@ -178,11 +192,6 @@ public class SceneManager : MonoBehaviour
                 currentFightIndex = 0;
 
                 break;
-
-            case GameState.Chatting:
-                HideDialogueBox?.Invoke ( );
-                
-                break;
                 
             case GameState.Ended:
                 ChangeInGameState ( InGameState.EndGame );
@@ -199,6 +208,12 @@ public class SceneManager : MonoBehaviour
         switch ( CurrentInGameState ) {
             case InGameState.PreExplosion:
                 ChangeBackgroundScene?.Invoke ( 0 );
+
+                break;
+            
+            case InGameState.PostFight2Branch2:
+                hasPlayerReachedLastDialogueSequence = true;
+
                 break;
         }
 
@@ -285,7 +300,7 @@ public class SceneManager : MonoBehaviour
     }
 
     private void StartTransition ( ) {
-        ChangeGameState ( newState: GameState.Transitioning );
+        ChangeGameState ( newState: GameState.BlockingInput );
 
         TransitionRemoveNextPlayerCharacter?.Invoke ( );
 
@@ -293,7 +308,7 @@ public class SceneManager : MonoBehaviour
     }
 
     private void StartTransition ( Characters nextPlayerCharacter ) {
-        ChangeGameState ( newState: GameState.Transitioning );
+        ChangeGameState ( newState: GameState.BlockingInput );
 
         float nextPlayerHealth, nextPlayerSpeed;
         switch ( nextPlayerCharacter ) {
@@ -530,7 +545,7 @@ public class SceneManager : MonoBehaviour
     #region Explosion Handlers
 
     private void StartExplosion ( ) {
-        ChangeGameState ( newState: GameState.Transitioning );
+        ChangeGameState ( newState: GameState.BlockingInput );
 
         PlaySound?.Invoke ( Constants.ON_EXPLOSION_SOUND );
         
@@ -589,7 +604,38 @@ public class SceneManager : MonoBehaviour
 
 
     private void EndGame ( Ending ending ) {
+        ++currentRunCount;
+        switch ( currentRunCount ) {
+            case Constants.SCENEMANAGER_TRYHARD_MODE_RUN_COUNT_THRESHOLD:
+                if ( !hasPlayerReachedLastDialogueSequence ) break;
+                
+                StopSound?.Invoke ( Constants.ON_END_GAME_LOSS_MUSIC );
+                StopSound?.Invoke ( Constants.ON_END_GAME_WIN_MUSIC );
+                PlaySound?.Invoke ( Constants.ON_ACHIEVEMENT_UNLOCKED_SOUND );
+
+                Constants.DIALOGUE_SEQUENCE_GAME_ENDED.Insert ( 0, Constants.DIALOGUES_CREATORS [ 0 ] );
+                
+                foreach ( List<Dialogue> dialogueSequence in Constants.INGAME_DIALOGUE_SEQUENCES )
+                    dialogueSequence.Clear ( );
+                
+                transitionFadeOutDelay = 0;
+
+                break;
+        }
+
         ChangeGameState ( newState: GameState.Ended );
+        
+        switch ( currentRunCount ) {
+            case Constants.SCENEMANAGER_TRYHARD_MODE_RUN_COUNT_THRESHOLD:
+                ChangeGameState ( newState: GameState.BlockingInput );
+                delayTimer.StartTimer (
+                    maxTime: AchievementDialogueShowDelay, onTimerFinish: ( ) => { ChangeGameState ( newState: GameState.Ended ); }
+                );
+
+                Constants.DIALOGUE_SEQUENCE_GAME_ENDED.Remove ( Constants.DIALOGUES_CREATORS [ 0 ] );
+                
+                break;
+        }
 
         float winnerHP;
         switch ( ending ) {
@@ -609,7 +655,6 @@ public class SceneManager : MonoBehaviour
                 winnerHP = -1;
                 break;
         }
-
         OnEndGame?.Invoke ( ending, winnerHP );
         
         ClearAllCharacters ( );
