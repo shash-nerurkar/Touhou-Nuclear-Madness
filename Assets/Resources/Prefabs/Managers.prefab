@@ -44,6 +44,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99acb432c7ff0264da7d27b0a341a412, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  AchievementDialogueShowDelay: 4
   transitionFadeOutDelay: 2
   playerSagumeObject: {fileID: 5708694090066587813, guid: 16218b42f8a1df348a38414d5d3503bb, type: 3}
   playerSagumeData: {fileID: 11400000, guid: 76c3253534c0ffc44a5029970dc32d4a, type: 2}
