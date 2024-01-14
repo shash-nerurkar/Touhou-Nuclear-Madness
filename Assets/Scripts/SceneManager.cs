@@ -147,7 +147,10 @@ public class SceneManager : MonoBehaviour
 
     #region Methods
 
-    private void Start ( ) => ChangeGameState ( newState: GameState.MainMenu );
+    private void Start ( ) {
+        ChangeGameState ( newState: GameState.MainMenu );
+        ChangeInGameState ( newState: InGameState.MainMenu );
+    }
 
     private void FixedUpdate ( ) => PlayerPosition = currentPlayer != null ? currentPlayer.transform.position : BASE_POSITION_PLAYER;
 
@@ -195,22 +198,6 @@ public class SceneManager : MonoBehaviour
     private void ChangeGameState ( GameState newState ) {
         currentGameState = newState;
 
-        switch ( currentGameState ) {
-            case GameState.MainMenu:
-                ChangeInGameState ( InGameState.MainMenu );
-                
-                PlaySound?.Invoke ( Constants.MAIN_MENU_MUSIC );
-                
-                currentFightIndex = 0;
-
-                break;
-                
-            case GameState.Ended:
-                ChangeInGameState ( InGameState.EndGame );
-
-                break;
-        }
-
         OnGameStateChanged?.Invoke ( currentGameState );
     }
 
@@ -218,6 +205,13 @@ public class SceneManager : MonoBehaviour
         currentInGameState = newState;
 
         switch ( currentInGameState ) {
+            case InGameState.MainMenu:
+                PlaySound?.Invoke ( Constants.MAIN_MENU_MUSIC );
+                
+                currentFightIndex = 0;
+                
+                break;
+
             case InGameState.PreExplosion:
                 ChangeBackgroundScene?.Invoke ( 0 );
 
@@ -274,6 +268,7 @@ public class SceneManager : MonoBehaviour
 
             case InGameState.EndGame:
                 ChangeGameState ( newState: GameState.MainMenu );
+                ChangeInGameState ( newState: InGameState.MainMenu );
                 
                 StopSound?.Invoke ( Constants.ON_END_GAME_LOSS_MUSIC );
                 StopSound?.Invoke ( Constants.ON_END_GAME_WIN_MUSIC );
@@ -665,7 +660,10 @@ public class SceneManager : MonoBehaviour
     private void HideAchievement ( Achievement achievement ) {
         ChangeGameState ( newState: GameState.BlockingInput );
         delayTimer.StartTimer (
-            maxTime: AchievementDialogueShowDelay, onTimerFinish: ( ) => { ChangeGameState ( newState: GameState.Ended ); }
+            maxTime: AchievementDialogueShowDelay, onTimerFinish: ( ) => { 
+                ChangeGameState ( newState: GameState.Ended );
+                ChangeInGameState ( newState: InGameState.EndGame );
+            }
         );
 
         Constants.DIALOGUE_SEQUENCE_GAME_ENDED.Remove ( Constants.DIALOGUES_ACHIEVEMENTS [ achievement ] );
@@ -687,6 +685,7 @@ public class SceneManager : MonoBehaviour
             if ( achievement.Value ) ShowAchievement ( achievement.Key );
 
         ChangeGameState ( newState: GameState.Ended );
+        ChangeInGameState ( newState: InGameState.EndGame );
         
         foreach ( KeyValuePair<Achievement, bool> achievement in AchievementUnlockableStatuses )
             if ( achievement.Value ) HideAchievement ( achievement.Key );
