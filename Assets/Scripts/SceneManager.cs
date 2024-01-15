@@ -252,12 +252,13 @@ public class SceneManager : MonoBehaviour
                 break;
 
             case InGameState.PostFight1Branch2:
+                ClearAllCharacters ( );
+
                 transitionDelayTimer.StartTimer ( maxTime: transitionFadeOutDelay, onTimerFinish: ( ) => {           
                     StopSound?.Invoke ( Constants.SCENE_01_MUSIC );
 
                     ChangeBackgroundScene?.Invoke ( 1 );
 
-                    ClearAllCharacters ( );
                     AddPlayer ( playerAyaObject );
                     AddEnemy ( enemySagumeObject );
 
@@ -458,6 +459,20 @@ public class SceneManager : MonoBehaviour
     private void OnFightComplete ( bool didWin ) {
         ChangeGameState ( newState: GameState.Chatting );
 
+        currentPlayer.ToggleAsCurrent ( false );
+        currentPlayer.OnLose -= ( ) => { OnFightComplete ( didWin: false ); };
+        currentPlayer.OnPlayerShoot -= CurrentPlayerShoot;
+        currentPlayer.OnPlayerFiredAbility1 -= CurrentPlayerFiredAbility1;
+        currentPlayer.OnPlayerFiredAbility2 -= CurrentPlayerFiredAbility2;
+        currentPlayer.OnHit -= CurrentPlayerHit;
+        currentPlayer.OnGrazed -= CurrentPlayerGrazed;
+        currentPlayer.OnDamageMultiplierIncreased -= OnCurrentPlayerDamageMultiplierIncreased;
+        currentPlayer.OnDamageMultiplierDecreased -= OnCurrentPlayerDamageMultiplierDecreased;
+
+        currentEnemy.ToggleAsCurrent ( false );
+        currentEnemy.OnLose -= ( ) => { OnFightComplete ( didWin: true ); };
+        currentEnemy.OnHit -= CurrentEnemyHit;
+
         switch ( currentFightIndex ) {
             case 0:
                 if ( didWin )
@@ -479,20 +494,6 @@ public class SceneManager : MonoBehaviour
         }
 
         ++currentFightIndex;
-
-        currentPlayer.ToggleAsCurrent ( false );
-        currentPlayer.OnLose -= ( ) => { OnFightComplete ( didWin: false ); };
-        currentPlayer.OnPlayerShoot -= CurrentPlayerShoot;
-        currentPlayer.OnPlayerFiredAbility1 -= CurrentPlayerFiredAbility1;
-        currentPlayer.OnPlayerFiredAbility2 -= CurrentPlayerFiredAbility2;
-        currentPlayer.OnHit -= CurrentPlayerHit;
-        currentPlayer.OnGrazed -= CurrentPlayerGrazed;
-        currentPlayer.OnDamageMultiplierIncreased -= OnCurrentPlayerDamageMultiplierIncreased;
-        currentPlayer.OnDamageMultiplierDecreased -= OnCurrentPlayerDamageMultiplierDecreased;
-
-        currentEnemy.ToggleAsCurrent ( false );
-        currentEnemy.OnLose -= ( ) => { OnFightComplete ( didWin: true ); };
-        currentEnemy.OnHit -= CurrentEnemyHit;
     }
 
     private void CurrentPlayerShoot ( ) {
@@ -680,6 +681,8 @@ public class SceneManager : MonoBehaviour
 
     private void EndGame ( Ending ending ) {
         ++currentRunCount;
+        if ( ending == Ending.AyaWin) 
+            ++currentWinCount;
 
         foreach ( KeyValuePair<Achievement, bool> achievement in AchievementUnlockableStatuses )
             if ( achievement.Value ) ShowAchievement ( achievement.Key );
@@ -701,7 +704,6 @@ public class SceneManager : MonoBehaviour
                 break;
             
             case Ending.AyaWin:
-                ++currentWinCount;
                 winnerHP = currentPlayer.Health;
                 break;
 
