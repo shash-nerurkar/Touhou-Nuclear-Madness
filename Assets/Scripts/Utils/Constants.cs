@@ -118,55 +118,76 @@ public class Constants {
     #region Dialogue Sequences
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_MAIN_MENU = new List<Dialogue> {
-        new ( "Hello! This is a story about how Sagume, the Lunarian goddess, wreaked havoc in Utsuho Reiuji's nuclear power plant.", Characters.Narrator ),
+        new ( "Hello! I'm Youmu. I'll be narrating an interesting incident - the day Sagume Kishin, the Lunarian goddess, wreaked havoc in Utsuho Reiuji's nuclear power plant.", Characters.Narrator ),
     };
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_1 = new List<Dialogue> {
-        new ( "Sagume is quietly soaring above the power plant. Aya spots her, and tails her. Utsuho, perched atop the plant, spots her too.", Characters.Narrator ),
-        new ( "... What a peculiar facility ... Looks quite secure ...", Characters.Sagume ),
+        new ( "Sagume was quietly soaring above the power plant. Aya spotted her, but kept her distance. Utsuho, perched atop the plant, saw her too and, smelling trouble, approached her.", Characters.Narrator ),
+        new ( "Sagume Kishin. Of all the Lunari. Whatever brings you to my humble plant?", Characters.Utsuho ),
+        new ( "... What a peculiar facility ... I am simply visiting ...", Characters.Sagume ),
+        new ( "It is of nuclear origin. Be wary of it's overwhelming power ...", Characters.Utsuho ),
+        new ( "...", Characters.Sagume ),
+        new ( "... lest it consume you.", Characters.Utsuho ),
+        new ( "It looks quite secure to me ...", Characters.Sagume ),
         new ( "... Oops", Characters.Sagume ),
     };
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_2 = new List<Dialogue> {
-        new ( "!!!!", Characters.Aya ),
-        new ( "AAARRRRGGHHHH!!!!! WHO ?!? WHAT ?!? C'MERE YOU!!!", Characters.Utsuho ),
-        new ( "... ... ... ...", Characters.Sagume ),
-        new ( "ANY LAST WORDS, LUNARIAN ?", Characters.Utsuho ),
-        new ( "... ... ... ...", Characters.Sagume ),
+        new ( "!!!", Characters.Aya ),
+        new ( "!!!!!!!!!!!!!!!!", Characters.Utsuho ),
+        new ( "...", Characters.Sagume ),
+        new ( "WHY?", Characters.Utsuho ),
+        new ( "...", Characters.Sagume ),
+        new ( "Amy last words, LUNARI?", Characters.Utsuho ),
+        new ( "...", Characters.Sagume ),
     };
     
     public static List<Dialogue> DIALOGUE_SEQUENCE_3_1 = new List<Dialogue> {
-        new ( "Good riddance", Characters.Utsuho ),
-        new ( "(˚ ˃̣̣̥ - ˂̣̣̥ )", Characters.SagumeCry ),
-        new ( "ufufu … This will make a nice story!", Characters.Aya ),
+        new ( "(˚ ˃̣̣̥ - ˂̣̣̥ )  ... I m-must retreat ... I will not f-forget this, Earthlings ...", Characters.SagumeCry ),
+        new ( "Okuu! You beat her! What were the chances?", Characters.Aya ),
+        new ( "As the fires in Hell, which unfailingly burn. I'd rather you misunderstood my strength, than miscalculated it, Tengu.", Characters.Utsuho ),
+        new ( "Hmph. Nevertheless, this will make a nice story. Keep an eye out for tomorrow's copy, Raven.", Characters.Aya ),
+        new ( "No. I spot the difference between the polite and the kind.", Characters.Utsuho ),
+        new ( "I must go tend to my plant now. Farewell.", Characters.Utsuho ),
+        new ( "(Talking to herself) Bah, what a grump. Well, I must hurry back and push this out before dusk. Off I go!", Characters.Aya ),
     };
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_3_2 = new List<Dialogue> {
-        new ( "... weak", Characters.Sagume ),
-        new ( "(,,>_<,,) I WILL GET YOU FOR THIS. Run, Aya!", Characters.UtsuhoCry ),
-        new ( "... ... ... ...", Characters.Sagume ),
-        new ( "I have to report this!", Characters.Aya ),
-        new ( "... ... ... ...", Characters.Sagume ),
+        new ( "... weak ...", Characters.Sagume ),
+        new ( "(,,>_<,,)  THERE WILL BE CONSEQUENCES, LUNARI. FLY, AYA!!", Characters.UtsuhoCry ),
+        new ( "(Spots Aya) !!!!", Characters.Sagume ),
+        new ( "I have to report this. The Lunarians can't get away with it!", Characters.Aya ),
+        new ( "... I cannot allow that to happen ... forgive me, Tengu, for it is your turn ...", Characters.Sagume ),
     };
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_4 = new List<Dialogue> {
-        new ( "Aya tries to flee back to the office, but Sagume manages to corner her before she reaches.", Characters.Narrator ),
-        new ( "... ready?", Characters.Sagume ),
-        new ( "For the truth!", Characters.Aya ),
+        new ( "Aya tries to flee back to the office, but Sagume manages to corner her before she reaches! A confrontation is imminent.", Characters.Narrator ),
+        new ( "Prepare yourself ...", Characters.Sagume ),
+        new ( "For the truth, I must be victorious. Come, Sagume Kishin!", Characters.Aya ),
     };
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_5_1 = new List<Dialogue> {
-        new ( "... ... ... ... weak", Characters.Sagume ),
-        new ( "(˚ ˃̣̣̥ - ˂̣̣̥ )", Characters.AyaCry ),
+        new ( "(˚ ˃̣̣̥ - ˂̣̣̥ )  This cannot be happening!", Characters.AyaCry ),
+        new ( "... It is the inevitable that has happened .... Remember this, crow ...", Characters.Sagume ),
+        new ( "How dare you call me that!", Characters.AyaCry ),
+        new ( "... I shall allow you to publish about this ... Write about your shame, and fly ... perhaps, someday, it will not keep up ...", Characters.Sagume ),
+        new ( "*glares*", Characters.Aya ),
+        new ( "I must depart now ...", Characters.Sagume ),
+        new ( "*sniffle*", Characters.AyaCry ),
     };
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_5_2 = new List<Dialogue> {
+        new ( "(╥ ω ╥)  How... how has a crow Tengu Earthling bested me, a Goddess of Lunarian descent?", Characters.SagumeCry ),
+        new ( "It takes more than blood to be special, moon-dweller. But your kind will never understand that.", Characters.Aya ),
+        new ( "Silence! I will not tolerate your chirping!", Characters.Sagume ),
+        new ( "Careful now, Kishin. It is your own chirping that got you in this mess, remember? Although that is not significant to the story ...", Characters.Aya ),
+        new ( "(,,>_<,,)  ARGH! I WILL LEAVE THIS TIME, BUT THIS IS NOT THE LAST YOU WILL SEE OF ME!", Characters.SagumeCry ),
+        new ( "Bye-bye!", Characters.Aya ),
         new ( "o( ˶^-^˶ )o  This is a huge scoop!", Characters.Aya ),
-        new ( "(╥ ω ╥)", Characters.SagumeCry ),
     };
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_GAME_ENDED = new List<Dialogue> {
-        new ( "In the next day's Bunbunmaru..", Characters.Narrator ),
+        new ( "And so, in the next day's Bunbunmaru ...", Characters.Narrator ),
     };
 
     public static List<List<Dialogue>> INGAME_DIALOGUE_SEQUENCES = new List<List<Dialogue>> {
