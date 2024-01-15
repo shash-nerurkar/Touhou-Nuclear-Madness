@@ -159,14 +159,4 @@ MonoBehaviour:
   unselectedMaterial: {fileID: 2100000, guid: 151aea5398b6dd640a6b8a579a443ecf, type: 2}
   selectedMaterial: {fileID: 2100000, guid: e1a7b4a7e4e8b5444a616165ae0dec83, type: 2}
   data: {fileID: 11400000, guid: 2ee3f8253ec26fe4e954785d635e6c84, type: 2}
-  basicAttackBulletSpeed: 10
-  basicAttackBulletDamage: 1
-  basicAttackCooldownTime: 1
-  basicAttackBurstBulletCount: 3
-  basicAttackBurstDelayInSeconds: 0.2
-  sunAttackBulletSpeed: 10
-  sunAttackBulletDamage: 1
-  sunAttackCooldownTime: 5
-  sunAttackBulletCount: 15
-  sunAttackFirstBulletDelay: 1
-  sunAttackSpreadRange: 1
+  utsuhoData: {fileID: 11400000, guid: ffe907a04f0a3f048b0d107b4d449e2b, type: 2}

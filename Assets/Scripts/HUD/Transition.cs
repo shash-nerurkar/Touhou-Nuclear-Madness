@@ -57,7 +57,7 @@ public class Transition : MonoBehaviour
 
         healthValueLabel.text = ( ( int ) playerCharacterData.Health ).ToString ( );
         
-        speedValueLabel.text = ( ( int ) playerCharacterData.Speed ).ToString ( );
+        speedValueLabel.text = ( ( int ) ( playerCharacterData.Speed + playerCharacterData.Acceleration ) ).ToString ( );
     }
 
     #endregion

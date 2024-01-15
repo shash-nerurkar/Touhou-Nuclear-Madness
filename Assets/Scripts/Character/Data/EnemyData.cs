@@ -4,7 +4,7 @@ using UnityEngine;
 [ CreateAssetMenu ( fileName = "EnemyData", menuName = "Character/Enemy Data" ) ]
 public class EnemyData : CharacterData
 {
-    [ Header ("Enemy movement") ]
+    [ Header ("AI Movement") ]
     [ SerializeField ] private float moveCooldownTime;
     public float MoveCooldownTime { get => moveCooldownTime; }
 

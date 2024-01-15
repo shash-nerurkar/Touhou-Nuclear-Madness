@@ -8,48 +8,10 @@ public class EnemySagume : Enemy
 
     [ Header ("Attack stats") ]
 
+    [ SerializeField ] protected EnemySagumeData sagumeData;
+    public EnemySagumeData SagumeData { get => sagumeData; }
+
     [ SerializeField ] protected TextMeshProUGUI legendDialogueLabel;
-
-    [ SerializeField ] protected float legendAttackCooldownTime;
-
-    [ SerializeField ] protected float legendAttackDelayTime;
-
-
-    [ Header ("Attack type 1: Legend 1") ]
-
-    [ SerializeField ] private float legend1BulletSpeed;
-    
-    [ SerializeField ] private float legend1BulletDamage;
-
-    [ SerializeField ] protected float legend1AttackBulletCount;
-
-    [ SerializeField ] protected string legend1DialogueText;
-
-
-    [ Header ("Attack type 2: Legend 2") ]
-    
-    [ SerializeField ] private float legend2BulletSpeed;
-    
-    [ SerializeField ] private float legend2BulletDamage;
-
-    [ SerializeField ] protected float legend2AttackBulletCount;
-
-    [ SerializeField ] protected string legend2DialogueText;
-
-
-    [ Header ("Attack type 1: Legend 3") ]
-    
-    [ SerializeField ] private float legend3BulletSpeed;
-    
-    [ SerializeField ] private float legend3BulletDamage;
-
-    [ SerializeField ] protected float legend3AttackBulletCount;
-
-    [ SerializeField ] protected float legend3AttackDelayInSeconds;
-
-    [ SerializeField ] protected float legend3AttackSpread;
-
-    [ SerializeField ] protected string legend3DialogueText;
 
     #endregion
 
@@ -83,7 +45,7 @@ public class EnemySagume : Enemy
 
             case State.Idle:
                 if ( !legendAttackCooldownTimer.IsRunning )
-                    legendAttackCooldownTimer.StartTimer ( maxTime: legendAttackCooldownTime, onTimerFinish: OnLegendAttackCooldownTimerFinished );
+                    legendAttackCooldownTimer.StartTimer ( maxTime: SagumeData.LegendAttackCooldownTime, onTimerFinish: OnLegendAttackCooldownTimerFinished );
                 break;
         }
     }
@@ -102,19 +64,19 @@ public class EnemySagume : Enemy
         legendDialogueLabel.gameObject.SetActive ( true );
         switch ( randomLegendIndex ) {
             case 0:
-                legendDialogueLabel.text = legend1DialogueText;
+                legendDialogueLabel.text = SagumeData.Legend1DialogueText;
                 break;
                 
             case 1:
-                legendDialogueLabel.text = legend2DialogueText;
+                legendDialogueLabel.text = SagumeData.Legend2DialogueText;
                 break;
                 
             case 2:
-                legendDialogueLabel.text = legend3DialogueText;
+                legendDialogueLabel.text = SagumeData.Legend3DialogueText;
                 break;
         }
         
-        legendAttackDelayTimer.StartTimer ( maxTime: legendAttackDelayTime, onTimerFinish: () => {
+        legendAttackDelayTimer.StartTimer ( maxTime: SagumeData.LegendAttackDelayTime, onTimerFinish: () => {
             OnLegendAttackDelayTimerFinished ( randomLegendIndex );
         } );
     }
@@ -136,18 +98,18 @@ public class EnemySagume : Enemy
                 break;
         }
 
-        legendAttackCooldownTimer.StartTimer ( maxTime: legendAttackCooldownTime, onTimerFinish: OnLegendAttackCooldownTimerFinished );
+        legendAttackCooldownTimer.StartTimer ( maxTime: SagumeData.LegendAttackCooldownTime, onTimerFinish: OnLegendAttackCooldownTimerFinished );
     }
 
     IEnumerator ReleaseLegend1Attack (  ) {
-        for ( int i = 0; i < legend1AttackBulletCount; i++ ) {
+        for ( int i = 0; i < SagumeData.Legend1AttackBulletCount; i++ ) {
             GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 1 ], position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
             bullet.Init ( 
                 BulletPathType.Straight, 
                 shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
-                speed: legend1BulletSpeed, 
-                damage: legend1BulletDamage, 
+                speed: SagumeData.Legend1BulletSpeed, 
+                damage: SagumeData.Legend1BulletDamage, 
                 isDamping: true
             );
 
@@ -156,7 +118,7 @@ public class EnemySagume : Enemy
     }
 
     IEnumerator ReleaseLegend2Attack (  ) {
-        for ( int i = 0; i < legend2AttackBulletCount; i++ ) {
+        for ( int i = 0; i < SagumeData.Legend2AttackBulletCount; i++ ) {
             int curveDir;
             if ( SceneManager.PlayerPosition != null )
                 curveDir = ( int ) Mathf.Sign ( SceneManager.PlayerPosition.y - transform.position.y );
@@ -169,8 +131,8 @@ public class EnemySagume : Enemy
             bullet.Init ( 
                 BulletPathType.Curve, 
                 shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
-                speed: legend2BulletSpeed,  
-                damage: legend2BulletDamage, 
+                speed: SagumeData.Legend2BulletSpeed,  
+                damage: SagumeData.Legend2BulletDamage, 
                 curveDir: curveDir, 
                 angle: curveInitialAngle
             );
@@ -180,7 +142,7 @@ public class EnemySagume : Enemy
     }
 
     IEnumerator ReleaseLegend3Attack (  ) {
-        for ( int i = 0; i < legend3AttackBulletCount; i++ ) {
+        for ( int i = 0; i < SagumeData.Legend3AttackBulletCount; i++ ) {
             int shootDirY;
             if ( SceneManager.PlayerPosition != null )
                 shootDirY = ( int ) Mathf.Sign ( SceneManager.PlayerPosition.y - transform.position.y );
@@ -191,13 +153,13 @@ public class EnemySagume : Enemy
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
             bullet.Init ( 
                 BulletPathType.Straight, 
-                shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), shootDirY * Random.Range ( 0, legend3AttackSpread ), 0 ),
-                speed: legend3BulletSpeed, 
-                damage: legend3BulletDamage,
+                shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), shootDirY * Random.Range ( 0, SagumeData.Legend3AttackSpread ), 0 ),
+                speed: SagumeData.Legend3BulletSpeed, 
+                damage: SagumeData.Legend3BulletDamage,
                 isDamping: true
             );
 
-            yield return new WaitForSeconds ( legend3AttackDelayInSeconds );
+            yield return new WaitForSeconds ( SagumeData.Legend3AttackDelayInSeconds );
         }
     }
 

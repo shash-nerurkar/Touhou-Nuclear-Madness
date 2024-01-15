@@ -16,10 +16,6 @@ public class Player : Character
 
     [ SerializeField ] private ParticleSystem grazeDecreaseEffectParticleSystem;
 
-    [ SerializeField ] [ Range ( 1.25f, 3.0f ) ] private float grazeDamageMultiplier;
-
-    [ SerializeField ] private float grazeDamageMultiplierDuration;
-
 
     [ Header ("Player ability 1: Bomb") ]
     [ SerializeField ] private ParticleSystem bombEffectParticleSystem;
@@ -180,7 +176,7 @@ public class Player : Character
             ToggleDamageMultiplier ( true );
             
             Timer grazeDamageMultiplierInstanceTimer = gameObject.AddComponent<Timer> ( );
-            grazeDamageMultiplierInstanceTimer.StartTimer ( maxTime: grazeDamageMultiplierDuration, onTimerFinish: ( ) => {
+            grazeDamageMultiplierInstanceTimer.StartTimer ( maxTime: Data.GrazeDamageMultiplierDuration, onTimerFinish: ( ) => {
                 ToggleDamageMultiplier ( false );
 
                 Destroy ( grazeDamageMultiplierInstanceTimer );
@@ -190,7 +186,7 @@ public class Player : Character
             if ( !isGrazeDamageMultiplierActive )
                 ToggleDamageMultiplier ( true );
             
-            grazeDamageMultiplierTimer.StartTimer ( maxTime: grazeDamageMultiplierDuration, onTimerFinish: ( ) => ToggleDamageMultiplier ( false ) );
+            grazeDamageMultiplierTimer.StartTimer ( maxTime: Data.GrazeDamageMultiplierDuration, onTimerFinish: ( ) => ToggleDamageMultiplier ( false ) );
         }
         
 
@@ -201,7 +197,7 @@ public class Player : Character
         isGrazeDamageMultiplierActive = toggleFlag;
 
         if ( isGrazeDamageMultiplierActive ) {
-            damageMultiplier *= grazeDamageMultiplier;
+            damageMultiplier *= Data.GrazeDamageMultiplier;
             
             grazeDecreaseEffectParticleSystem.Stop ( );
             grazeIncreaseEffectParticleSystem.Play ( );
@@ -209,7 +205,7 @@ public class Player : Character
             OnDamageMultiplierIncreased?.Invoke ( damageMultiplier );
         }
         else {
-            damageMultiplier /= grazeDamageMultiplier;
+            damageMultiplier /= Data.GrazeDamageMultiplier;
             
             grazeIncreaseEffectParticleSystem.Stop ( );
             grazeDecreaseEffectParticleSystem.Play ( );

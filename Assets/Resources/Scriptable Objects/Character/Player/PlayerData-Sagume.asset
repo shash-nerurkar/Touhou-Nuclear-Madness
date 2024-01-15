@@ -10,22 +10,22 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 323959db0321b644cb8fe4b3cc7f5b00, type: 3}
-  m_Name: PlayerDataAya
+  m_Name: PlayerData-Sagume
   m_EditorClassIdentifier: 
-  name: Aya
-  character: 3
-  color: {r: 0.6431373, g: 0.0627451, b: 0, a: 1}
-  sprite: {fileID: 1386449446, guid: 54970427ccee2304a84719b8ccff4904, type: 3}
-  health: 3
-  speed: 7
-  acceleration: 1
+  name: Sagume
+  character: 2
+  color: {r: 0.54901963, g: 0.3529412, b: 0.6392157, a: 1}
+  sprite: {fileID: -1356597432, guid: fa2c34c3f933a30409f27f6713bdc10c, type: 3}
+  health: 5
+  speed: 3
+  acceleration: 2
   onHitIDuration: 1
   bulletObjects:
-  - {fileID: 2423667156141439865, guid: 36ed8164093c76e42b6db3f1cf75ee34, type: 3}
+  - {fileID: 6965355835857350552, guid: a54510518cbd2dc4291b916a6965b149, type: 3}
   shootCooldown: 0.1
   bulletSpeed: 15
   bulletDamage: 10
   bombCooldown: 1
-  bombCount: 100
+  bombCount: 3
   ability2Cooldown: 1
   ability2Count: 3

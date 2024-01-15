@@ -20,16 +20,16 @@ public abstract class CharacterData : ScriptableObject
 
     [ Header ( "Stats" ) ]
 
-    [ SerializeField ] private float health;
+    [ SerializeField ] private float health = 5;
     public float Health { get => health; }
     
-    [ SerializeField ] private float speed;
+    [ SerializeField ] private float speed = 5;
     public float Speed { get => speed; }
     
-    [ SerializeField ] private float acceleration;
+    [ SerializeField ] private float acceleration = 1;
     public float Acceleration { get => acceleration; }
 
-    [ SerializeField ] private float onHitIDuration;
+    [ SerializeField ] private float onHitIDuration = 1;
     public float OnHitIDuration { get => onHitIDuration; }
 
     [ SerializeField ] private GameObject [ ] bulletObjects;

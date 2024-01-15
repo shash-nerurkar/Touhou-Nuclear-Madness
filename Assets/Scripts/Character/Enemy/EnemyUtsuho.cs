@@ -5,32 +5,10 @@ public class EnemyUtsuho : Enemy
 {
     #region Serialized Fields
 
-    [ Header ("Attack type 1: Basic") ]
-    
-    [ SerializeField ] private float basicAttackBulletSpeed;
-    
-    [ SerializeField ] private float basicAttackBulletDamage;
+    [ Header ("Attack") ]
 
-    [ SerializeField ] protected float basicAttackCooldownTime;
-
-    [ SerializeField ] protected float basicAttackBurstBulletCount;
-
-    [ SerializeField ] protected float basicAttackBurstDelayInSeconds;
-
-
-    [ Header ("Attack type 2: Sun") ]
-    
-    [ SerializeField ] private float sunAttackBulletSpeed;
-    
-    [ SerializeField ] private float sunAttackBulletDamage;
-
-    [ SerializeField ] protected float sunAttackCooldownTime;
-
-    [ SerializeField ] protected float sunAttackBulletCount;
-
-    [ SerializeField ] protected float sunAttackFirstBulletDelay;
-
-    [ SerializeField ] protected float sunAttackSpreadRange;
+    [ SerializeField ] protected EnemyUtsuhoData utsuhoData;
+    public EnemyUtsuhoData UtsuhoData { get => utsuhoData; }
 
     #endregion
 
@@ -59,9 +37,9 @@ public class EnemyUtsuho : Enemy
         switch ( currentState ) {
             case State.Idle:
                 if ( !sunAttackCooldownTimer.IsRunning )
-                    sunAttackCooldownTimer.StartTimer ( maxTime: sunAttackCooldownTime, onTimerFinish: OnSunAttackCooldownTimerFinished );
+                    sunAttackCooldownTimer.StartTimer ( maxTime: UtsuhoData.SunAttackCooldownTime, onTimerFinish: OnSunAttackCooldownTimerFinished );
                 if ( !basicAttackCooldownTimer.IsRunning )
-                    basicAttackCooldownTimer.StartTimer ( maxTime: basicAttackCooldownTime, onTimerFinish: OnBasicAttackCooldownTimerFinished );
+                    basicAttackCooldownTimer.StartTimer ( maxTime: UtsuhoData.BasicAttackCooldownTime, onTimerFinish: OnBasicAttackCooldownTimerFinished );
                 break;
             
             case State.Chatting:
@@ -81,11 +59,17 @@ public class EnemyUtsuho : Enemy
     private void OnBasicAttackCooldownTimerFinished ( ) {
         StartCoroutine ( ReleaseBasicAttack ( ) );
 
-        basicAttackCooldownTimer.StartTimer ( maxTime: basicAttackCooldownTime, onTimerFinish: OnBasicAttackCooldownTimerFinished );
+        basicAttackCooldownTimer.StartTimer ( maxTime: UtsuhoData.BasicAttackCooldownTime, onTimerFinish: OnBasicAttackCooldownTimerFinished );
+    }
+
+    private void OnSunAttackCooldownTimerFinished ( ) {
+        StartCoroutine ( ReleaseSunAttack ( ) );
+
+        sunAttackCooldownTimer.StartTimer ( maxTime: UtsuhoData.SunAttackCooldownTime, onTimerFinish: OnSunAttackCooldownTimerFinished );
     }
 
     IEnumerator ReleaseBasicAttack (  ) {
-        for ( int i = 0; i < basicAttackBurstBulletCount; i++ ) {
+        for ( int i = 0; i < UtsuhoData.BasicAttackBurstBulletCount; i++ ) {
             GameObject randomBulletObject = Data.BulletObjects [ Random.Range ( 0, Data.BulletObjects.Length ) ];
             
             GameObject bulletInstance = Instantiate ( original: randomBulletObject, position: pivot.position, rotation: Quaternion.identity );
@@ -93,8 +77,8 @@ public class EnemyUtsuho : Enemy
             bullet.Init ( 
                 BulletPathType.Sinusoidal, 
                 shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
-                speed: basicAttackBulletSpeed,
-                damage: basicAttackBulletDamage
+                speed: UtsuhoData.BasicAttackBulletSpeed,
+                damage: UtsuhoData.BasicAttackBulletDamage
             );
 
             GameObject bulletInstance2 = Instantiate ( original: randomBulletObject, position: pivot.position, rotation: Quaternion.identity );
@@ -102,18 +86,12 @@ public class EnemyUtsuho : Enemy
             bullet2.Init ( 
                 BulletPathType.Cosinusoidal, 
                 shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
-                speed: basicAttackBulletSpeed,
-                damage: basicAttackBulletDamage
+                speed: UtsuhoData.BasicAttackBulletSpeed,
+                damage: UtsuhoData.BasicAttackBulletDamage
             );
             
-            yield return new WaitForSeconds ( basicAttackBurstDelayInSeconds );
+            yield return new WaitForSeconds ( UtsuhoData.BasicAttackBurstDelayInSeconds );
         }
-    }
-
-    private void OnSunAttackCooldownTimerFinished ( ) {
-        StartCoroutine ( ReleaseSunAttack ( ) );
-
-        sunAttackCooldownTimer.StartTimer ( maxTime: sunAttackCooldownTime, onTimerFinish: OnSunAttackCooldownTimerFinished );
     }
 
     IEnumerator ReleaseSunAttack (  ) {
@@ -124,21 +102,21 @@ public class EnemyUtsuho : Enemy
         bullet.Init ( 
             BulletPathType.Straight, 
             shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
-            speed: sunAttackBulletSpeed,
-            damage: sunAttackBulletDamage,
+            speed: UtsuhoData.SunAttackBulletSpeed,
+            damage: UtsuhoData.SunAttackBulletDamage,
             isDamping: true
         );
 
-        yield return new WaitForSeconds ( sunAttackFirstBulletDelay );
+        yield return new WaitForSeconds ( UtsuhoData.SunAttackFirstBulletDelay );
         
-        for ( int i = 0; i < sunAttackBulletCount; i++ ) {
+        for ( int i = 0; i < UtsuhoData.SunAttackBulletCount; i++ ) {
             bulletInstance = Instantiate ( original: randomBulletObject, position: pivot.position, rotation: Quaternion.identity );
             bullet = bulletInstance.GetComponent<Bullet> ( );
             bullet.Init ( 
                 BulletPathType.Straight, 
-                shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), Random.Range ( -sunAttackSpreadRange, sunAttackSpreadRange ), 0 ),
-                speed: sunAttackBulletSpeed,
-                damage: sunAttackBulletDamage,
+                shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), Random.Range ( -UtsuhoData.SunAttackSpreadRange, UtsuhoData.SunAttackSpreadRange ), 0 ),
+                speed: UtsuhoData.SunAttackBulletSpeed,
+                damage: UtsuhoData.SunAttackBulletDamage,
                 isDamping: true
             );
         }
