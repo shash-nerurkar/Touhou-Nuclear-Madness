@@ -58,6 +58,8 @@ public abstract class Character : MonoBehaviour
     }
     
     public void TakeDamage ( float damage ) {
+        if ( health == 0 ) return;
+
         health = Mathf.Clamp ( health - damage, 0, health - damage );
 
         if ( health == 0 ) {
