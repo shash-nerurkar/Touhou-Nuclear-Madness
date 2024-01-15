@@ -16,7 +16,7 @@ MonoBehaviour:
   character: 2
   color: {r: 0.54901963, g: 0.3529412, b: 0.6392157, a: 1}
   sprite: {fileID: -1356597432, guid: fa2c34c3f933a30409f27f6713bdc10c, type: 3}
-  health: 5
+  health: 6
   speed: 3
   acceleration: 2
   onHitIDuration: 1
@@ -25,6 +25,8 @@ MonoBehaviour:
   shootCooldown: 0.1
   bulletSpeed: 15
   bulletDamage: 10
+  grazeDamageMultiplier: 2
+  grazeDamageMultiplierDuration: 2
   bombCooldown: 1
   bombCount: 3
   ability2Cooldown: 1

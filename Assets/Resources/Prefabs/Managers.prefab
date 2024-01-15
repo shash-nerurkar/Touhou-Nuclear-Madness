@@ -46,6 +46,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   AchievementDialogueShowDelay: 4
   transitionFadeOutDelay: 2
+  BASE_POSITION_ENEMY: {x: 7.5, y: 0, z: 0}
+  BASE_POSITION_PLAYER: {x: -7.5, y: 0, z: 0}
+  BASE_POSITION_BYSTANDER_1: {x: -7.5, y: 3, z: 0}
   playerSagumeObject: {fileID: 5708694090066587813, guid: 16218b42f8a1df348a38414d5d3503bb, type: 3}
   playerSagumeData: {fileID: 11400000, guid: 76c3253534c0ffc44a5029970dc32d4a, type: 2}
   enemyUtsuhoObject: {fileID: 8337879637977827542, guid: 62ddac7424aaced498d0c448ed584d5e, type: 3}
@@ -14694,7 +14697,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Chatting Music
     clip: {fileID: 8300000, guid: a9bc392746a890c409d21c26e9c30371, type: 3}
-    volume: 0.7
+    volume: 1
     pitch: 1
     isLoop: 1
     source: {fileID: 0}

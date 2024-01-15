@@ -16,9 +16,9 @@ MonoBehaviour:
   character: 2
   color: {r: 0.13725491, g: 0.5176471, b: 0.09019608, a: 1}
   sprite: {fileID: 1622488842, guid: 09891654692d6204086d9b77896518e3, type: 3}
-  health: 80
-  speed: 3
-  acceleration: 0
+  health: 800
+  speed: 2
+  acceleration: 2
   onHitIDuration: 0.1
   bulletObjects:
   - {fileID: 302041270312899223, guid: 3c0cf8bf7da44754e9c5ef2f10163857, type: 3}

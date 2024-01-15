@@ -14564,7 +14564,7 @@ CircleCollider2D:
   m_UsedByComposite: 0
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
-  m_Radius: 0.23
+  m_Radius: 0.3
 --- !u!114 &7718684391948640161
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14699,8 +14699,6 @@ MonoBehaviour:
   grazeDetector: {fileID: 7718684391948640161}
   grazeIncreaseEffectParticleSystem: {fileID: 6282560233375266765}
   grazeDecreaseEffectParticleSystem: {fileID: 8425141626709029807}
-  grazeDamageMultiplier: 2
-  grazeDamageMultiplierDuration: 2
   bombEffectParticleSystem: {fileID: 8461008767146765047}
 --- !u!4 &1377679275152227348 stripped
 Transform:

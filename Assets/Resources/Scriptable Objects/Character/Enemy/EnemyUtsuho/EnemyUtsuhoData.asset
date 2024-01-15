@@ -19,7 +19,7 @@ MonoBehaviour:
   basicAttackBurstDelayInSeconds: 0.2
   sunAttackBulletSpeed: 10
   sunAttackBulletDamage: 1
-  sunAttackCooldownTime: 5
-  sunAttackBulletCount: 15
+  sunAttackCooldownTime: 4
+  sunAttackBulletCount: 20
   sunAttackFirstBulletDelay: 1
-  sunAttackSpreadRange: 1
+  sunAttackSpreadRange: 0.75

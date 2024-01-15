@@ -19,14 +19,15 @@ public class PlayerBullet : Bullet
         Vector3 shootDir, 
         float speed, 
         float damage, 
-        int scale = 1, 
-        int curveDir = 1, 
+        float scale = 1, 
+        float curveDir = 1, 
         float angle = 0, 
-        bool isDamping = false
+        bool isDamping = false,
+        bool shouldDisappearOnTouchingScreenColliders = true
     ) {
         OnCreated?. Invoke ( this );
 
-        base.Init ( pathType, shootDir, speed, damage, scale, curveDir, angle, isDamping );
+        base.Init ( pathType, shootDir, speed, damage, scale, curveDir, angle, isDamping, shouldDisappearOnTouchingScreenColliders );
     }
 
     public override void OnHitAnimationComplete ( ) {

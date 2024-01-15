@@ -36,13 +36,15 @@ public class Bullet : MonoBehaviour
 
     private float angle;
 
-    private int curveDir;
+    private float curveDir;
     
     private float startTime;
     
     private float dampingValue;
 
     private Vector3 shootDir;
+
+    private bool shouldDisappearOnTouchingScreenColliders;
 
     #endregion
 
@@ -51,7 +53,7 @@ public class Bullet : MonoBehaviour
 
     public virtual void Init ( 
         BulletPathType pathType, Vector3 shootDir, float speed, float damage, 
-        int scale = 1, int curveDir = 1, float angle = 0, bool isDamping = false
+        float scale = 1, float curveDir = 1, float angle = 0, bool isDamping = false, bool shouldDisappearOnTouchingScreenColliders = true
     ) {
         isFlying = true;
         startTime = Time.time;
@@ -64,7 +66,7 @@ public class Bullet : MonoBehaviour
         transform.localScale = new Vector3 ( transform.localScale.x * shootDir.x, transform.localScale.y, transform.localScale.z );
         transform.localScale *= scale;
 
-        this.angle = angle;
+        this.angle = angle * Mathf.Deg2Rad;
         this.curveDir = curveDir;
 
         dampingBulletTimer = gameObject.AddComponent<Timer> ( );
@@ -72,6 +74,8 @@ public class Bullet : MonoBehaviour
         dampingValue = Random.Range ( 0.05f, 0.3f );
         lifetime = Random.Range ( 3.0f, 7.0f );
         dampingBulletTimer.StartTimer ( maxTime: lifetime, onTimerFinish: OnHitAnimationComplete );
+
+        this.shouldDisappearOnTouchingScreenColliders = shouldDisappearOnTouchingScreenColliders;
     }
 
     private void FixedUpdate ( ) {
@@ -124,7 +128,10 @@ public class Bullet : MonoBehaviour
 
     private void OnTriggerEnter2D ( Collider2D collided ) {
         int collidedLayer = collided.gameObject.layer;
-        if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_PLAYER_GRAZE ) )
+        if (
+            collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_PLAYER_GRAZE ) ||
+            collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_SCREEN_BORDER ) && !shouldDisappearOnTouchingScreenColliders
+        )
             return;
         
         cd.enabled = false;

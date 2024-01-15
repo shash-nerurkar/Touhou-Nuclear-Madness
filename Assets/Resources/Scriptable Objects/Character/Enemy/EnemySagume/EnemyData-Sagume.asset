@@ -16,14 +16,14 @@ MonoBehaviour:
   character: 1
   color: {r: 0.54901963, g: 0.3529412, b: 0.6392157, a: 1}
   sprite: {fileID: -1356597432, guid: fa2c34c3f933a30409f27f6713bdc10c, type: 3}
-  health: 110
-  speed: 3
-  acceleration: 0
+  health: 1100
+  speed: 2
+  acceleration: 2
   onHitIDuration: 0.1
   bulletObjects:
   - {fileID: 2719529840377004858, guid: 9bf8a05dbbf2bf248b89e2afcf0240ac, type: 3}
   - {fileID: 2719529840377004858, guid: e9b71552a645c5544ae472e5bb442315, type: 3}
   - {fileID: 2719529840377004858, guid: db4be9d027d4ab648a2a3ba75899a62d, type: 3}
   - {fileID: 2719529840377004858, guid: 08b425b35c7bb83459b15b916fc1b1ab, type: 3}
-  moveCooldownTime: 1
-  moveDistanceRange: 1.5
+  moveCooldownTime: 0.5
+  moveDistanceRange: 2.25

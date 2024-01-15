@@ -13,6 +13,8 @@ public class EnemySagume : Enemy
 
     [ SerializeField ] protected TextMeshProUGUI legendDialogueLabel;
 
+    [ SerializeField ] private LineRenderer legendLineIndicator;
+
     #endregion
 
 
@@ -122,57 +124,70 @@ public class EnemySagume : Enemy
                 BulletPathType.Straight, 
                 shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
                 speed: SagumeData.Legend1BulletSpeed, 
-                damage: SagumeData.Legend1BulletDamage, 
-                isDamping: true
+                damage: SagumeData.Legend1BulletDamage,
+                scale: SagumeData.Legend1AttackBulletScale,
+                shouldDisappearOnTouchingScreenColliders: false
             );
 
-            yield return null;
+            yield return new WaitForSeconds ( SagumeData.Legend1AttackDelayInSeconds );
         }
     }
 
     IEnumerator ReleaseLegend2Attack (  ) {
-        for ( int i = 0; i < SagumeData.Legend2AttackBulletCount; i++ ) {
-            int curveDir;
-            if ( SceneManager.PlayerPosition != null )
-                curveDir = ( int ) Mathf.Sign ( SceneManager.PlayerPosition.y - transform.position.y );
-            else
-                curveDir = Random.Range ( 0, 2 ) == 1 ? 1 : -1;
-            float curveInitialAngle = Random.Range ( -22.5f, 22.5f );
-
-            GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 2 ], position: pivot.position, rotation: Quaternion.identity );
-            Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
-            bullet.Init ( 
-                BulletPathType.Curve, 
-                shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
-                speed: SagumeData.Legend2BulletSpeed,  
-                damage: SagumeData.Legend2BulletDamage, 
-                curveDir: curveDir, 
-                angle: curveInitialAngle
-            );
-
-            yield return null;
+        int [ ] curveDirs = new int [ SagumeData.Legend2AttackBulletCountPerWave ];
+        float [ ] curveInitialAngles = new float [ SagumeData.Legend2AttackBulletCountPerWave ];
+        for ( int i = 0; i < SagumeData.Legend2AttackBulletCountPerWave; i++ ) {
+            curveDirs [ i ] = Random.Range ( 0, 2 ) == 1 ? 1 : -1;
+            curveInitialAngles [ i ] = Random.Range ( -SagumeData.Legend2CurveAngle, SagumeData.Legend2CurveAngle );
         }
+        
+        for ( int i = 0; i < SagumeData.Legend2AttackWaveCount; i++ ) {
+            for ( int j = 0; j < SagumeData.Legend2AttackBulletCountPerWave; j++ ) {
+                GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 2 ], position: pivot.position, rotation: Quaternion.identity );
+                Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
+                bullet.Init ( 
+                    BulletPathType.Curve, 
+                    shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
+                    speed: SagumeData.Legend2BulletSpeed,  
+                    damage: SagumeData.Legend2BulletDamage,
+                    scale: SagumeData.Legend2AttackBulletScale,
+                    curveDir: curveDirs [ j ], 
+                    angle: curveInitialAngles [ j ]
+                );
+            }
+            
+            yield return new WaitForSeconds ( SagumeData.Legend2AttackDelayBetweenWavesInSeconds );
+        }
+
     }
 
     IEnumerator ReleaseLegend3Attack (  ) {
         for ( int i = 0; i < SagumeData.Legend3AttackBulletCount; i++ ) {
-            int shootDirY;
+            Vector3 shootDir;
             if ( SceneManager.PlayerPosition != null )
-                shootDirY = ( int ) Mathf.Sign ( SceneManager.PlayerPosition.y - transform.position.y );
+                shootDir = ( SceneManager.PlayerPosition - transform.position ).normalized;
             else
-                shootDirY = Random.Range ( 0, 2 ) == 1 ? 1 : -1;
+                shootDir = new Vector3 ( Mathf.Sign ( transform.localScale.x ), Random.Range ( 0, 2 ) == 1 ? 1 : -1, 0 );
+            shootDir += new Vector3 ( 0, Random.Range ( -SagumeData.Legend3AttackSpread, SagumeData.Legend3AttackSpread ), 0 );
 
+            legendLineIndicator.SetPosition ( 0, pivot.position );
+            legendLineIndicator.SetPosition ( 1, shootDir * SagumeData.Legend3BulletSpeed );
+            
+            yield return new WaitForSeconds ( SagumeData.Legend3AttackDelayInSeconds );
+      
+            legendLineIndicator.SetPosition ( 0, Vector3.zero );
+            legendLineIndicator.SetPosition ( 1, Vector3.zero );
+        
             GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 3 ], position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
             bullet.Init ( 
                 BulletPathType.Straight, 
-                shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), shootDirY * Random.Range ( 0, SagumeData.Legend3AttackSpread ), 0 ),
+                shootDir: shootDir,
                 speed: SagumeData.Legend3BulletSpeed, 
                 damage: SagumeData.Legend3BulletDamage,
-                isDamping: true
+                scale: SagumeData.Legend3AttackBulletScale
             );
 
-            yield return new WaitForSeconds ( SagumeData.Legend3AttackDelayInSeconds );
         }
     }
 
