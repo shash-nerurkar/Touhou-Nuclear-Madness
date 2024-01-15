@@ -4,9 +4,8 @@ public abstract class Enemy : Character
 {
     #region Serialized Fields
 
-    [ SerializeField ] private float moveCooldownTime;
-
-    [ SerializeField ] [ Range ( 0.0f, 4.0f ) ] private float moveDistanceRange;
+    [ SerializeField ] protected EnemyData data;
+    public EnemyData Data { get => data; }
 
     #endregion
 
@@ -33,6 +32,10 @@ public abstract class Enemy : Character
     protected override void Awake ( ) {
         base.Awake ( );
 
+        speed = Data.Speed;
+        health = Data.Health;
+        onHitIDuration = Data.OnHitIDuration;
+
         moveCooldownTimer = gameObject.AddComponent<Timer> ( );
     }
 
@@ -50,7 +53,7 @@ public abstract class Enemy : Character
             
             case State.Idle:
                 cd.enabled = true;
-                moveCooldownTimer.StartTimer ( maxTime: moveCooldownTime, onTimerFinish: OnMoveCooldownTimerFinished );
+                moveCooldownTimer.StartTimer ( maxTime: Data.MoveCooldownTime, onTimerFinish: OnMoveCooldownTimerFinished );
                 animator.SetBool ( "isMoving", false );
                 break;
             
@@ -72,7 +75,7 @@ public abstract class Enemy : Character
         ChangeState ( State.Chatting );
     }
 
-    private void Update ( ) {
+    private void FixedUpdate ( ) {
         switch ( currentState ) {
             case State.Move:
                 rb.MovePosition( transform.position + ( moveDestination - transform.position ).normalized * speed * Time.deltaTime );
@@ -85,12 +88,16 @@ public abstract class Enemy : Character
     }
 
     private void OnMoveCooldownTimerFinished ( ) {
-        moveDestination = Constants.BASE_POSITION_ENEMY + new Vector3 ( Random.Range ( -0.5f, 0.5f ), Random.Range ( -moveDistanceRange, moveDistanceRange ) );
+        moveDestination = basePosition + new Vector3 ( Random.Range ( -0.5f, 0.5f ), Random.Range ( -Data.MoveDistanceRange, Data.MoveDistanceRange ) );
 
         ChangeState ( State.Move );
     }
 
-    public void SetActive ( bool isActive ) => ChangeState ( isActive ? State.Idle : State.Chatting );
+    public override void ToggleAsCurrent ( bool isCurrent ) {
+        base.ToggleAsCurrent ( isCurrent );
+
+        ChangeState ( this.isCurrent ? State.Idle : State.Chatting );
+    }
 
     #endregion
 }

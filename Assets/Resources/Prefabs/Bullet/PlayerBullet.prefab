@@ -91,5 +91,51 @@ PrefabInstance:
       propertyPath: m_Materials.Array.data[0]
       value: 
       objectReference: {fileID: 2100000, guid: c418f9a09b393e4458df40abe50198d6, type: 2}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 5349339279002926857, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
+--- !u!50 &611173415951848431 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 1438763963140834489, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
+  m_PrefabInstance: {fileID: 1985197691509692246}
+  m_PrefabAsset: {fileID: 0}
+--- !u!60 &4968971130801564282 stripped
+PolygonCollider2D:
+  m_CorrespondingSourceObject: {fileID: 6879672992180567340, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
+  m_PrefabInstance: {fileID: 1985197691509692246}
+  m_PrefabAsset: {fileID: 0}
+--- !u!212 &7535069831079657450 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 8294826628683376828, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
+  m_PrefabInstance: {fileID: 1985197691509692246}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &7701689214980677712 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 8173245254862714630, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
+  m_PrefabInstance: {fileID: 1985197691509692246}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &6769577548850067466
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7701689214980677712}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 79fc25d76c01ad54a8a7127653b938b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  rb: {fileID: 611173415951848431}
+  cd: {fileID: 4968971130801564282}
+  spriteRenderer: {fileID: 7535069831079657450}
+  animator: {fileID: 7960898536248851781}
+  speed: 15
+  damage: 10
+  unhighlightedMaterial: {fileID: 2100000, guid: 151aea5398b6dd640a6b8a579a443ecf, type: 2}
+  highlightedMaterial: {fileID: 2100000, guid: c418f9a09b393e4458df40abe50198d6, type: 2}
+--- !u!95 &7960898536248851781 stripped
+Animator:
+  m_CorrespondingSourceObject: {fileID: 8500014065925909011, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
+  m_PrefabInstance: {fileID: 1985197691509692246}
+  m_PrefabAsset: {fileID: 0}

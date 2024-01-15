@@ -13,27 +13,30 @@ public class SoundManager : MonoBehaviour
 
   #region Fields
 
-  private static SoundManager _instance;
-
-  public static SoundManager instance { get { return _instance; } }
-
-  private List<int> pausedSoundIndices;
+  private List<int> pausedSoundIndices = new List<int> ( );
   
   #endregion
 
 
   #region Methods
 
-  void Awake ( ) {
-    pausedSoundIndices = new List<int> ( );
 
-    if ( _instance != null && _instance != this ) {
-      Destroy ( gameObject );
-    }
-    else {
-      _instance = this;
-    }
+  #region Event Subscriptions
 
+  private void Awake ( ) {
+    SceneManager.PlaySound += Play;
+    SceneManager.StopSound += Stop;
+  }
+
+  private void OnDestroy ( ) {
+    SceneManager.PlaySound -= Play;
+    SceneManager.StopSound -= Stop;
+  }
+
+  #endregion
+
+
+  private void Start ( ) {
     foreach ( Sound sound in sounds ) {
       sound.source = gameObject.AddComponent<AudioSource> ( );
       sound.source.clip = sound.clip;
@@ -44,30 +47,6 @@ public class SoundManager : MonoBehaviour
     }
   }
   
-  // FIND SOUND AND PLAY IT
-  public void Play( string name ) {
-    Sound sound = Array.Find ( sounds, s => s.name == name );
-
-    if ( sound == null )
-      Debug.LogError ( "Sound " + name + " Not Found!" );
-    else {
-      sound.source.pitch = sound.pitch;
-      sound.source.volume = sound.volume;
-      sound.source.Play ( );
-    }
-  }
-
-  // FIND SOUND AND STOP IT
-  public void Stop ( string name ) {
-    Sound sound = Array.Find( sounds, s => s.name == name );
-
-    if ( sound == null )
-      Debug.LogError ( "Sound " + name + " Not Found!" );
-    else
-      sound.source.Stop ( );
-  }
-
-  // PAUSE ALL ONGOING SOUNDS / PLAY ALL ONGOING PAUSED SOUNDS
   private void OnGamePauseToggled( bool isPaused ) {
     if ( isPaused ) {
       pausedSoundIndices.Clear ( );
@@ -85,6 +64,33 @@ public class SoundManager : MonoBehaviour
       pausedSoundIndices.Clear ( );
     }
   }
-  
+
+
+  #region Sound-state Managers
+
+  private void Play( string name ) {
+    Sound sound = Array.Find ( sounds, s => s.name == name );
+
+    if ( sound == null )
+      Debug.LogError ( "Sound " + name + " Not Found!" );
+    else {
+      sound.source.pitch = sound.pitch;
+      sound.source.volume = sound.volume;
+      sound.source.Play ( );
+    }
+  }
+
+  private void Stop ( string name ) {
+    Sound sound = Array.Find( sounds, s => s.name == name );
+
+    if ( sound == null )
+      Debug.LogError ( "Sound " + name + " Not Found!" );
+    else
+      sound.source.Stop ( );
+  }
+
+  #endregion
+
+
   #endregion
 }

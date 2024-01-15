@@ -18,7 +18,9 @@ public class InputManager : MonoBehaviour
 
     public static event Action<bool> OnPlayerShootAction;
 
-    public static event Action<bool> OnPlayerBombAction;
+    public static event Action<bool> OnPlayerAbility1Action;
+
+    public static event Action<bool> OnPlayerAbility2Action;
 
     public static event Action PopDialogueAction;
 
@@ -27,7 +29,7 @@ public class InputManager : MonoBehaviour
 
     #region Methods
 
-    private void Awake() {
+    private void Awake ( ) {
         PlayerInputActions playerInputActions = new PlayerInputActions();
         FlyActions = playerInputActions.PlayerFly;
         UIActions = playerInputActions.PlayerUI;
@@ -37,14 +39,20 @@ public class InputManager : MonoBehaviour
 		UIActions.PopDialogue.performed += context => {
 			PopDialogueAction?.Invoke( );
 		};
+
+		FlyActions.Ability1.performed += context => {
+            OnPlayerAbility1Action?.Invoke ( true );
+		};
+
+		FlyActions.Ability2.performed += context => {
+			// OnPlayerAbility2Action?.Invoke( true );
+		};
     }
 
-    private void FixedUpdate() {
+    private void FixedUpdate ( ) {
         OnPlayerMoveAction?.Invoke ( FlyActions.Movement.ReadValue<Vector2>( ) );
 
         OnPlayerShootAction?.Invoke ( FlyActions.Shoot.ReadValue<float>( ) != 0 );
-
-        OnPlayerBombAction?.Invoke ( FlyActions.Bomb.ReadValue<float>( ) != 0 );
     }
 
     private void OnGameStateChanged ( GameState gameState ) {
@@ -67,6 +75,11 @@ public class InputManager : MonoBehaviour
             case GameState.Ended:
                 FlyActions.Disable ( );
                 UIActions.Enable ( );
+                break;
+            
+            case GameState.BlockingInput:
+                FlyActions.Disable ( );
+                UIActions.Disable ( );
                 break;
         }
     }

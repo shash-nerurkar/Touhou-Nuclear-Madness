@@ -60,6 +60,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 9100000, guid: d7501eb3814d6b649a9848b2276dfb48, type: 2}
     - target: {fileID: 2351583975198027985, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
+      propertyPath: data
+      value: 
+      objectReference: {fileID: 11400000, guid: 6f0d415d045c4d647b6d8bf7b1779df0, type: 2}
+    - target: {fileID: 2351583975198027985, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
       propertyPath: speed
       value: 8
       objectReference: {fileID: 0}
@@ -71,18 +75,6 @@ PrefabInstance:
       propertyPath: shootCooldown
       value: 0.1
       objectReference: {fileID: 0}
-    - target: {fileID: 2351583975198027985, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
-      propertyPath: spriteRenderer
-      value: 
-      objectReference: {fileID: 6892896779712595579}
-    - target: {fileID: 2351583975198027985, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
-      propertyPath: selectedMaterial
-      value: 
-      objectReference: {fileID: 2100000, guid: 1a16af73158826048921236a15177d0e, type: 2}
-    - target: {fileID: 2351583975198027985, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
-      propertyPath: unselectedMaterial
-      value: 
-      objectReference: {fileID: 2100000, guid: 151aea5398b6dd640a6b8a579a443ecf, type: 2}
     - target: {fileID: 2351583975198027985, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
       propertyPath: bulletObjects.Array.size
       value: 1
@@ -107,17 +99,17 @@ PrefabInstance:
       propertyPath: m_Color.r
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7839858692226412189, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
-      propertyPath: m_Radius
-      value: 0.21066594
-      objectReference: {fileID: 0}
-    - target: {fileID: 7839858692226412189, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
-      propertyPath: m_Offset.x
+    - target: {fileID: 8461008767146765047, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.b
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7839858692226412189, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
-      propertyPath: m_Offset.y
-      value: 0
+    - target: {fileID: 8461008767146765047, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.g
+      value: 0.0627451
+      objectReference: {fileID: 0}
+    - target: {fileID: 8461008767146765047, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
+      propertyPath: InitialModule.startColor.maxColor.r
+      value: 0.6431373
       objectReference: {fileID: 0}
     - target: {fileID: 8663788566805746476, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
       propertyPath: m_LocalPosition.x
@@ -125,8 +117,3 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
---- !u!212 &6892896779712595579 stripped
-SpriteRenderer:
-  m_CorrespondingSourceObject: {fileID: 7027688899548137187, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
-  m_PrefabInstance: {fileID: 4480836198657540248}
-  m_PrefabAsset: {fileID: 0}

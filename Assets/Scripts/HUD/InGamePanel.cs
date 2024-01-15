@@ -11,6 +11,14 @@ public class InGamePanel : MonoBehaviour
 
     [ SerializeField ] private GameObject playerHealthBar;
 
+    [ SerializeField ] private TextMeshProUGUI playerAbility1CountLabel;
+
+    [ SerializeField ] private TextMeshProUGUI playerAbility2CountLabel;
+
+    [ SerializeField ] private TextMeshProUGUI playerGrazeCountLabel;
+
+    [ SerializeField ] private TextMeshProUGUI playerDamageMultiplierLabel;
+
     [ SerializeField ] private Slider enemyHealthBarSlider;
 
     [ SerializeField ] private TextMeshProUGUI enemyHealthBarText;
@@ -24,7 +32,7 @@ public class InGamePanel : MonoBehaviour
 
     #region Fields
 
-    private List<GameObject> playerHealthBarElements;
+    private List<GameObject> playerHealthBarElements = new List<GameObject> ( );
 
     private Timer controlsTutorialShowTimer;
 
@@ -33,12 +41,12 @@ public class InGamePanel : MonoBehaviour
 
     #region Methods
 
-    private void Awake ( ) {
-        playerHealthBarElements = new List<GameObject> ( );
-    }
-    
-    public void SetPanelValues ( float playerHealth, float enemyHealth ) {
+    public void SetPanelValues ( float playerHealth, int ability1Count, int ability2Count, int grazeCount, float damageMultiplier, float enemyHealth ) {
         UpdatePlayerHealth ( playerHealth );
+        UpdatePlayerAbility1 ( ability1Count );
+        UpdatePlayerAbility2 ( ability2Count );
+        UpdatePlayerGraze ( grazeCount );
+        UpdatePlayerDamageMultiplier ( damageMultiplier );
 
         enemyHealthBarSlider.maxValue = enemyHealth;
         UpdateEnemyHealth ( enemyHealthBarSlider.maxValue );
@@ -53,6 +61,26 @@ public class InGamePanel : MonoBehaviour
             GameObject playerHealthBarElement = Instantiate ( playerHealthBarElementObject, Vector3.zero, Quaternion.identity, playerHealthBar.transform );
             playerHealthBarElements.Add ( playerHealthBarElement );
         }
+    }
+
+    public void UpdatePlayerAbility1 ( int abilityCount ) {
+        playerAbility1CountLabel.text = abilityCount.ToString ( );
+    }
+
+    public void UpdatePlayerAbility2 ( int abilityCount ) {
+        playerAbility2CountLabel.text = abilityCount.ToString ( );
+    }
+
+    public void UpdatePlayerGraze ( int grazeCount ) {
+        playerGrazeCountLabel.text = "Graze: " + grazeCount;
+    }
+
+    public void UpdatePlayerDamageMultiplier ( float damageMultiplier ) {
+        playerDamageMultiplierLabel.text = "Damage: " + damageMultiplier + "x";
+
+        float guessMultiplierCounts = Mathf.Log ( damageMultiplier, 2 );
+        float tValue = Mathf.Clamp01 ( 0.2f * guessMultiplierCounts );
+        playerDamageMultiplierLabel.color = Color.Lerp ( Constants.COLOR_PLAYER_UI, Color.blue, tValue );
     }
 
     public void UpdateEnemyHealth ( float health ) {

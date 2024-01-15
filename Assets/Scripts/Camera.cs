@@ -1,9 +1,12 @@
+using System.Collections;
 using UnityEngine;
 
 public class Camera : MonoBehaviour
 {
     #region Fields
 
+    private float shakeDuration;
+    
     private float shakeIntensity;
 
     private Vector3 originalPosition;
@@ -11,39 +14,65 @@ public class Camera : MonoBehaviour
     private bool isCameraShaking;
     public bool IsCameraShaking { get => isCameraShaking; }
 
-    private Timer shakeTimer;
-
     #endregion
 
 
     #region Methods
 
-    private void Awake ( ) {
-        HUD.ShakeCamera += ShakeCamera;
 
-        shakeTimer = gameObject.AddComponent<Timer> ( );
+    #region Event Subscriptions
+    
+    private void Awake ( ) {
+        SceneManager.ShakeCamera += ShakeCamera;   
     }
+    
+    private void OnDestroy ( ) {
+        SceneManager.ShakeCamera -= ShakeCamera;
+    }
+
+    #endregion
+
 
     private void Start ( ) => originalPosition = transform.position;
 
-    private void Update ( ) {
-        if ( isCameraShaking )
-            transform.position = originalPosition + Random.insideUnitSphere * shakeIntensity;
-        else
-            transform.position = originalPosition; // + Random.insideUnitSphere * 0.05f;
-    }
 
-    public void ShakeCamera ( float shakeDuration = 0.5f, float shakeIntensity = 0.1f ) {
+    #region Shake Handlers
+
+    public void ShakeCamera ( float shakeDuration, float shakeIntensity ) {
+        this.shakeDuration = shakeDuration;
         this.shakeIntensity = shakeIntensity;
 
         isCameraShaking = true;
-        shakeTimer.StartTimer ( maxTime: shakeDuration, onTimerFinish: ( ) => {
-            isCameraShaking = false;
-        } );
+        StartCoroutine ( TweenShakeIntensity ( shakeIntensity, Constants.CAMERA_MIN_SHAKE_INTENSITY ) );
     }
 
-    private void OnDestroy ( ) {
-        HUD.ShakeCamera -= ShakeCamera;
+    private void FixedUpdate ( ) {
+        if ( isCameraShaking )
+            transform.position = originalPosition + Random.insideUnitSphere * shakeIntensity;
+        else
+            transform.position = originalPosition;
+    }
+
+    #endregion
+
+
+    public IEnumerator TweenShakeIntensity( float startValue, float endValue )
+    {
+        float elapsed = 0f;
+
+        while ( elapsed < shakeDuration )
+        {
+            float t = elapsed / shakeDuration;
+            shakeIntensity = Mathf.Lerp(startValue, endValue, t);
+
+            elapsed += Time.deltaTime;
+            
+            yield return null;
+        }
+
+        shakeIntensity = endValue;
+
+        isCameraShaking = false;
     }
 
     #endregion

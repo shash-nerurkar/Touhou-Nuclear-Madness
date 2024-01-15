@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -7,18 +8,40 @@ public class EndGamePanel : MonoBehaviour
 
     [ SerializeField ] private Image endImage;
 
-    #endregion
+    [ SerializeField ] private TextMeshProUGUI endWinnerHPLabel;
 
-
-    #region Fields
+    [ SerializeField ] private Sprite [ ] endingBackgroundSprites;
 
     #endregion
 
 
     #region Methods
     
-    public void SetPanelValues ( Sprite endGameImageSprite ) {
-        endImage.sprite = endGameImageSprite;
+    public void ChangeBackgroundScene ( Ending ending, float winnerHP ) {
+        if ( ending < 0 || ( int ) ending >= endingBackgroundSprites.Length ) {
+            Debug.Log ( "No scene background sprite found for index: " + ending );
+            return;
+        }
+
+        switch ( ending ) {
+            case Ending.UtsuhoWin:
+                endWinnerHPLabel.text = "OKUU BEAT THE LUNARI WITH " + winnerHP + "HP!";
+                break;
+            
+            case Ending.SagumeWin:
+                endWinnerHPLabel.text = "SHE GOT AWAY WITH " + winnerHP + "HP!";
+                break;
+            
+            case Ending.AyaWin:
+                endWinnerHPLabel.text = "AYA SAVED US WITH " + winnerHP + "HP!";
+                break;
+
+            case Ending.NarratorWin:
+                endWinnerHPLabel.text = "WHO? HOW? SHE HAD " + winnerHP + "HP!";
+                break;
+        }
+
+        endImage.sprite = endingBackgroundSprites [ ( int ) ending ];
     }
 
     #endregion

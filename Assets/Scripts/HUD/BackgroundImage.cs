@@ -10,6 +10,8 @@ public class BackgroundImage : MonoBehaviour
 
     [ SerializeField ] private Animator animator;
 
+    [ SerializeField ] private Sprite [ ] sceneBackgroundSprites;
+
     #endregion
 
 
@@ -17,16 +19,29 @@ public class BackgroundImage : MonoBehaviour
 
     public static event Action OnExplosionAnimationComplete;
 
+    public static event Action<int> OnBackgroundSceneChanged;
+
     #endregion
 
 
     #region Methods
     
-    public void SetPanelValues ( Sprite backgroundImageSprite ) {
-        backgroundImage.sprite = backgroundImageSprite;
+    public void ChangeBackgroundScene ( int sceneIndex ) {
+        gameObject.SetActive ( true );
+
+        if ( sceneIndex < 0 || sceneIndex >= sceneBackgroundSprites.Length ) {
+            Debug.Log ( "No scene background sprite found for index: " + sceneIndex );
+            return;
+        }
+
+        backgroundImage.sprite = sceneBackgroundSprites [ sceneIndex ];
+
+        OnBackgroundSceneChanged?.Invoke ( sceneIndex );
     }
 
     public void PlayExplosion ( ) {
+        gameObject.SetActive ( true );
+        
         animator.enabled = true;
         animator.SetBool ( "isExploding" , true );
     }

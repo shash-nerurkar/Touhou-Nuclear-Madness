@@ -12,10 +12,6 @@ public class Bullet : MonoBehaviour
 
     [ SerializeField ] private Animator animator;
 
-    [ SerializeField ] private float speed;
-
-    [ SerializeField ] private float damage;
-
     [ SerializeField ] private Material unhighlightedMaterial;
     [ SerializeField ] private Material highlightedMaterial;
 
@@ -23,6 +19,10 @@ public class Bullet : MonoBehaviour
 
 
     #region Fields
+
+    private float speed;
+
+    private float damage;
 
     private bool isFlying;
 
@@ -36,7 +36,7 @@ public class Bullet : MonoBehaviour
 
     private float angle;
 
-    private int curveDir;
+    private float curveDir;
     
     private float startTime;
     
@@ -44,31 +44,38 @@ public class Bullet : MonoBehaviour
 
     private Vector3 shootDir;
 
+    private bool shouldDisappearOnTouchingScreenColliders;
+
     #endregion
 
 
     #region Methods
 
-    public void Init ( BulletPathType pathType, Vector3 shootDir, int curveDir = 1, float angle = 0, int scale = 1, bool isDamping = false, float speedScale = 1 ) {
+    public virtual void Init ( 
+        BulletPathType pathType, Vector3 shootDir, float speed, float damage, 
+        float scale = 1, float curveDir = 1, float angle = 0, bool isDamping = false, bool shouldDisappearOnTouchingScreenColliders = true
+    ) {
         isFlying = true;
+        startTime = Time.time;
 
-        dampingBulletTimer = gameObject.AddComponent<Timer> ( );
+        this.pathType = pathType;
+        this.shootDir = shootDir;
+        this.speed = speed;
+        this.damage = damage;
 
         transform.localScale = new Vector3 ( transform.localScale.x * shootDir.x, transform.localScale.y, transform.localScale.z );
         transform.localScale *= scale;
 
-        this.pathType = pathType;
-        this.shootDir = shootDir;
-        speed *= speedScale;
-
-        startTime = Time.time;
-        this.angle = angle;
+        this.angle = angle * Mathf.Deg2Rad;
         this.curveDir = curveDir;
 
+        dampingBulletTimer = gameObject.AddComponent<Timer> ( );
         this.isDamping = isDamping;
         dampingValue = Random.Range ( 0.05f, 0.3f );
         lifetime = Random.Range ( 3.0f, 7.0f );
         dampingBulletTimer.StartTimer ( maxTime: lifetime, onTimerFinish: OnHitAnimationComplete );
+
+        this.shouldDisappearOnTouchingScreenColliders = shouldDisappearOnTouchingScreenColliders;
     }
 
     private void FixedUpdate ( ) {
@@ -120,31 +127,41 @@ public class Bullet : MonoBehaviour
     }
 
     private void OnTriggerEnter2D ( Collider2D collided ) {
+        int collidedLayer = collided.gameObject.layer;
+        if (
+            collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_PLAYER_GRAZE ) ||
+            collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_SCREEN_BORDER ) && !shouldDisappearOnTouchingScreenColliders
+        )
+            return;
+        
         cd.enabled = false;
 
-        int collidedLayer = collided.gameObject.layer;
         if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_SCREEN_BORDER ) ) {
             OnHitAnimationComplete ( );
         }
         else if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_PLAYER ) ) {        
-            collided.GetComponent<Player> ( )?.TakeDamage ( damage: damage );
+            collided.GetComponent<Player> ( ).TakeDamage ( damage: damage );
             
-            SetHighlighted ( false );
+            OnHit ( );
         }
         else if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_ENEMY ) ) {        
-            collided.GetComponent<Enemy> ( )?.TakeDamage ( damage: damage );
+            collided.GetComponent<Enemy> ( ).TakeDamage ( damage: damage );
             
-            SetHighlighted ( false );
+            OnHit ( );
         }
     }
 
-    private void SetHighlighted ( bool isHighlighted ) {
-        spriteRenderer.material = isHighlighted ? highlightedMaterial : unhighlightedMaterial;
-        isFlying = isHighlighted;
-        animator.SetBool ( "isHit", !isHighlighted );
+    public void OnHit ( ) {
+        spriteRenderer.material = unhighlightedMaterial;
+        
+        isFlying = false;
+
+        animator.SetBool ( "isHit", true );
     }
 
-    public void OnHitAnimationComplete ( ) => Destroy ( gameObject );
+    public virtual void OnHitAnimationComplete ( ) {
+        Destroy ( gameObject );
+    }
 
     #endregion
 }

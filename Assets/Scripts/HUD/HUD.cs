@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class HUD : MonoBehaviour
@@ -7,7 +8,7 @@ public class HUD : MonoBehaviour
 
     [ SerializeField ] private BackgroundImage backgroundImage;
 
-    [ SerializeField ] private GameObject mainMenuPanel;
+    [ SerializeField ] private MainMenuPanel mainMenuPanel;
 
     [ SerializeField ] private InGamePanel inGamePanel;
 
@@ -17,19 +18,12 @@ public class HUD : MonoBehaviour
 
     [ SerializeField ] private Transition transition;
 
-    [ SerializeField ] private Sprite scene1BackgroundSprite;
-    [ SerializeField ] private Sprite scene2BackgroundSprite;
-
-    [ SerializeField ] private Sprite ending1BackgroundSprite;
-    [ SerializeField ] private Sprite ending2BackgroundSprite;
-    [ SerializeField ] private Sprite ending3BackgroundSprite;
-
     #endregion
 
     
     #region Fields
 
-    private Dialogue [ ] currentDialogues;
+    private List<Dialogue> currentDialogues;
 
     private int currentDialogueIndex;
 
@@ -38,60 +32,93 @@ public class HUD : MonoBehaviour
     
     #region Actions
 
-    public static event Action OnExplosionComplete;
-
-    public static event Action OnPostExplosionSequenceComplete;
-
-    public static event Action OnTransitionFadeInComplete;
-
-    public static event Action OnTransitionFadeOutComplete;
-
-    public static event Action EndGame;
-
-    public static event Action<int> OnBackgroundSceneChanged;
-
-    public static event Action<float, float> ShakeCamera;
+    public static event Action OnDialogueSequenceCompleted;
 
     #endregion
 
     
     #region Methods
 
+
+    #region Event Subscriptions
+
     private void Awake ( ) {
-        Transition.OnFadeIn += OnTransitionFadeIn;
-        Transition.OnFadeOut += OnTransitionFadeOut;
-
-        BackgroundImage.OnExplosionAnimationComplete += OnExplosionAnimationComplete;
-
         SceneManager.OnGameStateChanged += OnGameStateChanged;
         SceneManager.OnInGameStateChanged += OnInGameStateChanged;
+        SceneManager.ContinueDialogueSequence += ContinueDialogueSequence;
+        SceneManager.ChangeGameStateOnHUD += ChangeGameStateOnHUD;
+
+        SceneManager.ShowTutorial += inGamePanel.ShowTutorial;
         SceneManager.OnFightStarted += inGamePanel.SetPanelValues;
         SceneManager.OnCurrentPlayerHit += inGamePanel.UpdatePlayerHealth;
+        SceneManager.OnCurrentPlayerGrazed += inGamePanel.UpdatePlayerGraze;
+        SceneManager.OnCurrentPlayerDamageMultiplierChanged += inGamePanel.UpdatePlayerDamageMultiplier;
+        SceneManager.OnCurrentPlayerFiredAbility1 += inGamePanel.UpdatePlayerAbility1;
+        SceneManager.OnCurrentPlayerFiredAbility2 += inGamePanel.UpdatePlayerAbility2;
         SceneManager.OnCurrentEnemyHit += inGamePanel.UpdateEnemyHealth;
-        SceneManager.HideDialogueBox += dialogueBox.Hide;
-        SceneManager.ContinueDialogueSequence += ContinueDialogueSequence;
+        
+        SceneManager.OnEndGame += endGamePanel.ChangeBackgroundScene;
+        
+        SceneManager.ChangeBackgroundScene += backgroundImage.ChangeBackgroundScene;
+        SceneManager.PlayExplosion += backgroundImage.PlayExplosion;
+
+        SceneManager.TransitionFadeIn += transition.FadeIn;
+        SceneManager.TransitionFadeOut += transition.FadeOut;
+        SceneManager.TransitionSetNextPlayerCharacter += transition.SetNextPlayerCharacter;
+        SceneManager.TransitionRemoveNextPlayerCharacter += transition.SetNextPlayerCharacter;
     }
 
-    private void OnGameStateChanged ( GameState gameState ) {
-        mainMenuPanel.SetActive ( gameState == GameState.MainMenu );
-        inGamePanel.gameObject.SetActive ( gameState == GameState.Playing );
-        endGamePanel.gameObject.SetActive ( gameState == GameState.Ended );
+    private void OnDestroy ( ) {
+        SceneManager.OnGameStateChanged -= OnGameStateChanged;
+        SceneManager.OnInGameStateChanged -= OnInGameStateChanged;
+        SceneManager.ContinueDialogueSequence -= ContinueDialogueSequence;
+        SceneManager.ChangeGameStateOnHUD -= ChangeGameStateOnHUD;
+
+        SceneManager.ShowTutorial -= inGamePanel.ShowTutorial;
+        SceneManager.OnFightStarted -= inGamePanel.SetPanelValues;
+        SceneManager.OnCurrentPlayerHit -= inGamePanel.UpdatePlayerHealth;
+        SceneManager.OnCurrentPlayerGrazed -= inGamePanel.UpdatePlayerGraze;
+        SceneManager.OnCurrentPlayerDamageMultiplierChanged -= inGamePanel.UpdatePlayerDamageMultiplier;
+        SceneManager.OnCurrentPlayerFiredAbility1 -= inGamePanel.UpdatePlayerAbility1;
+        SceneManager.OnCurrentPlayerFiredAbility2 -= inGamePanel.UpdatePlayerAbility2;
+        SceneManager.OnCurrentEnemyHit -= inGamePanel.UpdateEnemyHealth;
         
-        switch ( SceneManager.CurrentGameState ) {
-            case GameState.MainMenu:
-                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_MAIN_MENU );
-                break;
+        SceneManager.OnEndGame -= endGamePanel.ChangeBackgroundScene;
+        
+        SceneManager.ChangeBackgroundScene -= backgroundImage.ChangeBackgroundScene;
+        SceneManager.PlayExplosion -= backgroundImage.PlayExplosion;
+
+        SceneManager.TransitionFadeIn -= transition.FadeIn;
+        SceneManager.TransitionFadeOut -= transition.FadeOut;
+        SceneManager.TransitionSetNextPlayerCharacter -= transition.SetNextPlayerCharacter;
+        SceneManager.TransitionRemoveNextPlayerCharacter -= transition.SetNextPlayerCharacter;
+    }
+
+    #endregion
+
+
+    #region On-States-Changed Managers
+
+    private void OnGameStateChanged ( GameState gameState ) {
+        if ( gameState == GameState.BlockingInput ) {
+            dialogueBox.ToggleInputPrompt ( false );
+        }
+        else {
+            dialogueBox.ToggleInputPrompt ( true );
             
-            case GameState.Ended:
-                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_GAME_ENDED );
-                break;
+            mainMenuPanel.gameObject.SetActive ( gameState == GameState.MainMenu );
+            inGamePanel.gameObject.SetActive ( gameState == GameState.Playing );
+            endGamePanel.gameObject.SetActive ( gameState == GameState.Ended );
         }
     }
  
     private void OnInGameStateChanged ( InGameState inGameState ) {
         switch ( inGameState ) {
+            case InGameState.MainMenu:
+                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_MAIN_MENU );
+                break;
+
             case InGameState.PreExplosion:
-                ChangeBackgroundScene ( 0 );
                 BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_1 );
                 break;
 
@@ -107,18 +134,31 @@ public class HUD : MonoBehaviour
                 BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_3_2 );
                 break;
             
+            case InGameState.PreFight2:
+                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_4 );
+                break;
+            
             case InGameState.PostFight2Branch1:
-                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_4_1 );
+                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_5_1 );
                 break;
             
             case InGameState.PostFight2Branch2:
-                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_4_2 );
+                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_5_2 );
+                break;
+                
+            case InGameState.EndGame:
+                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_GAME_ENDED );
                 break;
         }
     }
 
-    private void BeginDialogueSequence ( Dialogue [ ] dialogues ) {
-        if ( dialogues.Length == 0 ) {
+    #endregion
+
+
+    #region Dialogue Sequence Managers
+
+    private void BeginDialogueSequence ( List<Dialogue> dialogues ) {
+        if ( dialogues.Count == 0 ) {
             OnDialogueSequenceComplete ( );
         }
         else {
@@ -129,7 +169,9 @@ public class HUD : MonoBehaviour
     }
 
     private void ContinueDialogueSequence ( ) {
-        if ( currentDialogueIndex == currentDialogues.Length )
+        if ( currentDialogues == null ) return;
+
+        if ( currentDialogueIndex == currentDialogues.Count )
             OnDialogueSequenceComplete ( );
         else
             dialogueBox.Show ( currentDialogues [ currentDialogueIndex++ ] );
@@ -138,89 +180,13 @@ public class HUD : MonoBehaviour
     private void OnDialogueSequenceComplete ( ) {
         dialogueBox.Hide ( );
         currentDialogues = null;
-        
-        switch ( SceneManager.CurrentInGameState ) {
-            case InGameState.PreExplosion:
-                SoundManager.instance.Stop ( Constants.CHATTING_MUSIC );
-                SoundManager.instance.Play ( Constants.ON_EXPLOSION_SOUND );
-                ShakeCamera?.Invoke ( 0.5f, 0.5f );
-                backgroundImage.PlayExplosion ( );
 
-                break;
-
-            case InGameState.PostExplosion:
-                inGamePanel.ShowTutorial ( );
-                OnPostExplosionSequenceComplete?.Invoke ( );
-                
-                break;
-            
-            case InGameState.PostFight1Branch1:
-                SoundManager.instance.Stop( Constants.SCENE_01_MUSIC );
-                SoundManager.instance.Play( Constants.ON_END_GAME_LOSS_SOUND );
-                endGamePanel.SetPanelValues ( ending1BackgroundSprite );
-                EndGame?.Invoke ( );
-
-                break;
-            
-            case InGameState.PostFight1Branch2:
-                transition.FadeIn ( );
-                
-                break;
-            
-            case InGameState.PostFight2Branch1:
-                SoundManager.instance.Play( Constants.ON_END_GAME_LOSS_SOUND );
-                endGamePanel.SetPanelValues ( ending2BackgroundSprite );
-                EndGame?.Invoke ( );
-
-                break;
-            
-            case InGameState.PostFight2Branch2:
-                SoundManager.instance.Play( Constants.ON_END_GAME_WIN_SOUND );
-                endGamePanel.SetPanelValues ( ending3BackgroundSprite );
-                EndGame?.Invoke ( );
-
-                break;
-        }
+        OnDialogueSequenceCompleted?.Invoke ( );
     }
 
-    void ChangeBackgroundScene ( int sceneIndex ) {
-        if ( sceneIndex == 0)
-            backgroundImage.SetPanelValues ( scene1BackgroundSprite );
-        else if ( sceneIndex == 1)
-            backgroundImage.SetPanelValues ( scene2BackgroundSprite );
+    #endregion
 
-        OnBackgroundSceneChanged?.Invoke ( sceneIndex );
-    }
-
-    private void OnExplosionAnimationComplete ( ) {
-        OnExplosionComplete?.Invoke ( );
-    }
-
-    private void OnTransitionFadeIn ( ) {
-        ChangeBackgroundScene ( 1 );
-        transition.FadeOut ( );
-
-        OnTransitionFadeInComplete?.Invoke ( );
-    }
-
-    private void OnTransitionFadeOut ( ) {
-        OnTransitionFadeOutComplete?.Invoke ( );
-    }
-
-    private void OnDestroy ( ) {
-        Transition.OnFadeIn -= OnTransitionFadeInComplete;
-        Transition.OnFadeOut -= OnTransitionFadeOutComplete;
-
-        BackgroundImage.OnExplosionAnimationComplete -= OnExplosionAnimationComplete;
-
-        SceneManager.OnGameStateChanged -= OnGameStateChanged;
-        SceneManager.OnInGameStateChanged -= OnInGameStateChanged;
-        SceneManager.OnFightStarted -= inGamePanel.SetPanelValues;
-        SceneManager.OnCurrentPlayerHit -= inGamePanel.UpdatePlayerHealth;
-        SceneManager.OnCurrentEnemyHit -= inGamePanel.UpdateEnemyHealth;
-        SceneManager.HideDialogueBox -= dialogueBox.Hide;
-        SceneManager.ContinueDialogueSequence -= ContinueDialogueSequence;
-    }
+    private void ChangeGameStateOnHUD ( GameState gameState ) => OnGameStateChanged ( gameState );
 
     #endregion
 }
