@@ -123,28 +123,12 @@ public class Bullet : MonoBehaviour
     }
 
     private void OnTriggerEnter2D ( Collider2D collided ) {
+        int collidedLayer = collided.gameObject.layer;
+        if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_PLAYER_GRAZE ) )
+            return;
+        
         cd.enabled = false;
 
-        int collidedLayer = collided.gameObject.layer;
-        if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_SCREEN_BORDER ) ) {
-            OnHitAnimationComplete ( );
-        }
-        else if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_PLAYER ) ) {        
-            collided.GetComponent<Player> ( ).TakeDamage ( damage: damage );
-            
-            OnHit ( );
-        }
-        else if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_ENEMY ) ) {        
-            collided.GetComponent<Enemy> ( ).TakeDamage ( damage: damage );
-            
-            OnHit ( );
-        }
-    }
-
-    private void OnTriggerStay2D ( Collider2D collided ) {
-        cd.enabled = false;
-
-        int collidedLayer = collided.gameObject.layer;
         if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_SCREEN_BORDER ) ) {
             OnHitAnimationComplete ( );
         }
