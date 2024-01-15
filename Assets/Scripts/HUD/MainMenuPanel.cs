@@ -7,14 +7,14 @@ public class MainMenuPanel : MonoBehaviour
     
     #region Serializable Fields
 
-    [ SerializeField ] private Toggle easyDifficultyToggleOption;
+    [ SerializeField ] private Toggle chaosDifficultyToggleOption;
 
     #endregion
 
 
     #region Action
 
-    public static event Action<bool> OnEasyDifficultyToggledAction;
+    public static event Action<bool> OnChaosDifficultyToggledAction;
 
     #endregion
 
@@ -25,19 +25,19 @@ public class MainMenuPanel : MonoBehaviour
     #region Event subscriptions
 
     private void Awake ( ) {
-        SceneManager.OnEasyDifficultyUnlocked += OnEasyDifficultyUnlocked;
+        SceneManager.OnChaosDifficultyUnlocked += OnChaosDifficultyUnlocked;
     }
 
     private void OnDestroy ( ) {
-        SceneManager.OnEasyDifficultyUnlocked -= OnEasyDifficultyUnlocked;
+        SceneManager.OnChaosDifficultyUnlocked -= OnChaosDifficultyUnlocked;
     }
 
     #endregion
 
 
-    private void OnEasyDifficultyUnlocked ( ) => easyDifficultyToggleOption.gameObject.SetActive ( true );
+    private void OnChaosDifficultyUnlocked ( ) => chaosDifficultyToggleOption.gameObject.SetActive ( true );
 
-    public void OnEasyDifficultyToggled ( bool toggleFlag ) => OnEasyDifficultyToggledAction?.Invoke ( toggleFlag );
+    public void OnChaosDifficultyToggled ( bool toggleFlag ) => OnChaosDifficultyToggledAction?.Invoke ( toggleFlag );
 
     #endregion
 }

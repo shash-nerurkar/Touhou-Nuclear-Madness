@@ -16,7 +16,7 @@ MonoBehaviour:
   character: 1
   color: {r: 0.54901963, g: 0.3529412, b: 0.6392157, a: 1}
   sprite: {fileID: -1356597432, guid: fa2c34c3f933a30409f27f6713bdc10c, type: 3}
-  health: 1100
+  health: 110
   speed: 3
   acceleration: 0
   onHitIDuration: 0.1

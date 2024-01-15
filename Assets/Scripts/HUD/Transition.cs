@@ -55,7 +55,7 @@ public class Transition : MonoBehaviour
 
         nextPlayerCharacterImage.sprite = playerCharacterData.Sprite;
 
-        healthValueLabel.text = ( ( int ) playerCharacterData.Health ).ToString ( );
+        healthValueLabel.text = ( SceneManager.CurrentGameDifficulty == GameDifficulty.Chaos ? 1 : ( int ) playerCharacterData.Health ).ToString ( );
         
         speedValueLabel.text = ( ( int ) ( playerCharacterData.Speed + playerCharacterData.Acceleration ) ).ToString ( );
     }

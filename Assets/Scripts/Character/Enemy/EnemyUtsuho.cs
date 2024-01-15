@@ -7,7 +7,7 @@ public class EnemyUtsuho : Enemy
 
     [ Header ("Attack") ]
 
-    [ SerializeField ] protected EnemyUtsuhoData utsuhoData;
+    [ SerializeField ] private EnemyUtsuhoData utsuhoData;
     public EnemyUtsuhoData UtsuhoData { get => utsuhoData; }
 
     #endregion
@@ -15,9 +15,13 @@ public class EnemyUtsuho : Enemy
 
     #region Fields
 
-    protected Timer sunAttackCooldownTimer;
+    private Timer sunAttackCooldownTimer;
 
-    protected Timer basicAttackCooldownTimer;
+    private Timer basicAttackCooldownTimer;
+
+    private IEnumerator sunAttackCoroutine;
+
+    private IEnumerator basicAttackCoroutine;
 
     #endregion
 
@@ -53,17 +57,22 @@ public class EnemyUtsuho : Enemy
         base.OnLoseFight();
 
         sunAttackCooldownTimer.PauseTimer ( );
+        if ( sunAttackCoroutine != null ) StopCoroutine ( sunAttackCoroutine );
+        
         basicAttackCooldownTimer.PauseTimer ( );
+        if ( basicAttackCoroutine != null ) StopCoroutine ( basicAttackCoroutine );
     }
 
     private void OnBasicAttackCooldownTimerFinished ( ) {
-        StartCoroutine ( ReleaseBasicAttack ( ) );
+        basicAttackCoroutine = ReleaseBasicAttack ( );
+        StartCoroutine ( basicAttackCoroutine );
 
         basicAttackCooldownTimer.StartTimer ( maxTime: UtsuhoData.BasicAttackCooldownTime, onTimerFinish: OnBasicAttackCooldownTimerFinished );
     }
 
     private void OnSunAttackCooldownTimerFinished ( ) {
-        StartCoroutine ( ReleaseSunAttack ( ) );
+        sunAttackCoroutine = ReleaseSunAttack ( );
+        StartCoroutine ( sunAttackCoroutine );
 
         sunAttackCooldownTimer.StartTimer ( maxTime: UtsuhoData.SunAttackCooldownTime, onTimerFinish: OnSunAttackCooldownTimerFinished );
     }

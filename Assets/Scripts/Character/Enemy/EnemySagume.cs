@@ -22,6 +22,12 @@ public class EnemySagume : Enemy
 
     protected Timer legendAttackDelayTimer;
 
+    private IEnumerator legend1AttackCoroutine;
+
+    private IEnumerator legend2AttackCoroutine;
+
+    private IEnumerator legend3AttackCoroutine;
+
     #endregion
 
 
@@ -56,6 +62,10 @@ public class EnemySagume : Enemy
         legendAttackCooldownTimer.PauseTimer ( );
         legendAttackDelayTimer.PauseTimer ( );
         legendDialogueLabel.gameObject.SetActive ( false );
+
+        if ( legend1AttackCoroutine != null ) StopCoroutine ( legend1AttackCoroutine );
+        if ( legend2AttackCoroutine != null ) StopCoroutine ( legend2AttackCoroutine );
+        if ( legend3AttackCoroutine != null ) StopCoroutine ( legend3AttackCoroutine );
     }
 
     private void OnLegendAttackCooldownTimerFinished ( ) {
@@ -86,15 +96,18 @@ public class EnemySagume : Enemy
 
         switch ( chosenLegendIndex ) {
             case 0:
-                StartCoroutine ( ReleaseLegend1Attack ( ) );
+                legend1AttackCoroutine = ReleaseLegend1Attack ( );
+                StartCoroutine ( legend1AttackCoroutine );
                 break;
 
             case 1:
-                StartCoroutine ( ReleaseLegend2Attack ( ) );
+                legend2AttackCoroutine = ReleaseLegend2Attack ( );
+                StartCoroutine ( legend2AttackCoroutine );
                 break;
 
             case 2:
-                StartCoroutine ( ReleaseLegend3Attack ( ) );
+                legend3AttackCoroutine = ReleaseLegend3Attack ( );
+                StartCoroutine ( legend3AttackCoroutine );
                 break;
         }
 

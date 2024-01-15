@@ -90,7 +90,7 @@ public class Player : Character
 
         speed = Data.Speed;
         damageMultiplier = 1;
-        health = Data.Health;
+        health = SceneManager.CurrentGameDifficulty == GameDifficulty.Chaos ? 1 : Data.Health;
         onHitIDuration = Data.OnHitIDuration;
         ability1Count = Data.BombCount;
         ability2Count = Data.Ability2Count;
@@ -172,7 +172,7 @@ public class Player : Character
     protected virtual void OnGetGrazed ( Collider2D collided ) {
         ++grazeCount;
 
-        if ( SceneManager.CurrentGameDifficulty == GameDifficulty.Easy ) {
+        if ( SceneManager.CurrentGameDifficulty == GameDifficulty.Chaos ) {
             ToggleDamageMultiplier ( true );
             
             Timer grazeDamageMultiplierInstanceTimer = gameObject.AddComponent<Timer> ( );

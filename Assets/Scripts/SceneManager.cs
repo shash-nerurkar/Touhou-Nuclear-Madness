@@ -15,11 +15,11 @@ public class SceneManager : MonoBehaviour
 
 
     [ Header ( "Combat" ) ]
-    [ SerializeField ] private static Vector3 BASE_POSITION_ENEMY  = new Vector2 ( 7.5f, 0f );
+    [ SerializeField ] private Vector3 BASE_POSITION_ENEMY  = new Vector2 ( 7.5f, 0f );
     
-    [ SerializeField ] private static Vector3 BASE_POSITION_PLAYER = new Vector2 ( -7.5f, 0f );
+    [ SerializeField ] private Vector3 BASE_POSITION_PLAYER = new Vector2 ( -7.5f, 0f );
     
-    [ SerializeField ] private static Vector3 BASE_POSITION_BYSTANDER_1 = new Vector2 ( -7.5f, 3f );
+    [ SerializeField ] private Vector3 BASE_POSITION_BYSTANDER_1 = new Vector2 ( -7.5f, 3f );
 
 
     [ Header ( "Player Sagume" ) ]
@@ -140,7 +140,7 @@ public class SceneManager : MonoBehaviour
 
     public static event Action ClearAllBullets;
 
-    public static event Action OnEasyDifficultyUnlocked;
+    public static event Action OnChaosDifficultyUnlocked;
 
     public static event Action<GameState> ChangeGameStateOnHUD;
 
@@ -174,7 +174,7 @@ public class SceneManager : MonoBehaviour
 
         HUD.OnDialogueSequenceCompleted += OnDialogueSequenceComplete;
 
-        MainMenuPanel.OnEasyDifficultyToggledAction += OnEasyDifficultyToggled;
+        MainMenuPanel.OnChaosDifficultyToggledAction += OnChaosDifficultyToggled;
     }
 
     private void OnDestroy ( ) {
@@ -189,7 +189,7 @@ public class SceneManager : MonoBehaviour
 
         HUD.OnDialogueSequenceCompleted -= OnDialogueSequenceComplete;
 
-        MainMenuPanel.OnEasyDifficultyToggledAction -= OnEasyDifficultyToggled;
+        MainMenuPanel.OnChaosDifficultyToggledAction -= OnChaosDifficultyToggled;
     }
 
     #endregion
@@ -461,7 +461,7 @@ public class SceneManager : MonoBehaviour
         currentEnemy.OnLose += ( ) => { OnFightComplete ( didWin: true ); };
         currentEnemy.OnHit += CurrentEnemyHit;
         
-        OnFightStarted ( currentPlayer.Data.Health, currentPlayer.Data.BombCount, currentPlayer.Data.Ability2Count, 0, 1, currentEnemy.Data.Health );
+        OnFightStarted ( currentPlayer.Health, currentPlayer.Data.BombCount, currentPlayer.Data.Ability2Count, 0, 1, currentEnemy.Data.Health );
     }
 
     private void OnFightComplete ( bool didWin ) {
@@ -617,16 +617,16 @@ public class SceneManager : MonoBehaviour
     #region Achievements
 
     private Dictionary<Achievement, bool> AchievementStatuses = new Dictionary<Achievement, bool> {
-        { Achievement.Easy_Difficulty, false },
+        { Achievement.Chaos_Difficulty, false },
         { Achievement.Skip_Dialogues_Mode, false }
     };
 
     private Dictionary<Achievement, bool> AchievementUnlockableStatuses { get {
         return new Dictionary<Achievement, bool> {
             { 
-                Achievement.Easy_Difficulty, 
-                currentRunCount == Constants.SCENEMANAGER_EASY_MODE_RUN_COUNT_THRESHOLD && 
-                    !AchievementStatuses [ Achievement.Easy_Difficulty ]
+                Achievement.Chaos_Difficulty, 
+                currentRunCount == Constants.SCENEMANAGER_CHAOS_MODE_RUN_COUNT_THRESHOLD && 
+                    !AchievementStatuses [ Achievement.Chaos_Difficulty ]
             },
             { 
                 Achievement.Skip_Dialogues_Mode, 
@@ -640,9 +640,9 @@ public class SceneManager : MonoBehaviour
     private Dictionary<Achievement, Action> OnAchievementUnlockActions { get {
         return new Dictionary<Achievement, Action> {
             { 
-                Achievement.Easy_Difficulty, 
+                Achievement.Chaos_Difficulty, 
                 ( ) => { 
-                    OnEasyDifficultyUnlocked?.Invoke ( ); 
+                    OnChaosDifficultyUnlocked?.Invoke ( ); 
                 }
             },
             { 
@@ -683,8 +683,8 @@ public class SceneManager : MonoBehaviour
     #endregion
 
 
-    private void OnEasyDifficultyToggled ( bool easyDifficultyToggleFlag ) {
-        currentGameDifficulty = easyDifficultyToggleFlag ? GameDifficulty.Easy : GameDifficulty.Default;
+    private void OnChaosDifficultyToggled ( bool chaosDifficultyToggleFlag ) {
+        currentGameDifficulty = chaosDifficultyToggleFlag ? GameDifficulty.Chaos : GameDifficulty.Default;
     }
 
     private void EndGame ( Ending ending ) {
