@@ -142,6 +142,8 @@ public class SceneManager : MonoBehaviour
 
     public static event Action OnEasyDifficultyUnlocked;
 
+    public static event Action<GameState> ChangeGameStateOnHUD;
+
     #endregion
 
 
@@ -235,12 +237,12 @@ public class SceneManager : MonoBehaviour
             case InGameState.MainMenu:
                 StopSound?.Invoke ( Constants.MAIN_MENU_MUSIC );
 
-                transitionDelayTimer.StartTimer ( maxTime: transitionFadeOutDelay, onTimerFinish: ( ) => {
-                    ChangeGameState ( newState: GameState.Chatting );
-
+                transitionDelayTimer.StartTimer ( maxTime: transitionFadeOutDelay, onTimerFinish: ( ) => {             
                     PlaySound?.Invoke ( Constants.CHATTING_MUSIC );
 
                     ChangeInGameState ( newState: InGameState.PreExplosion );
+
+                    ChangeGameStateOnHUD?.Invoke ( GameState.Chatting );
 
                     AddPlayer ( playerSagumeObject );
                     AddEnemy ( enemyUtsuhoObject );
@@ -268,9 +270,10 @@ public class SceneManager : MonoBehaviour
                 break;
 
             case InGameState.EndGame:
-                ChangeGameState ( newState: GameState.MainMenu );
                 ChangeInGameState ( newState: InGameState.MainMenu );
                 
+                ChangeGameStateOnHUD?.Invoke ( GameState.MainMenu );
+
                 StopSound?.Invoke ( Constants.ON_END_GAME_LOSS_MUSIC );
                 StopSound?.Invoke ( Constants.ON_END_GAME_WIN_MUSIC );
 
@@ -285,6 +288,11 @@ public class SceneManager : MonoBehaviour
         switch ( currentInGameState ) {
             case InGameState.MainMenu:
                 ChangeGameState ( newState: GameState.MainMenu );
+                
+                break;
+
+            case InGameState.PreExplosion:
+                ChangeGameState ( newState: GameState.Chatting );
                 
                 break;
 

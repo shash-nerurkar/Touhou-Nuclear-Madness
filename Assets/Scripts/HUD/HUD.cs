@@ -46,6 +46,7 @@ public class HUD : MonoBehaviour
         SceneManager.OnGameStateChanged += OnGameStateChanged;
         SceneManager.OnInGameStateChanged += OnInGameStateChanged;
         SceneManager.ContinueDialogueSequence += ContinueDialogueSequence;
+        SceneManager.ChangeGameStateOnHUD += ChangeGameStateOnHUD;
 
         SceneManager.ShowTutorial += inGamePanel.ShowTutorial;
         SceneManager.OnFightStarted += inGamePanel.SetPanelValues;
@@ -71,6 +72,7 @@ public class HUD : MonoBehaviour
         SceneManager.OnGameStateChanged -= OnGameStateChanged;
         SceneManager.OnInGameStateChanged -= OnInGameStateChanged;
         SceneManager.ContinueDialogueSequence -= ContinueDialogueSequence;
+        SceneManager.ChangeGameStateOnHUD -= ChangeGameStateOnHUD;
 
         SceneManager.ShowTutorial -= inGamePanel.ShowTutorial;
         SceneManager.OnFightStarted -= inGamePanel.SetPanelValues;
@@ -183,6 +185,8 @@ public class HUD : MonoBehaviour
     }
 
     #endregion
+
+    private void ChangeGameStateOnHUD ( GameState gameState ) => OnGameStateChanged ( gameState );
 
     #endregion
 }
