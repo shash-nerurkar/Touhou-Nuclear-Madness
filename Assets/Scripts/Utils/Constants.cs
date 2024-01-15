@@ -149,13 +149,13 @@ public class Constants {
         new ( "Hmph. Nevertheless, this will make a nice story. Keep an eye out for tomorrow's copy, Raven.", Characters.Aya ),
         new ( "No. I spot the difference between the polite and the kind.", Characters.Utsuho ),
         new ( "I must go tend to my plant now. Farewell.", Characters.Utsuho ),
-        new ( "(Talking to herself) Bah, what a grump. Well, I must hurry back and push this out before dusk. Off I go!", Characters.Aya ),
+        new ( "Bah, what a grump. Well, I must hurry back and push this out before dusk. Off I go!", Characters.Aya ),
     };
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_3_2 = new List<Dialogue> {
         new ( "... weak ...", Characters.Sagume ),
         new ( "(,,>_<,,)  THERE WILL BE CONSEQUENCES, LUNARI. FLY, AYA!!", Characters.UtsuhoCry ),
-        new ( "(Spots Aya) !!!!", Characters.Sagume ),
+        new ( "!!!!", Characters.Sagume ),
         new ( "I have to report this. The Lunarians can't get away with it!", Characters.Aya ),
         new ( "... I cannot allow that to happen ... forgive me, Tengu, for it is your turn ...", Characters.Sagume ),
     };

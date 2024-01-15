@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 55d2265e7da17114e974316ff988266e
+guid: 70d4fb10d2fa2bd45a6827c030405d66
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
@@ -125,11 +125,23 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Fission_0
+      name: Ball_0
       rect:
         serializedVersion: 2
         x: 0
@@ -143,14 +155,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: e5909bf1d00398346b72e242821c90a2
-      internalID: 2081607565
+      spriteID: 89cbb2756deed424aa22f5bf1b1aa52f
+      internalID: -6232131
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Fission_1
+      name: Ball_1
       rect:
         serializedVersion: 2
         x: 24
@@ -164,50 +176,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 275097e130d645540ae5527462830630
-      internalID: 1896628663
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fission_2
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 0
-        width: 24
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 97141cdb0d8a4734d825ba91f900e92d
-      internalID: -974823085
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: Fission_3
-      rect:
-        serializedVersion: 2
-        x: 72
-        y: 0
-        width: 24
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 10c021ddc890e304eb7b3c88ec8b940b
-      internalID: -1781505575
+      spriteID: 1c90f56f8bd22314783dc077bac20c8f
+      internalID: -2020709035
       vertices: []
       indices: 
       edges: []
@@ -223,10 +193,8 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Fission_2: -974823085
-      Fission_3: -1781505575
-      Fission_1: 1896628663
-      Fission_0: 2081607565
+      Ball_0: -6232131
+      Ball_1: -2020709035
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

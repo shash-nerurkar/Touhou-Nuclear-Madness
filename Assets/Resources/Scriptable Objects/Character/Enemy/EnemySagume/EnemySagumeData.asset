@@ -14,21 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   legendAttackCooldownTime: 2
   legendAttackDelayTime: 1.5
-  legend1BulletSpeed: 12.5
+  legend1BulletSpeed: 12
   legend1BulletDamage: 1
   legend1AttackBulletCount: 2
   legend1AttackBulletScale: 15
+  legend1AttackBulletScalingUpDuration: 0.5
   legend1AttackDelayInSeconds: 1.4
   legend1DialogueText: Come forth, Kuchisake Onna...
-  legend2BulletSpeed: 10
+  legend2BulletSpeed: 12.5
   legend2BulletDamage: 1
-  legend2AttackWaveCount: 5
+  legend2AttackWaveCount: 15
   legend2AttackBulletCountPerWave: 15
   legend2CurveAngle: 45
   legend2AttackBulletScale: 1.35
   legend2AttackDelayBetweenWavesInSeconds: 0.1
-  legend2DialogueText: Rise, Great Serpent, from the Lochness!
-  legend3BulletSpeed: 23
+  legend2DialogueText: Rise, Great Serpents of the Lochness!
+  legend3BulletSpeed: 20
   legend3BulletDamage: 1
   legend3AttackBulletCount: 10
   legend3AttackDelayInSeconds: 0.15

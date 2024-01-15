@@ -14,6 +14,8 @@ public class EnemyUtsuhoData : ScriptableObject
 
     [ SerializeField ] private int basicAttackBurstBulletCount = 3;
 
+    [ SerializeField ] private float basicAttackBulletScale = 0.9f;
+
     [ SerializeField ] private float basicAttackBurstDelayInSeconds = 0.2f;
 
 
@@ -27,7 +29,13 @@ public class EnemyUtsuhoData : ScriptableObject
 
     [ SerializeField ] private int sunAttackBulletCount = 15;
 
-    [ SerializeField ] private float sunAttackFirstBulletDelay = 1f;
+    [ SerializeField ] private float sunAttackBulletScale = 5;
+
+    [ SerializeField ] private float sunAttackBulletScalingUpDuration = 0.5f;
+
+    [ SerializeField ] private Vector2 sunAttackBulletDampingValueRange = new Vector2 ( 0.05f, 0.30f);
+
+    [ SerializeField ] private float sunAttackBulletDelay = 1f;
 
     [ SerializeField ] private float sunAttackSpreadRange = 1f;
 
@@ -36,11 +44,15 @@ public class EnemyUtsuhoData : ScriptableObject
     public float BasicAttackBulletDamage { get => basicAttackBulletDamage; }
     public float BasicAttackCooldownTime { get => basicAttackCooldownTime; }
     public int BasicAttackBurstBulletCount { get => basicAttackBurstBulletCount; }
+    public float BasicAttackBulletScale { get => basicAttackBulletScale; }
     public float BasicAttackBurstDelayInSeconds { get => basicAttackBurstDelayInSeconds; }
     public float SunAttackBulletSpeed { get => sunAttackBulletSpeed; }
     public float SunAttackBulletDamage { get => sunAttackBulletDamage; }
     public float SunAttackCooldownTime { get => sunAttackCooldownTime; }
     public int SunAttackBulletCount { get => sunAttackBulletCount; }
-    public float SunAttackFirstBulletDelay { get => sunAttackFirstBulletDelay; }
+    public float SunAttackBulletScale { get => sunAttackBulletScale; }
+    public float SunAttackBulletScalingUpDuration { get => sunAttackBulletScalingUpDuration; }
+    public Vector2 SunAttackBulletDampingValueRange { get => sunAttackBulletDampingValueRange; }
+    public float SunAttackBulletDelay { get => sunAttackBulletDelay; }
     public float SunAttackSpreadRange { get => sunAttackSpreadRange; }
 }

@@ -21,6 +21,8 @@ public class EnemySagumeData : ScriptableObject
 
     [ SerializeField ] private float legend1AttackBulletScale = 10;
 
+    [ SerializeField ] private float legend1AttackBulletScalingUpDuration = 0.5f;
+
     [ SerializeField ] private float legend1AttackDelayInSeconds = 0.2f;
 
     [ SerializeField ] private string legend1DialogueText = "Kuchisake Onna...";
@@ -68,6 +70,7 @@ public class EnemySagumeData : ScriptableObject
     public float Legend1BulletDamage { get => legend1BulletDamage; }
     public int Legend1AttackBulletCount { get => legend1AttackBulletCount; }
     public float Legend1AttackBulletScale { get => legend1AttackBulletScale; }
+    public float Legend1AttackBulletScalingUpDuration { get => legend1AttackBulletScalingUpDuration; }
     public float Legend1AttackDelayInSeconds { get => legend1AttackDelayInSeconds; }
     public string Legend1DialogueText { get => legend1DialogueText; }
     public float Legend2BulletSpeed { get => legend2BulletSpeed; }
