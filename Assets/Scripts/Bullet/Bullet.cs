@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -26,25 +27,58 @@ public class Bullet : MonoBehaviour
 
     private bool isFlying;
 
-    private bool isDamping;
-
-    private float lifetime;
-
-    private Timer dampingBulletTimer;
+    private Vector3 shootDir;
 
     private BulletPathType pathType;
+
+    private bool shouldDisappearOnTouchingScreenColliders;
+
+
+    #region Lifetime related
+    
+    private float lifetime;
+    
+    private Timer lifetimeTimer;
+    
+    #endregion
+
+
+    #region Damping related
+
+    private bool isDamping;
+
+    private float dampingValue;
+
+    #endregion
+
+
+    #region Straight-path related
+
+    #endregion
+
+
+    #region Sinusoidal-path related
+
+    private float startTime;
+
+    #endregion
+
+
+    #region Curve-path related
 
     private float angle;
 
     private float curveDir;
-    
-    private float startTime;
-    
-    private float dampingValue;
 
-    private Vector3 shootDir;
+    #endregion
 
-    private bool shouldDisappearOnTouchingScreenColliders;
+
+    #region Scale related
+
+    private IEnumerator scaleCoroutine;
+
+    #endregion
+
 
     #endregion
 
@@ -53,29 +87,38 @@ public class Bullet : MonoBehaviour
 
     public virtual void Init ( 
         BulletPathType pathType, Vector3 shootDir, float speed, float damage, 
-        float scale = 1, float curveDir = 1, float angle = 0, bool isDamping = false, bool shouldDisappearOnTouchingScreenColliders = true
+        float scale = 1, bool scaleGradually = false, float scalingUpDuration = 0f,
+        float curveDir = 1, float angle = 0, 
+        bool isDamping = false, float dampingValue = 0.0f,
+        bool shouldDisappearOnTouchingScreenColliders = true
     ) {
         isFlying = true;
         startTime = Time.time;
+        transform.localScale = new Vector3 ( transform.localScale.x * shootDir.x, transform.localScale.y, transform.localScale.z );
 
-        this.pathType = pathType;
-        this.shootDir = shootDir;
         this.speed = speed;
         this.damage = damage;
-
-        transform.localScale = new Vector3 ( transform.localScale.x * shootDir.x, transform.localScale.y, transform.localScale.z );
-        transform.localScale *= scale;
+        this.shootDir = shootDir;
+        this.pathType = pathType;
+        this.shouldDisappearOnTouchingScreenColliders = shouldDisappearOnTouchingScreenColliders;
+        
+        if ( scaleGradually ) {
+            scaleCoroutine = ScaleCoroutine ( transform.localScale * scale, scalingUpDuration );
+            StartCoroutine ( scaleCoroutine );
+        }
+        else {
+            transform.localScale *= scale;
+        }
 
         this.angle = angle * Mathf.Deg2Rad;
         this.curveDir = curveDir;
 
-        dampingBulletTimer = gameObject.AddComponent<Timer> ( );
         this.isDamping = isDamping;
-        dampingValue = Random.Range ( 0.05f, 0.3f );
+        this.dampingValue = dampingValue;
+        
         lifetime = Random.Range ( 3.0f, 7.0f );
-        dampingBulletTimer.StartTimer ( maxTime: lifetime, onTimerFinish: OnHitAnimationComplete );
-
-        this.shouldDisappearOnTouchingScreenColliders = shouldDisappearOnTouchingScreenColliders;
+        lifetimeTimer = gameObject.AddComponent<Timer> ( );
+        lifetimeTimer.StartTimer ( maxTime: lifetime, onTimerFinish: OnHit );
     }
 
     private void FixedUpdate ( ) {
@@ -104,7 +147,13 @@ public class Bullet : MonoBehaviour
                 offset.x = shootDir.x * speed;
                 offset.y = 9.0f * Mathf.Cos ( Time.time * speed );
                 break;
-            
+              
+            case BulletPathType.Curve:
+                offset.x = shootDir.x * speed;
+                offset.y = speed * Mathf.Sin(angle) * curveDir;
+                angle += Time.deltaTime;
+                break;
+          
             case BulletPathType.Twirly:
                 offset.x = ( Mathf.Cos ( angle ) * 2.0f ) + 1;
                 offset.y = Mathf.Sin ( angle ) * 2.0f;
@@ -115,15 +164,23 @@ public class Bullet : MonoBehaviour
                 offset.x = shootDir.x * Mathf.PingPong ( time * speed, 2 * 1.0f );
                 offset.y = 1.0f * Mathf.Sin ( time * 1.0f * speed );
                 break;
-            
-            case BulletPathType.Curve:
-                offset.x = shootDir.x * speed;
-                offset.y = speed * Mathf.Sin(angle) * curveDir;
-                angle += Time.deltaTime;
-                break;
         }
 
         rb.MovePosition ( transform.position + offset * Time.deltaTime );
+    }
+
+    IEnumerator ScaleCoroutine ( Vector3 destScale, float duration ) {
+        Vector3 originalScale = transform.localScale;
+        float elapsedTime = 0f;
+
+        while (elapsedTime < duration)
+        {
+            transform.localScale = Vector3.Lerp(originalScale, destScale, elapsedTime / duration);
+            elapsedTime += Time.deltaTime;
+            yield return null;
+        }
+
+        transform.localScale = destScale;
     }
 
     private void OnTriggerEnter2D ( Collider2D collided ) {
@@ -137,6 +194,9 @@ public class Bullet : MonoBehaviour
         cd.enabled = false;
 
         if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_SCREEN_BORDER ) ) {
+            if ( scaleCoroutine != null )
+                StopCoroutine ( scaleCoroutine );
+            
             OnHitAnimationComplete ( );
         }
         else if ( collidedLayer == LayerMask.NameToLayer ( Constants.COLLISION_LAYER_PLAYER ) ) {        
@@ -155,6 +215,9 @@ public class Bullet : MonoBehaviour
         spriteRenderer.material = unhighlightedMaterial;
         
         isFlying = false;
+        
+        if ( scaleCoroutine != null )
+            StopCoroutine ( scaleCoroutine );
 
         animator.SetBool ( "isHit", true );
     }

@@ -100,7 +100,7 @@ public class Constants {
 
         public const int SCENEMANAGER_CHAOS_MODE_RUN_COUNT_THRESHOLD = 7;
 
-        public const int SCENEMANAGER_SKIP_DIALOGUES_MODE_RUN_COUNT_THRESHOLD = 10;
+        public const int SCENEMANAGER_SKIP_DIALOGUES_MODE_RUN_COUNT_THRESHOLD = 15;
 
         #endregion
 
@@ -118,7 +118,7 @@ public class Constants {
     #region Dialogue Sequences
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_MAIN_MENU = new List<Dialogue> {
-        new ( "Hello! I'm Youmu. I'll be narrating an interesting incident - the day Sagume Kishin, the Lunarian goddess, wreaked havoc in Utsuho Reiuji's nuclear power plant.", Characters.Narrator ),
+        new ( "Hello! I'm Youmu. This game is about yet another Lunarian-Earthling tussle - the day Sagume Kishin, the Lunarian goddess, wreaked havoc in Utsuho Reiuji's nuclear power plant.", Characters.Narrator ),
     };
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_1 = new List<Dialogue> {
@@ -136,26 +136,26 @@ public class Constants {
         new ( "!!!", Characters.Aya ),
         new ( "!!!!!!!!!!!!!!!!", Characters.Utsuho ),
         new ( "...", Characters.Sagume ),
-        new ( "WHY?", Characters.Utsuho ),
+        new ( "WHAT HAVE YOU DONE, LUNARI?", Characters.Utsuho ),
         new ( "...", Characters.Sagume ),
-        new ( "Amy last words, LUNARI?", Characters.Utsuho ),
+        new ( "ANY LAST WORDS?", Characters.Utsuho ),
         new ( "...", Characters.Sagume ),
     };
     
     public static List<Dialogue> DIALOGUE_SEQUENCE_3_1 = new List<Dialogue> {
         new ( "(˚ ˃̣̣̥ - ˂̣̣̥ )  ... I m-must retreat ... I will not f-forget this, Earthlings ...", Characters.SagumeCry ),
         new ( "Okuu! You beat her! What were the chances?", Characters.Aya ),
-        new ( "As the fires in Hell, which unfailingly burn. I'd rather you misunderstood my strength, than miscalculated it, Tengu.", Characters.Utsuho ),
+        new ( "As much as for Hell to be ablaze. I'd rather you misunderstood my strength, than miscalculated it, Tengu.", Characters.Utsuho ),
         new ( "Hmph. Nevertheless, this will make a nice story. Keep an eye out for tomorrow's copy, Raven.", Characters.Aya ),
         new ( "No. I spot the difference between the polite and the kind.", Characters.Utsuho ),
-        new ( "I must go tend to my plant now. Farewell.", Characters.Utsuho ),
-        new ( "(Talking to herself) Bah, what a grump. Well, I must hurry back and push this out before dusk. Off I go!", Characters.Aya ),
+        new ( "I must go mend my plant now. Farewell.", Characters.Utsuho ),
+        new ( "Bah, what a grump. Well, I must hurry back and push this out before dusk. Off I go!", Characters.Aya ),
     };
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_3_2 = new List<Dialogue> {
         new ( "... weak ...", Characters.Sagume ),
-        new ( "(,,>_<,,)  THERE WILL BE CONSEQUENCES, LUNARI. FLY, AYA!!", Characters.UtsuhoCry ),
-        new ( "(Spots Aya) !!!!", Characters.Sagume ),
+        new ( "(,,>_<,,)  THERE WILL BE CONSEQUENCES, LUNARI. FLY, AYA!", Characters.UtsuhoCry ),
+        new ( "!!!!", Characters.Sagume ),
         new ( "I have to report this. The Lunarians can't get away with it!", Characters.Aya ),
         new ( "... I cannot allow that to happen ... forgive me, Tengu, for it is your turn ...", Characters.Sagume ),
     };
@@ -168,9 +168,9 @@ public class Constants {
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_5_1 = new List<Dialogue> {
         new ( "(˚ ˃̣̣̥ - ˂̣̣̥ )  This cannot be happening!", Characters.AyaCry ),
-        new ( "... It is the inevitable that has happened .... Remember this, crow ...", Characters.Sagume ),
+        new ( "It is the inevitable that has happened .... Remember this, crow ...", Characters.Sagume ),
         new ( "How dare you call me that!", Characters.AyaCry ),
-        new ( "... I shall allow you to publish about this ... Write about your shame, and fly ... perhaps, someday, it will not keep up ...", Characters.Sagume ),
+        new ( "I shall allow you to publish about this ... Write about your shame, and fly ... perhaps, someday, it will not keep up ...", Characters.Sagume ),
         new ( "*glares*", Characters.Aya ),
         new ( "I must depart now ...", Characters.Sagume ),
         new ( "*sniffle*", Characters.AyaCry ),

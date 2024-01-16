@@ -64,6 +64,7 @@ public class EnemySagume : Enemy
         legendAttackCooldownTimer.PauseTimer ( );
         legendAttackDelayTimer.PauseTimer ( );
         legendDialogueLabel.gameObject.SetActive ( false );
+        legendLineIndicator.gameObject.SetActive ( false );
 
         if ( legend1AttackCoroutine != null ) StopCoroutine ( legend1AttackCoroutine );
         if ( legend2AttackCoroutine != null ) StopCoroutine ( legend2AttackCoroutine );
@@ -126,6 +127,8 @@ public class EnemySagume : Enemy
                 speed: SagumeData.Legend1BulletSpeed, 
                 damage: SagumeData.Legend1BulletDamage,
                 scale: SagumeData.Legend1AttackBulletScale,
+                scaleGradually: true,
+                scalingUpDuration: SagumeData.Legend1AttackBulletScalingUpDuration,
                 shouldDisappearOnTouchingScreenColliders: false
             );
 

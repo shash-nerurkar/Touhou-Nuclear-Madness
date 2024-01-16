@@ -79,24 +79,24 @@ public class EnemyUtsuho : Enemy
 
     IEnumerator ReleaseBasicAttack (  ) {
         for ( int i = 0; i < UtsuhoData.BasicAttackBurstBulletCount; i++ ) {
-            GameObject randomBulletObject = Data.BulletObjects [ Random.Range ( 0, Data.BulletObjects.Length ) ];
-
-            GameObject bulletInstance = Instantiate ( original: randomBulletObject, position: pivot.position, rotation: Quaternion.identity );
+            GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 0 ], position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
             bullet.Init ( 
                 BulletPathType.Sinusoidal, 
                 shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
                 speed: UtsuhoData.BasicAttackBulletSpeed,
-                damage: UtsuhoData.BasicAttackBulletDamage
+                damage: UtsuhoData.BasicAttackBulletDamage,
+                scale: UtsuhoData.BasicAttackBulletScale
             );
 
-            GameObject bulletInstance2 = Instantiate ( original: randomBulletObject, position: pivot.position, rotation: Quaternion.identity );
+            GameObject bulletInstance2 = Instantiate ( original: Data.BulletObjects [ 0 ], position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet2 = bulletInstance2.GetComponent<Bullet> ( );
             bullet2.Init ( 
                 BulletPathType.Cosinusoidal, 
                 shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
                 speed: UtsuhoData.BasicAttackBulletSpeed,
-                damage: UtsuhoData.BasicAttackBulletDamage
+                damage: UtsuhoData.BasicAttackBulletDamage,
+                scale: UtsuhoData.BasicAttackBulletScale
             );
             
             yield return new WaitForSeconds ( UtsuhoData.BasicAttackBurstDelayInSeconds );
@@ -104,27 +104,34 @@ public class EnemyUtsuho : Enemy
     }
 
     IEnumerator ReleaseSunAttack (  ) {
-        void ShootSunBullet ( GameObject randomBulletObject, Vector3 shootDir ) {
-            GameObject bulletInstance = Instantiate ( original: randomBulletObject, position: pivot.position, rotation: Quaternion.identity );
+        void ShootSunBullet ( Vector3 shootDir, float dampingValue ) {
+            GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ 1 ], position: pivot.position, rotation: Quaternion.identity );
             Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
             bullet.Init ( 
                 BulletPathType.Straight, 
                 shootDir: shootDir,
                 speed: UtsuhoData.SunAttackBulletSpeed,
                 damage: UtsuhoData.SunAttackBulletDamage,
-                isDamping: true
+                scale: UtsuhoData.SunAttackBulletScale,
+                scaleGradually: true,
+                scalingUpDuration: UtsuhoData.SunAttackBulletScalingUpDuration,
+                isDamping: true,
+                dampingValue: dampingValue
             );
         }
-
-        GameObject randomBulletObject = Data.BulletObjects [ Random.Range ( 0, Data.BulletObjects.Length ) ];
-
-        ShootSunBullet ( randomBulletObject, new Vector3 ( Mathf.Sign ( transform.localScale.x ), -UtsuhoData.SunAttackSpreadRange, 0 ) );
-        ShootSunBullet ( randomBulletObject, new Vector3 ( Mathf.Sign ( transform.localScale.x ), UtsuhoData.SunAttackSpreadRange, 0 ) );
-
-        yield return new WaitForSeconds ( UtsuhoData.SunAttackFirstBulletDelay );
         
-        for ( int i = 0; i < UtsuhoData.SunAttackBulletCount; i++ )
-            ShootSunBullet ( randomBulletObject, new Vector3 ( Mathf.Sign ( transform.localScale.x ), Random.Range ( -UtsuhoData.SunAttackSpreadRange, UtsuhoData.SunAttackSpreadRange ), 0 ) );
+        float dampingUnit = ( UtsuhoData.SunAttackBulletDampingValueRange.y - UtsuhoData.SunAttackBulletDampingValueRange.x ) / ( UtsuhoData.SunAttackBulletCount - 1 );
+        
+        for ( int i = 0; i < UtsuhoData.SunAttackBulletCount; i++ ) {    
+            float dampingValue = UtsuhoData.SunAttackBulletDampingValueRange.x + ( i * dampingUnit );
+
+            ShootSunBullet (
+                shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), Random.Range ( -UtsuhoData.SunAttackSpreadRange, UtsuhoData.SunAttackSpreadRange ), 0 ),
+                dampingValue
+            );
+
+            yield return new WaitForSeconds ( UtsuhoData.SunAttackBulletDelay );
+        }    
     }
 
     #endregion

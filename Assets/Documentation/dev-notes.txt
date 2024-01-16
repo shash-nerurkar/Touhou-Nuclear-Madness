@@ -1,0 +1,84 @@
+- Fix transition text anim																DONE
+- Remove animation lag																	DONE
+- Fix spacebar-spam related exceptions													DONE
+- Change cat-mojis (aren't rendering properly)											DONE
+- Change music (to dodge legal bullets)													DONE
+- Refactor code to make transitions reusable											DONE
+- Add transitions at the beginning & end of the game									DONE
+- Refactor code to make fights reusable													DONE
+- Add support for character abilities													DONE
+- Add grazing																			DONE
+- Make player hitboxes smaller															DONE
+- Add next character stats to transition												DONE
+- Fix scene flow bugs																	DONE
+- Migrate character damage to character script											DONE
+- Add acceleration to player movement													DONE
+- Adjust bullet colliders																DONE
+- Show enemy HP on losing fight															DONE
+- Add prompts for Enemy Sagume's legends												DONE
+- Fix iframe not working																DONE
+- Add damage multiplier on grazing														DONE
+- Add delay for transitions with fight details											DONE
+- Feather particle																		DONE
+- Up Arrow particle																		DONE
+- Down Arrow particle																	DONE
+- Bomb icon																				DONE
+- Speed icon																			DONE
+- On Bomb Used sound																	DONE
+- Damage Multiplier Increased sound														DONE
+- On Damage Multiplier Decreased sound													DONE
+- Menu music																			DONE
+- Add fly anim bobbing back																DONE
+- Achievements implementation															DONE
+- Tryhard mode achievement																DONE
+- Creators Portrait sprite																DONE
+- Achievement sound																		DONE
+- Mickey Mouse mode achievement															DONE
+- Checkbox Sprite																		DONE
+- Fix new scene flow bug																DONE
+- Fix tryhard mode bug																	DONE
+- Fix main menu dialogue missing bug													DONE
+- Fix small hitbox not working bug														DONE
+- Move all character stats to Scriptable Object Data									DONE
+- Change Mickey Mouse mode to Chaos mode (player 1 hp)									DONE
+- Add description for Chaos mode														DONE
+- Stop enemy attacks on set not as current												DONE
+
+- Balance difficulty and change enemy attack patterns									
+	Increase graze radius																DONE
+	Change Utsuho sun attack indicator													DONE
+	Change Utsuho sun attack spread amount												DONE
+	Decrease Utsuho sun attack cooldown													DONE
+	Increase sun attack spread bullets													DONE
+	Increase Sagume movement range and frequency										DONE
+	Fix Sagume curve attack spread														DONE
+	Increase Sagume curve attack bullet count											DONE
+	Scale Sagume curve attack bullet													DONE
+	Lowwe Sagume random attack bullet speed												DONE
+	Adjust Sagume random attack spread and delay										DONE
+	Add indicator for Sagume random attack												DONE
+	Scale Sagume random attack bullet													DONE
+	Rewrite Sagume Kuchisake Onna attack												DONE
+	Adjust Sagume legend dialogues and their delay										DONE
+	Increase Player Sagume and Aya health												DONE
+- Trim scene-01 fight music																DONE
+- Change scene-02 fight music															DONE
+- Make dialogues good (somewhat)														DONE
+
+- Adjust Sagume legends																	DONE
+- Adjust Utsuho sun attack																DONE
+- Create new Utsuho basic attack bullet prefab											DONE
+- Smoothen Utsuho sun attack bullet anim												DONE
+- Lower Sagume stats																	DONE
+- Lower player hitbox																	DONE
+- Add timer																				DONE
+- Show time on main menu panel															DONE
+
+- ITCH IO PAGE
+	Controls																			DONE
+	Ability descriptions																DONE
+	Graze description																	DONE
+	Enemy descriptions																	DONE
+	Devlog																				DONE
+
+- Create trailer																		

@@ -25,6 +25,8 @@ public class InGamePanel : MonoBehaviour
 
     [ SerializeField ] private GameObject controlsTutorial;
 
+    [ SerializeField ] private TextMeshProUGUI fightTimerLabel;
+
     [ SerializeField ] private float controlsTutorialShowTime;
 
     #endregion
@@ -50,6 +52,12 @@ public class InGamePanel : MonoBehaviour
 
         enemyHealthBarSlider.maxValue = enemyHealth;
         UpdateEnemyHealth ( enemyHealthBarSlider.maxValue );
+
+        UpdateFightTimer ( "00:00" );
+    }
+
+    public void UpdateFightTimer ( string fightTime ) {
+        fightTimerLabel.text = fightTime;
     }
 
     public void UpdatePlayerHealth ( float health ) {

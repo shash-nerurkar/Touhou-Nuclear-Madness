@@ -22,5 +22,6 @@ MonoBehaviour:
   onHitIDuration: 0.1
   bulletObjects:
   - {fileID: 302041270312899223, guid: 3c0cf8bf7da44754e9c5ef2f10163857, type: 3}
+  - {fileID: 302041270312899223, guid: cfb1d7dde2f9e054b9eae5eab902cb94, type: 3}
   moveCooldownTime: 0
   moveDistanceRange: 3.5
