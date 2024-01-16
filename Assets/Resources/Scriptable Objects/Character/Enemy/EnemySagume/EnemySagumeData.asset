@@ -24,7 +24,7 @@ MonoBehaviour:
   legend2BulletSpeed: 12.5
   legend2BulletDamage: 1
   legend2AttackWaveCount: 15
-  legend2AttackBulletCountPerWave: 15
+  legend2AttackBulletCountPerWave: 13
   legend2CurveAngle: 45
   legend2AttackBulletScale: 1.35
   legend2AttackDelayBetweenWavesInSeconds: 0.1
