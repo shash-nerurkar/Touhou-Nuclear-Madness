@@ -48,6 +48,9 @@ public class HUD : MonoBehaviour
         SceneManager.ContinueDialogueSequence += ContinueDialogueSequence;
         SceneManager.ChangeGameStateOnHUD += ChangeGameStateOnHUD;
 
+        SceneManager.OnChaosDifficultyUnlocked += mainMenuPanel.OnChaosDifficultyUnlocked;
+        SceneManager.UpdateScore += mainMenuPanel.UpdateScore;
+
         SceneManager.ShowTutorial += inGamePanel.ShowTutorial;
         SceneManager.OnFightStarted += inGamePanel.SetPanelValues;
         SceneManager.OnCurrentPlayerHit += inGamePanel.UpdatePlayerHealth;
@@ -56,6 +59,7 @@ public class HUD : MonoBehaviour
         SceneManager.OnCurrentPlayerFiredAbility1 += inGamePanel.UpdatePlayerAbility1;
         SceneManager.OnCurrentPlayerFiredAbility2 += inGamePanel.UpdatePlayerAbility2;
         SceneManager.OnCurrentEnemyHit += inGamePanel.UpdateEnemyHealth;
+        SceneManager.UpdateFightTimer += inGamePanel.UpdateFightTimer;
         
         SceneManager.OnEndGame += endGamePanel.ChangeBackgroundScene;
         
@@ -74,6 +78,9 @@ public class HUD : MonoBehaviour
         SceneManager.ContinueDialogueSequence -= ContinueDialogueSequence;
         SceneManager.ChangeGameStateOnHUD -= ChangeGameStateOnHUD;
 
+        SceneManager.OnChaosDifficultyUnlocked -= mainMenuPanel.OnChaosDifficultyUnlocked;
+        SceneManager.UpdateScore -= mainMenuPanel.UpdateScore;
+
         SceneManager.ShowTutorial -= inGamePanel.ShowTutorial;
         SceneManager.OnFightStarted -= inGamePanel.SetPanelValues;
         SceneManager.OnCurrentPlayerHit -= inGamePanel.UpdatePlayerHealth;
@@ -82,6 +89,7 @@ public class HUD : MonoBehaviour
         SceneManager.OnCurrentPlayerFiredAbility1 -= inGamePanel.UpdatePlayerAbility1;
         SceneManager.OnCurrentPlayerFiredAbility2 -= inGamePanel.UpdatePlayerAbility2;
         SceneManager.OnCurrentEnemyHit -= inGamePanel.UpdateEnemyHealth;
+        SceneManager.UpdateFightTimer -= inGamePanel.UpdateFightTimer;
         
         SceneManager.OnEndGame -= endGamePanel.ChangeBackgroundScene;
         

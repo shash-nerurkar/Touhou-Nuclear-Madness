@@ -54,6 +54,12 @@ public class SceneManager : MonoBehaviour
 
     private Timer delayTimer;
 
+    private Timer fightTimer;
+
+    private const float fightMaxTime = 9999f;
+
+    private float [ ] fightScores;
+
 
     #region Current run data
 
@@ -144,6 +150,10 @@ public class SceneManager : MonoBehaviour
 
     public static event Action<GameState> ChangeGameStateOnHUD;
 
+    public static event Action<string> UpdateFightTimer;
+
+    public static event Action<int, string> UpdateScore;
+
     #endregion
 
 
@@ -154,7 +164,12 @@ public class SceneManager : MonoBehaviour
         ChangeInGameState ( newState: InGameState.MainMenu );
     }
 
-    private void FixedUpdate ( ) => PlayerPosition = currentPlayer != null ? currentPlayer.transform.position : BASE_POSITION_PLAYER;
+    private void FixedUpdate ( ) {
+        PlayerPosition = currentPlayer != null ? currentPlayer.transform.position : BASE_POSITION_PLAYER;
+
+        if ( currentGameState == GameState.Playing && fightTimer != null && fightTimer.IsRunning )
+            UpdateFightTimer?.Invoke ( Timer.DisplayTime ( fightMaxTime - fightTimer.TimeRemaining ) );
+    }
 
 
     #region Event Subscriptions
@@ -162,6 +177,11 @@ public class SceneManager : MonoBehaviour
     private void Awake ( ) {
         transitionDelayTimer = gameObject.AddComponent<Timer> ( );
         delayTimer = gameObject.AddComponent<Timer> ( );
+        fightTimer = gameObject.AddComponent<Timer> ( );
+        fightScores = new float [ ] {
+            Mathf.Infinity,
+            Mathf.Infinity,
+        };
 
         InputManager.PopDialogueAction += OnDialoguePopped;
 
@@ -447,6 +467,8 @@ public class SceneManager : MonoBehaviour
                 break;
         }
 
+        fightTimer.StartTimer ( maxTime: fightMaxTime, onTimerFinish: ( ) => { } );
+
         currentPlayer.ToggleAsCurrent ( true );
         currentPlayer.OnLose += ( ) => { OnFightComplete ( didWin: false ); };
         currentPlayer.OnPlayerShoot += CurrentPlayerShoot;
@@ -481,6 +503,16 @@ public class SceneManager : MonoBehaviour
         currentEnemy.OnLose -= ( ) => { OnFightComplete ( didWin: true ); };
         currentEnemy.OnHit -= CurrentEnemyHit;
 
+        fightTimer.PauseTimer ( );
+        if ( didWin ) {
+            float newScore = fightMaxTime - fightTimer.TimeRemaining;
+            
+            if ( newScore < fightScores [ currentFightIndex ] ) {
+                fightScores [ currentFightIndex ] = newScore;
+                UpdateScore ( currentFightIndex, Timer.DisplayTime ( fightScores [ currentFightIndex ] ) );
+            }
+        }
+        
         switch ( currentFightIndex ) {
             case 0:
                 if ( didWin )

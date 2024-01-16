@@ -1,4 +1,5 @@
 using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +9,8 @@ public class MainMenuPanel : MonoBehaviour
     #region Serializable Fields
 
     [ SerializeField ] private Toggle chaosDifficultyToggleOption;
+
+    [ SerializeField ] private TextMeshProUGUI [ ] timerScoresLabels;
 
     #endregion
 
@@ -21,21 +24,11 @@ public class MainMenuPanel : MonoBehaviour
 
     #region Methods
 
-
-    #region Event subscriptions
-
-    private void Awake ( ) {
-        SceneManager.OnChaosDifficultyUnlocked += OnChaosDifficultyUnlocked;
+    public void UpdateScore ( int fightIndex, string fightTimeScore ) {
+        timerScoresLabels [ fightIndex ].text = "Fight " + ( fightIndex + 1 ) + " - " + fightTimeScore;
     }
 
-    private void OnDestroy ( ) {
-        SceneManager.OnChaosDifficultyUnlocked -= OnChaosDifficultyUnlocked;
-    }
-
-    #endregion
-
-
-    private void OnChaosDifficultyUnlocked ( ) => chaosDifficultyToggleOption.gameObject.SetActive ( true );
+    public void OnChaosDifficultyUnlocked ( ) => chaosDifficultyToggleOption.gameObject.SetActive ( true );
 
     public void OnChaosDifficultyToggled ( bool toggleFlag ) => OnChaosDifficultyToggledAction?.Invoke ( toggleFlag );
 
