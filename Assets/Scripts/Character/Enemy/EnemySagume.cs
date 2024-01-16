@@ -64,6 +64,7 @@ public class EnemySagume : Enemy
         legendAttackCooldownTimer.PauseTimer ( );
         legendAttackDelayTimer.PauseTimer ( );
         legendDialogueLabel.gameObject.SetActive ( false );
+        legendLineIndicator.gameObject.SetActive ( false );
 
         if ( legend1AttackCoroutine != null ) StopCoroutine ( legend1AttackCoroutine );
         if ( legend2AttackCoroutine != null ) StopCoroutine ( legend2AttackCoroutine );
