@@ -82,3 +82,7 @@
 	Devlog																				DONE
 
 - Create trailer																		
+
+
+FUTURE
+- Checkpoints between fights
