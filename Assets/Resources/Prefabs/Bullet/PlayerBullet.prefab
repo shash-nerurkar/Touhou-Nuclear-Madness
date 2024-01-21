@@ -77,20 +77,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8294826628683376828, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
       propertyPath: m_Color.b
-      value: 1
+      value: 0.5647059
       objectReference: {fileID: 0}
     - target: {fileID: 8294826628683376828, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
       propertyPath: m_Color.g
-      value: 0.572327
+      value: 0.44313726
       objectReference: {fileID: 0}
     - target: {fileID: 8294826628683376828, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
       propertyPath: m_Color.r
-      value: 0.572327
+      value: 0.29803923
       objectReference: {fileID: 0}
     - target: {fileID: 8294826628683376828, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: c418f9a09b393e4458df40abe50198d6, type: 2}
+      objectReference: {fileID: 2100000, guid: e1a7b4a7e4e8b5444a616165ae0dec83, type: 2}
     m_RemovedComponents:
     - {fileID: 5349339279002926857, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
@@ -130,10 +130,8 @@ MonoBehaviour:
   cd: {fileID: 4968971130801564282}
   spriteRenderer: {fileID: 7535069831079657450}
   animator: {fileID: 7960898536248851781}
-  speed: 15
-  damage: 10
   unhighlightedMaterial: {fileID: 2100000, guid: 151aea5398b6dd640a6b8a579a443ecf, type: 2}
-  highlightedMaterial: {fileID: 2100000, guid: c418f9a09b393e4458df40abe50198d6, type: 2}
+  highlightedMaterial: {fileID: 2100000, guid: e1a7b4a7e4e8b5444a616165ae0dec83, type: 2}
 --- !u!95 &7960898536248851781 stripped
 Animator:
   m_CorrespondingSourceObject: {fileID: 8500014065925909011, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}

@@ -612,6 +612,8 @@ public class SceneManager : MonoBehaviour
         GameObject playerInstance = Instantiate ( playerObject, BASE_POSITION_PLAYER, Quaternion.identity );
         
         currentPlayer = playerInstance.GetComponent<Player> ( );
+        currentPlayer.ToggleAsCurrent ( false );
+
         return currentPlayer;
     }
 
@@ -619,6 +621,8 @@ public class SceneManager : MonoBehaviour
         GameObject enemyInstance = Instantiate ( enemyObject, BASE_POSITION_ENEMY, Quaternion.identity );
 
         currentEnemy = enemyInstance.GetComponent<Enemy> ( );
+        currentEnemy.ToggleAsCurrent ( false );
+        
         return currentEnemy;
     }
 
@@ -626,6 +630,8 @@ public class SceneManager : MonoBehaviour
         GameObject bystanderInstance = Instantiate ( bystanderObject, BASE_POSITION_BYSTANDER_1, Quaternion.identity );
         
         Character bystander = bystanderInstance.GetComponent<Character> ( );
+        bystander.ToggleAsCurrent ( false );
+
         currentOtherCharacters.Add ( bystander );
 
         return bystander;

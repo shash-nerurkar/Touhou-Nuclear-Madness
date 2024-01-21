@@ -18,10 +18,8 @@ public class EndGamePanel : MonoBehaviour
     #region Methods
     
     public void ChangeBackgroundScene ( Ending ending, float winnerHP ) {
-        if ( ending < 0 || ( int ) ending >= endingBackgroundSprites.Length ) {
-            Debug.Log ( "No scene background sprite found for index: " + ending );
+        if ( ending < 0 || ( int ) ending >= endingBackgroundSprites.Length )
             return;
-        }
 
         switch ( ending ) {
             case Ending.UtsuhoWin:

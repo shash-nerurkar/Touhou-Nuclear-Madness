@@ -37,23 +37,48 @@ public class Constants {
 
     #region Colors
 
-    // 383838
-    public static Color COLOR_NARRATOR = new ( 0.219f, 0.219f, 0.219f );
-
     // 8c5aa3
-    public static Color COLOR_SAGUME = new ( 0.549f, 0.353f, 0.639f );
+    public static Color COLOR_SAGUME                = new ( 0.549f, 0.353f, 0.639f );
 
     // 238417
-    public static Color COLOR_UTSUHO = new ( 0.137f, 0.518f, 0.090f );
+    public static Color COLOR_UTSUHO                = new ( 0.137f, 0.518f, 0.090f );
 
     // a41000
-    public static Color COLOR_AYA    = new ( 0.643f, 0.063f, 0.000f );
+    public static Color COLOR_AYA                   = new ( 0.643f, 0.063f, 0.000f );
 
-    // 40C9FF
-    public static Color COLOR_PLAYER_UI = new ( 0.251f, 0.788f, 1.000f );
+    // 383838
+    public static Color COLOR_NARRATOR              = new ( 0.219f, 0.219f, 0.219f );
 
     // FFFFFF
-    public static Color COLOR_CREATORS = new ( 1f, 1f, 1f );
+    public static Color COLOR_CREATORS              = new ( 1.000f, 1.000f, 1.000f );
+
+    // 40C9FF
+    public static Color COLOR_PLAYER_BASE           = new ( 0.251f, 0.788f, 1.000f );
+    // 0000FF
+    public static Color COLOR_PLAYER_FINAL          = new ( 0.000f, 0.000f, 1.000f );
+
+    // 804040
+    public static Color COLOR_ENEMY_BASE     = new Color ( 0.620f, 0.000f, 0.000f );
+    // FF0000
+    public static Color COLOR_ENEMY_FINAL    = new Color ( 1.000f, 0.000f, 0.000f );
+
+    // 4C7190
+    public static Color COLOR_PLAYER_BULLET_BASE    = new ( 0.300f, 0.443f, 0.566f );
+    // 4C71FF
+    public static Color COLOR_PLAYER_BULLET_FINAL   = new ( 0.300f, 0.443f, 1.000f );
+
+    // 804040
+    public static Color COLOR_ENEMY_BULLET_BASE     = new Color ( 0.620f, 0.251f, 0.251f );
+    // FF4040
+    public static Color COLOR_ENEMY_BULLET_FINAL    = new Color ( 1.000f, 0.251f, 0.251f );
+
+    
+    public static Color CalculateColorForDamageMultiplier ( Color baseColor, Color destColor, float damageMultiplier ) {
+        float guessMultiplierCounts = Mathf.Log ( damageMultiplier, 2 );
+        float tValue = Mathf.Clamp01 ( 0.2f * guessMultiplierCounts );
+
+        return Color.Lerp ( baseColor, destColor, tValue );
+    }
 
     #endregion
 

@@ -86,9 +86,7 @@ public class InGamePanel : MonoBehaviour
     public void UpdatePlayerDamageMultiplier ( float damageMultiplier ) {
         playerDamageMultiplierLabel.text = "Damage: " + damageMultiplier + "x";
 
-        float guessMultiplierCounts = Mathf.Log ( damageMultiplier, 2 );
-        float tValue = Mathf.Clamp01 ( 0.2f * guessMultiplierCounts );
-        playerDamageMultiplierLabel.color = Color.Lerp ( Constants.COLOR_PLAYER_UI, Color.blue, tValue );
+        playerDamageMultiplierLabel.color = Constants.CalculateColorForDamageMultiplier ( Constants.COLOR_PLAYER_BASE, Constants.COLOR_PLAYER_FINAL, damageMultiplier );
     }
 
     public void UpdateEnemyHealth ( float health ) {

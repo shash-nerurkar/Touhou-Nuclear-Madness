@@ -63,18 +63,6 @@ public abstract class Enemy : Character
         }
     }
 
-    protected override void OnGetHit ( ) {
-        base.OnGetHit();
-        
-        ChangeState ( State.Idle );
-    }
-
-    protected override void OnLoseFight ( ) {
-        base.OnLoseFight();
-        
-        ChangeState ( State.Chatting );
-    }
-
     private void FixedUpdate ( ) {
         switch ( currentState ) {
             case State.Move:
@@ -91,6 +79,18 @@ public abstract class Enemy : Character
         moveDestination = basePosition + new Vector3 ( Random.Range ( -0.5f, 0.5f ), Random.Range ( -Data.MoveDistanceRange, Data.MoveDistanceRange ) );
 
         ChangeState ( State.Move );
+    }
+
+    protected override void OnGetHit ( ) {
+        base.OnGetHit();
+        
+        ChangeState ( State.Idle );
+    }
+
+    protected override void OnLoseFight ( ) {
+        base.OnLoseFight();
+        
+        ChangeState ( State.Chatting );
     }
 
     public override void ToggleAsCurrent ( bool isCurrent ) {

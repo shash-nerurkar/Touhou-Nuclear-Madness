@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: EnemyBullet_PixelOutline
+  m_Name: PixelOutline
   m_Shader: {fileID: -6465566751694194690, guid: 2cd5d15b925ad9744bc54170c183464e, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords: []
@@ -39,7 +39,7 @@ Material:
     m_Ints: []
     m_Floats:
     - CORNERS: 0
-    - _OutlineThickness: 1
+    - _OutlineThickness: 2
     m_Colors:
-    - _OutlineColor: {r: 1, g: 0.019823868, b: 0, a: 1}
+    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

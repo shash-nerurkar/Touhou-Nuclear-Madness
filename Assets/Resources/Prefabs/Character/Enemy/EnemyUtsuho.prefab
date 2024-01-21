@@ -156,7 +156,7 @@ MonoBehaviour:
   cd: {fileID: 3839050659253091502}
   rb: {fileID: 3866568331177218782}
   pivot: {fileID: 325933068823556107}
-  unselectedMaterial: {fileID: 2100000, guid: 151aea5398b6dd640a6b8a579a443ecf, type: 2}
-  selectedMaterial: {fileID: 2100000, guid: e1a7b4a7e4e8b5444a616165ae0dec83, type: 2}
+  unselectedMaterial: {fileID: 2100000, guid: 30a39cfcb12bbc44e817579db8a1030d, type: 2}
+  selectedMaterial: {fileID: 2100000, guid: d8d59b747f92404439f5f8e235b1624a, type: 2}
   data: {fileID: 11400000, guid: 2ee3f8253ec26fe4e954785d635e6c84, type: 2}
   utsuhoData: {fileID: 11400000, guid: ffe907a04f0a3f048b0d107b4d449e2b, type: 2}

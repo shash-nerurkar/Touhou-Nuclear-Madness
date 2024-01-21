@@ -160,7 +160,9 @@ public class Player : Character
             pathType: BulletPathType.Straight, 
             shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ), 
             speed: Data.BulletSpeed,
-            damage: Data.BulletDamage * damageMultiplier
+            damage: Data.BulletDamage * damageMultiplier,
+            bulletColor: Constants.CalculateColorForDamageMultiplier ( Constants.COLOR_PLAYER_BULLET_BASE, Constants.COLOR_PLAYER_BULLET_FINAL, damageMultiplier ),
+            bulletBorderColor: Constants.CalculateColorForDamageMultiplier ( Constants.COLOR_PLAYER_BASE, Constants.COLOR_PLAYER_FINAL, damageMultiplier )
         );
     }
 
@@ -265,12 +267,6 @@ public class Player : Character
     #endregion
 
 
-    public override void ToggleAsCurrent ( bool isCurrent ) {
-        base.ToggleAsCurrent ( isCurrent );
-        
-        grazeDetector.ToggleEnabled ( this.isCurrent );
-    }
-  
     protected override void OnGetHit ( ) {
         base.OnGetHit();
         
@@ -289,5 +285,11 @@ public class Player : Character
         base.OnLoseFight ( );
     }
    
+    public override void ToggleAsCurrent ( bool isCurrent ) {
+        base.ToggleAsCurrent ( isCurrent );
+        
+        grazeDetector.ToggleEnabled ( this.isCurrent );
+    }
+  
     #endregion
 }

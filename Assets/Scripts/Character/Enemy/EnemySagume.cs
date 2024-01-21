@@ -126,6 +126,8 @@ public class EnemySagume : Enemy
                 shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
                 speed: SagumeData.Legend1BulletSpeed, 
                 damage: SagumeData.Legend1BulletDamage,
+                bulletColor: Constants.COLOR_ENEMY_BULLET_BASE,
+                bulletBorderColor: Constants.COLOR_ENEMY_FINAL,
                 scale: SagumeData.Legend1AttackBulletScale,
                 scaleGradually: true,
                 scalingUpDuration: SagumeData.Legend1AttackBulletScalingUpDuration,
@@ -153,6 +155,8 @@ public class EnemySagume : Enemy
                     shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
                     speed: SagumeData.Legend2BulletSpeed,  
                     damage: SagumeData.Legend2BulletDamage,
+                    bulletColor: Constants.COLOR_ENEMY_BULLET_BASE,
+                    bulletBorderColor: Constants.COLOR_ENEMY_FINAL,
                     scale: SagumeData.Legend2AttackBulletScale,
                     curveDir: curveDirs [ j ], 
                     angle: curveInitialAngles [ j ]
@@ -188,6 +192,8 @@ public class EnemySagume : Enemy
                 shootDir: shootDir,
                 speed: SagumeData.Legend3BulletSpeed, 
                 damage: SagumeData.Legend3BulletDamage,
+                bulletColor: Constants.COLOR_ENEMY_BULLET_BASE,
+                bulletBorderColor: Constants.COLOR_ENEMY_FINAL,
                 scale: SagumeData.Legend3AttackBulletScale
             );
 
