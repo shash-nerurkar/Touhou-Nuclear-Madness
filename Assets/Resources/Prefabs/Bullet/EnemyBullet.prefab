@@ -77,15 +77,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8294826628683376828, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
       propertyPath: m_Color.b
-      value: 0.60062885
+      value: 0.24901962
       objectReference: {fileID: 0}
     - target: {fileID: 8294826628683376828, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
       propertyPath: m_Color.g
-      value: 0.60062885
+      value: 0.24901962
       objectReference: {fileID: 0}
     - target: {fileID: 8294826628683376828, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
       propertyPath: m_Color.r
-      value: 1
+      value: 0.665
       objectReference: {fileID: 0}
     - target: {fileID: 8294826628683376828, guid: 51fe8add40e9f434fb2c3fb776bf9b8f, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -125,8 +125,6 @@ MonoBehaviour:
   cd: {fileID: 5709703890534855135}
   spriteRenderer: {fileID: 7158567900706776143}
   animator: {fileID: 7328322579313059552}
-  speed: 10
-  damage: 1
   unhighlightedMaterial: {fileID: 2100000, guid: 151aea5398b6dd640a6b8a579a443ecf, type: 2}
   highlightedMaterial: {fileID: 2100000, guid: e1a7b4a7e4e8b5444a616165ae0dec83, type: 2}
 --- !u!212 &7158567900706776143 stripped

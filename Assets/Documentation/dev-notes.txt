@@ -1,3 +1,5 @@
+V2
+
 - Fix transition text anim																DONE
 - Remove animation lag																	DONE
 - Fix spacebar-spam related exceptions													DONE
@@ -43,8 +45,7 @@
 - Change Mickey Mouse mode to Chaos mode (player 1 hp)									DONE
 - Add description for Chaos mode														DONE
 - Stop enemy attacks on set not as current												DONE
-
-- Balance difficulty and change enemy attack patterns									
+- Balance difficulty and change enemy attack patterns									DONE
 	Increase graze radius																DONE
 	Change Utsuho sun attack indicator													DONE
 	Change Utsuho sun attack spread amount												DONE
@@ -64,7 +65,6 @@
 - Trim scene-01 fight music																DONE
 - Change scene-02 fight music															DONE
 - Make dialogues good (somewhat)														DONE
-
 - Adjust Sagume legends																	DONE
 - Adjust Utsuho sun attack																DONE
 - Create new Utsuho basic attack bullet prefab											DONE
@@ -74,11 +74,67 @@
 - Add timer																				DONE
 - Show time on main menu panel															DONE
 
-- ITCH IO PAGE
+- ITCH IO PAGE																			DONE
 	Controls																			DONE
 	Ability descriptions																DONE
 	Graze description																	DONE
 	Enemy descriptions																	DONE
 	Devlog																				DONE
 
+
+
+
+
+
+V3
+
+- DON'T add exit button																	DONE
+- Make graze bonus more meaningful														DONE
+	Change bullet colors																DONE
+	Widen graze range																	DONE
+	Increase bonus duration																DONE
+- Add indicators to the boss' height													DONE
+- Tweak Sagume bullet speed																DONE
+- Tweak initial dialogue to make it in-tune to Sagume's actual power					DONE
+- Make Tryhard mode a toggle															DONE
+- Pre-unlock tryhard mode and chaos difficulty from the start of the game				DONE
+- Make time scores more meaningful														DONE
+	Display current run's time as well													DONE
+	Show "New record!" text																DONE
+- Make fights more interactive and involving dodging									DONE
+	Increase enemy hp																	DONE
+	Lower player hp																		DONE
+	Move dialogue box to character level												DONE
+	Add dialogue emojis at character level												DONE
+	Move bullet colors to character data objects										DONE
+	For Utsuho fight:																	DONE
+		Increase Player Sagume MS														DONE
+	For Sagume fight:																	DONE
+		Lower Sagume bullet speeds														DONE
+- Fix character sprites																	DONE
+	Create new sprites																	DONE
+	Create newer sprites																DONE
+	Update endgame images																DONE
+- Auto-refilling energy bar to make shooting more meaningful							DONE
+
+- ITCH IO PAGE																			
+	Update documentation screenshots													
+	Update WebGL version																
+	Itch description																	
+	Devlog																				
+
+- Archive repo																			
+
+
+
+
+
+
+FUTURE
+- Emojis/one-liners during fights
+- More achievements
+- Split difficulty modes
 - Create trailer																		
+- Foil Sagume cheese																	
+- Checkpoints between fights / Option to choose fight from main menu					
+- Try shape-forming bullets																

@@ -1,5 +1,7 @@
 using System;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class Character : MonoBehaviour
 {
@@ -18,6 +20,10 @@ public abstract class Character : MonoBehaviour
     [ SerializeField ] protected Material unselectedMaterial;
 
     [ SerializeField ] protected Material selectedMaterial;
+
+    [ SerializeField ] private TextMeshProUGUI dialogueLabel;
+
+    [ SerializeField ] private Image dialogueImage;
     
     #endregion
 
@@ -90,6 +96,28 @@ public abstract class Character : MonoBehaviour
         cd.enabled = false;
 
         OnLose?.Invoke ( );
+    }
+
+    protected void ToggleDialogue ( string text, Sprite emoji ) {
+        if ( emoji != null ) {
+            dialogueImage.enabled = true;
+            dialogueLabel.enabled = false;
+
+            dialogueImage.sprite = emoji;
+        }
+        else if ( text != null ) {
+            dialogueLabel.enabled = true;
+            dialogueImage.enabled = false;
+
+            dialogueLabel.text = text;
+        }
+        else {
+            dialogueLabel.enabled = false;
+            dialogueImage.enabled = false;
+
+            dialogueLabel.text = "";
+            dialogueImage.sprite = null;
+        }
     }
 
     public virtual void ToggleAsCurrent ( bool isCurrent ) {

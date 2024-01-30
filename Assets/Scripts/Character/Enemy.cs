@@ -7,6 +7,12 @@ public abstract class Enemy : Character
     [ SerializeField ] protected EnemyData data;
     public EnemyData Data { get => data; }
 
+    [ SerializeField ] protected LineRenderer heightIndicatorTop;
+
+    [ SerializeField ] protected LineRenderer heightIndicatorBottom;
+
+    [ SerializeField ] protected LineRenderer attackLineIndicator;
+
     #endregion
 
 
@@ -63,18 +69,6 @@ public abstract class Enemy : Character
         }
     }
 
-    protected override void OnGetHit ( ) {
-        base.OnGetHit();
-        
-        ChangeState ( State.Idle );
-    }
-
-    protected override void OnLoseFight ( ) {
-        base.OnLoseFight();
-        
-        ChangeState ( State.Chatting );
-    }
-
     private void FixedUpdate ( ) {
         switch ( currentState ) {
             case State.Move:
@@ -93,8 +87,23 @@ public abstract class Enemy : Character
         ChangeState ( State.Move );
     }
 
+    protected override void OnGetHit ( ) {
+        base.OnGetHit();
+        
+        ChangeState ( State.Idle );
+    }
+
+    protected override void OnLoseFight ( ) {
+        base.OnLoseFight();
+        
+        ChangeState ( State.Chatting );
+    }
+
     public override void ToggleAsCurrent ( bool isCurrent ) {
         base.ToggleAsCurrent ( isCurrent );
+
+        heightIndicatorTop.gameObject.SetActive ( isCurrent );
+        heightIndicatorBottom.gameObject.SetActive ( isCurrent );
 
         ChangeState ( this.isCurrent ? State.Idle : State.Chatting );
     }

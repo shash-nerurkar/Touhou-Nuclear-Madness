@@ -29,10 +29,8 @@ public class BackgroundImage : MonoBehaviour
     public void ChangeBackgroundScene ( int sceneIndex ) {
         gameObject.SetActive ( true );
 
-        if ( sceneIndex < 0 || sceneIndex >= sceneBackgroundSprites.Length ) {
-            Debug.Log ( "No scene background sprite found for index: " + sceneIndex );
+        if ( sceneIndex < 0 || sceneIndex >= sceneBackgroundSprites.Length )
             return;
-        }
 
         backgroundImage.sprite = sceneBackgroundSprites [ sceneIndex ];
 

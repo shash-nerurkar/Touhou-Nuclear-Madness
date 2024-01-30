@@ -86,7 +86,7 @@ public class Bullet : MonoBehaviour
     #region Methods
 
     public virtual void Init ( 
-        BulletPathType pathType, Vector3 shootDir, float speed, float damage, 
+        BulletPathType pathType, Vector3 shootDir, float speed, float damage, Color bulletColor, Color bulletBorderColor, 
         float scale = 1, bool scaleGradually = false, float scalingUpDuration = 0f,
         float curveDir = 1, float angle = 0, 
         bool isDamping = false, float dampingValue = 0.0f,
@@ -101,6 +101,9 @@ public class Bullet : MonoBehaviour
         this.shootDir = shootDir;
         this.pathType = pathType;
         this.shouldDisappearOnTouchingScreenColliders = shouldDisappearOnTouchingScreenColliders;
+
+        spriteRenderer.color = bulletColor;
+        spriteRenderer.material.SetColor ( "_OutlineColor", bulletBorderColor );
         
         if ( scaleGradually ) {
             scaleCoroutine = ScaleCoroutine ( transform.localScale * scale, scalingUpDuration );

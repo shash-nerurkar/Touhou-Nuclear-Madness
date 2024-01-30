@@ -16,18 +16,26 @@ MonoBehaviour:
   character: 2
   color: {r: 0.54901963, g: 0.3529412, b: 0.6392157, a: 1}
   sprite: {fileID: -1356597432, guid: fa2c34c3f933a30409f27f6713bdc10c, type: 3}
-  health: 6
-  speed: 3
+  health: 5
+  speed: 5
   acceleration: 2
   onHitIDuration: 1
   bulletObjects:
   - {fileID: 6965355835857350552, guid: a54510518cbd2dc4291b916a6965b149, type: 3}
   shootCooldown: 0.1
+  shootEnergy: 3
+  shootEnergyPerBullet: 0.25
+  shootEnergyRegenCycleSizeInSeconds: 0.1
+  shootEnergyRegenPerCycle: 0.1
   bulletSpeed: 15
   bulletDamage: 10
+  bulletColorBaseDamage: {r: 0.29803923, g: 0.44313726, b: 0.5647059, a: 1}
+  bulletColorMaxDamage: {r: 0.2509804, g: 0.7882353, b: 1, a: 1}
+  bulletBorderColorBaseDamage: {r: 0.29803923, g: 0.44313726, b: 1, a: 1}
+  bulletBorderColorMaxDamage: {r: 0, g: 0, b: 1, a: 1}
   grazeDamageMultiplier: 2
-  grazeDamageMultiplierDuration: 2
+  grazeDamageMultiplierDuration: 3
   bombCooldown: 1
-  bombCount: 3
+  bombUseCount: 3
   ability2Cooldown: 1
-  ability2Count: 3
+  ability2UseCount: 3

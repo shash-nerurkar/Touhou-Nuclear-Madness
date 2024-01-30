@@ -31,29 +31,41 @@ public class Constants {
     public const string INFINITY_TEXT = "ꝏ";
     
     public const string ACHIEVEMENT_UNLOCKED_TEXT = "Achievement!";
+
+    public const string TIMER_EMPTY = "--:--";
     
     #endregion
 
 
     #region Colors
 
-    // 383838
-    public static Color COLOR_NARRATOR = new ( 0.219f, 0.219f, 0.219f );
-
     // 8c5aa3
-    public static Color COLOR_SAGUME = new ( 0.549f, 0.353f, 0.639f );
+    public static Color COLOR_SAGUME                = new ( 0.549f, 0.353f, 0.639f );
 
     // 238417
-    public static Color COLOR_UTSUHO = new ( 0.137f, 0.518f, 0.090f );
+    public static Color COLOR_UTSUHO                = new ( 0.137f, 0.518f, 0.090f );
 
     // a41000
-    public static Color COLOR_AYA    = new ( 0.643f, 0.063f, 0.000f );
+    public static Color COLOR_AYA                   = new ( 0.643f, 0.063f, 0.000f );
 
-    // 40C9FF
-    public static Color COLOR_PLAYER_UI = new ( 0.251f, 0.788f, 1.000f );
+    // 383838
+    public static Color COLOR_NARRATOR              = new ( 0.219f, 0.219f, 0.219f );
 
     // FFFFFF
-    public static Color COLOR_CREATORS = new ( 1f, 1f, 1f );
+    public static Color COLOR_CREATORS              = new ( 1.000f, 1.000f, 1.000f );
+
+    // 40C9FF
+    public static Color COLOR_PLAYER_BASE           = new ( 0.251f, 0.788f, 1.000f );
+    // 0000FF
+    public static Color COLOR_PLAYER_FINAL          = new ( 0.000f, 0.000f, 1.000f );
+
+    
+    public static Color CalculateColorForDamageMultiplier ( Color baseColor, Color destColor, float damageMultiplier ) {
+        float guessMultiplierCounts = Mathf.Log ( damageMultiplier, 2 );
+        float tValue = Mathf.Clamp01 ( 0.2f * guessMultiplierCounts );
+
+        return Color.Lerp ( baseColor, destColor, tValue );
+    }
 
     #endregion
 
@@ -129,7 +141,19 @@ public class Constants {
         new ( "...", Characters.Sagume ),
         new ( "... lest it consume you.", Characters.Utsuho ),
         new ( "It looks quite secure to me ...", Characters.Sagume ),
-        new ( "... Oops", Characters.Sagume ),
+        new ( "I guard it with my life, rube. It is bound to be that.", Characters.Utsuho ),
+        new ( "...", Characters.Sagume ),
+        new ( "Are you in disagreement?", Characters.Utsuho ),
+        new ( "...", Characters.Sagume ),
+        new ( "Comment on it's safety.", Characters.Utsuho ),
+        new ( "...", Characters.Sagume ),
+        new ( "Say it.", Characters.Utsuho ),
+        new ( "Do not test me, earthling ...", Characters.Sagume ),
+        new ( "Utter it!", Characters.Utsuho ),
+        new ( "... Bear in your mind, the only choice you left me here today ...", Characters.Sagume ),
+        new ( "*glowers testily*", Characters.Utsuho ),
+        new ( "This nuclear plant is an indestructible structure. It shall remain erect, steadfast and unabated, for a thousand years to come.", Characters.Sagume ),
+        new ( "*smirks triumphantly*", Characters.Utsuho ),
     };
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_2 = new List<Dialogue> {

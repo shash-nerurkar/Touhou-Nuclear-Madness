@@ -7,76 +7,122 @@ public class InGamePanel : MonoBehaviour
 {
     #region Serializable Fields
 
+
+    #region Player Stats
+
+    [ SerializeField ] private RectTransform playerStatsLayoutBuilder;
+
     [ SerializeField ] private GameObject playerHealthBarElementObject;
 
     [ SerializeField ] private GameObject playerHealthBar;
 
-    [ SerializeField ] private TextMeshProUGUI playerAbility1CountLabel;
+    [ SerializeField ] private Slider playerShootEnergyBarSlider;
 
-    [ SerializeField ] private TextMeshProUGUI playerAbility2CountLabel;
+    [ SerializeField ] private Image playerShootEnergyBarFillImage;
+
+    [ SerializeField ] private TextMeshProUGUI playerAbility1UseCountLabel;
+
+    [ SerializeField ] private TextMeshProUGUI playerAbility2UseCountLabel;
 
     [ SerializeField ] private TextMeshProUGUI playerGrazeCountLabel;
 
     [ SerializeField ] private TextMeshProUGUI playerDamageMultiplierLabel;
 
+    #endregion
+
+
+    #region Enemy Stats
+
     [ SerializeField ] private Slider enemyHealthBarSlider;
 
     [ SerializeField ] private TextMeshProUGUI enemyHealthBarText;
 
-    [ SerializeField ] private GameObject controlsTutorial;
+    #endregion
 
-    [ SerializeField ] private TextMeshProUGUI fightTimerLabel;
+
+    #region Controls Tutorial
+
+    [ SerializeField ] private GameObject controlsTutorial;
 
     [ SerializeField ] private float controlsTutorialShowTime;
 
     #endregion
 
 
+    [ SerializeField ] private TextMeshProUGUI fightTimerLabel;
+
+    #endregion
+
+
     #region Fields
 
-    private List<GameObject> playerHealthBarElements = new List<GameObject> ( );
+    private List<Image> playerHealthBarElements = new List<Image> ( );
 
     private Timer controlsTutorialShowTimer;
+
+    private float playerCurrentMaxHealth;
 
     #endregion
 
 
     #region Methods
 
-    public void SetPanelValues ( float playerHealth, int ability1Count, int ability2Count, int grazeCount, float damageMultiplier, float enemyHealth ) {
-        UpdatePlayerHealth ( playerHealth );
+    public void SetPanelValues (
+        float playerHealth, float playerShootEnergy, int ability1Count, int ability2Count, int grazeCount, float damageMultiplier, 
+        float enemyHealth
+    ) {
+        CreatePlayerHealthBarElements ( playerHealth );
+        playerCurrentMaxHealth = playerHealth;
+
+        playerShootEnergyBarSlider.maxValue = playerShootEnergy;
+        UpdatePlayerShootEnergy ( playerShootEnergyBarSlider.maxValue );
+
         UpdatePlayerAbility1 ( ability1Count );
         UpdatePlayerAbility2 ( ability2Count );
+
         UpdatePlayerGraze ( grazeCount );
+
         UpdatePlayerDamageMultiplier ( damageMultiplier );
+
 
         enemyHealthBarSlider.maxValue = enemyHealth;
         UpdateEnemyHealth ( enemyHealthBarSlider.maxValue );
 
+
         UpdateFightTimer ( "00:00" );
     }
 
-    public void UpdateFightTimer ( string fightTime ) {
-        fightTimerLabel.text = fightTime;
+    
+    #region Player Stats
+
+    public void CreatePlayerHealthBarElements ( float maxHealth ) {
+        foreach ( Image playerHealthBarElement in playerHealthBarElements )
+            Destroy ( playerHealthBarElement.gameObject );
+        playerHealthBarElements.Clear ( );
+
+        for ( int i = 0; i < maxHealth; i++ ) {
+            GameObject playerHealthBarElement = Instantiate ( playerHealthBarElementObject, Vector3.zero, Quaternion.identity, playerHealthBar.transform );
+            playerHealthBarElements.Add ( playerHealthBarElement.GetComponent<Image> ( ) );
+        }
+
+        LayoutRebuilder.ForceRebuildLayoutImmediate ( playerStatsLayoutBuilder );
     }
 
     public void UpdatePlayerHealth ( float health ) {
-        foreach ( GameObject playerHealthBarElement in playerHealthBarElements )
-            Destroy ( playerHealthBarElement );
-        playerHealthBarElements.Clear ( );
+        for ( int i = 0; i < playerCurrentMaxHealth; i++ ) 
+            playerHealthBarElements [ i ].enabled = ( i < health );
+    }
 
-        for ( int i = 0; i < health; i++ ) {
-            GameObject playerHealthBarElement = Instantiate ( playerHealthBarElementObject, Vector3.zero, Quaternion.identity, playerHealthBar.transform );
-            playerHealthBarElements.Add ( playerHealthBarElement );
-        }
+    public void UpdatePlayerShootEnergy ( float shootEnergy ) {
+        playerShootEnergyBarSlider.value = shootEnergy;
     }
 
     public void UpdatePlayerAbility1 ( int abilityCount ) {
-        playerAbility1CountLabel.text = abilityCount.ToString ( );
+        playerAbility1UseCountLabel.text = abilityCount.ToString ( );
     }
 
     public void UpdatePlayerAbility2 ( int abilityCount ) {
-        playerAbility2CountLabel.text = abilityCount.ToString ( );
+        playerAbility2UseCountLabel.text = abilityCount.ToString ( );
     }
 
     public void UpdatePlayerGraze ( int grazeCount ) {
@@ -84,17 +130,26 @@ public class InGamePanel : MonoBehaviour
     }
 
     public void UpdatePlayerDamageMultiplier ( float damageMultiplier ) {
-        playerDamageMultiplierLabel.text = "Damage: " + damageMultiplier + "x";
+        Color currentPlayerUIColor = Constants.CalculateColorForDamageMultiplier ( Constants.COLOR_PLAYER_BASE, Constants.COLOR_PLAYER_FINAL, damageMultiplier );
 
-        float guessMultiplierCounts = Mathf.Log ( damageMultiplier, 2 );
-        float tValue = Mathf.Clamp01 ( 0.2f * guessMultiplierCounts );
-        playerDamageMultiplierLabel.color = Color.Lerp ( Constants.COLOR_PLAYER_UI, Color.blue, tValue );
+        playerDamageMultiplierLabel.text = "Damage: " + damageMultiplier + "x";
+        playerDamageMultiplierLabel.color = currentPlayerUIColor;
+
+        playerShootEnergyBarFillImage.color = currentPlayerUIColor;
     }
+
+    #endregion
+
+    
+    #region Enemy Stats
 
     public void UpdateEnemyHealth ( float health ) {
         enemyHealthBarSlider.value = health;
         enemyHealthBarText.text = enemyHealthBarSlider.value + "/" + enemyHealthBarSlider.maxValue;
     }
+
+    #endregion
+
 
     public void ShowTutorial () {
         controlsTutorial.SetActive ( true );
@@ -105,6 +160,10 @@ public class InGamePanel : MonoBehaviour
         controlsTutorialShowTimer.StartTimer ( maxTime: controlsTutorialShowTime, onTimerFinish: ( ) => {
             controlsTutorial.SetActive ( false );
         } );
+    }
+
+    public void UpdateFightTimer ( string fightTime ) {
+        fightTimerLabel.text = fightTime;
     }
 
     #endregion

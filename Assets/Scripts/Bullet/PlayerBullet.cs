@@ -15,10 +15,7 @@ public class PlayerBullet : Bullet
     #region Methods
 
     public override void Init ( 
-        BulletPathType pathType, 
-        Vector3 shootDir, 
-        float speed, 
-        float damage, 
+        BulletPathType pathType, Vector3 shootDir, float speed, float damage, Color bulletColor, Color bulletBorderColor,
         float scale = 1, bool scaleGradually = false, float scalingUpDuration = 0f,
         float curveDir = 1, 
         float angle = 0, 
@@ -27,7 +24,7 @@ public class PlayerBullet : Bullet
     ) {
         OnCreated?. Invoke ( this );
 
-        base.Init ( pathType, shootDir, speed, damage, scale, scaleGradually, scalingUpDuration, curveDir, angle, isDamping, dampingValue, shouldDisappearOnTouchingScreenColliders );
+        base.Init ( pathType, shootDir, speed, damage, bulletColor, bulletBorderColor, scale, scaleGradually, scalingUpDuration, curveDir, angle, isDamping, dampingValue, shouldDisappearOnTouchingScreenColliders );
     }
 
     public override void OnHitAnimationComplete ( ) {

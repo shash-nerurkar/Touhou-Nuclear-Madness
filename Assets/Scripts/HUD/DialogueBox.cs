@@ -101,7 +101,7 @@ public class DialogueBox : MonoBehaviour
         gameObject.SetActive ( false );
         
         dialogueLabel.text = "";
-        boxBackgroundImage.color = Constants.COLOR_NARRATOR;
+        boxBackgroundImage.color = Color.black;
     }
 
     #endregion

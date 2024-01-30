@@ -103,7 +103,7 @@ GameObject:
   - component: {fileID: 5450365047260172541}
   - component: {fileID: 5450365047260172540}
   m_Layer: 0
-  m_Name: Particle Systems Manager
+  m_Name: Particles Manager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
