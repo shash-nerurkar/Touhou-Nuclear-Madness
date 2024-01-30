@@ -83,6 +83,18 @@ PrefabInstance:
       propertyPath: bulletObjects.Array.data[0]
       value: 
       objectReference: {fileID: 2423667156141439865, guid: 36ed8164093c76e42b6db3f1cf75ee34, type: 3}
+    - target: {fileID: 2351583975198027985, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
+      propertyPath: shootEnergyRegenMultiplierMax
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2351583975198027985, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
+      propertyPath: shootEnergyRegenMultiplierTickValue
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656592515181575647, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.32
+      objectReference: {fileID: 0}
     - target: {fileID: 7027688899548137187, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
       propertyPath: m_Sprite
       value: 

@@ -9,7 +9,15 @@ public class Player : Character
     public PlayerData Data { get => data; }
 
 
-    [ Header ("Player graze") ]
+    [ Header ( "Player Shoot" ) ]
+
+    [ SerializeField ] [ Range ( 1.0f, 20.0f ) ] private float shootEnergyRegenMultiplierMax = 10.0f;
+
+    [ SerializeField ] [ Range ( 0.0f, 2.0f ) ] private float shootEnergyRegenMultiplierTickValue = 0.75f;
+
+
+    [ Header ( "Player graze" ) ]
+
     [ SerializeField ] private PlayerGrazeDetector grazeDetector;
 
     [ SerializeField ] private ParticleSystem grazeIncreaseEffectParticleSystem;
@@ -17,7 +25,8 @@ public class Player : Character
     [ SerializeField ] private ParticleSystem grazeDecreaseEffectParticleSystem;
 
 
-    [ Header ("Player ability 1: Bomb") ]
+    [ Header ( "Player ability 1: Bomb" ) ]
+
     [ SerializeField ] private ParticleSystem bombEffectParticleSystem;
 
     #endregion
@@ -27,7 +36,7 @@ public class Player : Character
 
     private Vector3 moveDirection;
 
-    private bool canShoot = true;
+    private bool CanShoot { get { return !shootCooldownTimer.IsRunning && shootEnergy >= Data.ShootEnergyPerBullet ; } }
 
     private bool canFireAbility1 = true;
 
@@ -51,16 +60,25 @@ public class Player : Character
 
     private bool isGrazeDamageMultiplierActive;
 
+    protected float shootEnergy;
+    public float ShootEnergy { get => shootEnergy; }
+
+    private Timer shootEnergyRegenTimer;
+
+    private float currentShootEnergyRegenMultiplier;
+
     #endregion
 
 
     #region Actions
 
-    public event Action OnPlayerShoot;
+    public event Action OnShootAction;
 
-    public event Action<int> OnPlayerFiredAbility1;
+    public event Action<float> OnShootEnergyChanged;
 
-    public event Action<int> OnPlayerFiredAbility2;
+    public event Action<int> OnFiredAbility1;
+
+    public event Action<int> OnFiredAbility2;
 
     public static event Action FireAbility1Event;
 
@@ -91,14 +109,17 @@ public class Player : Character
         speed = Data.Speed;
         damageMultiplier = 1;
         health = SceneManager.CurrentGameDifficulty == GameDifficulty.Chaos ? 1 : Data.Health;
+        shootEnergy = Data.ShootEnergy;
+        currentShootEnergyRegenMultiplier = 1;
         onHitIDuration = Data.OnHitIDuration;
-        ability1Count = Data.BombCount;
-        ability2Count = Data.Ability2Count;
+        ability1Count = Data.BombUseCount;
+        ability2Count = Data.Ability2UseCount;
 
         shootCooldownTimer = gameObject.AddComponent<Timer> ( );
         ability1CooldownTimer = gameObject.AddComponent<Timer> ( );
         ability2CooldownTimer = gameObject.AddComponent<Timer> ( );
         grazeDamageMultiplierTimer = gameObject.AddComponent<Timer> ( );
+        shootEnergyRegenTimer = gameObject.AddComponent<Timer> ( );
     }
 
     protected virtual void OnDestroy ( ) {
@@ -140,19 +161,32 @@ public class Player : Character
     #region Shoot related
 
     private void OnShoot ( bool isShooting ) {
-        if ( isShooting && canShoot ) {
-            Shoot ( );
+        if ( isShooting ) {
+            if ( CanShoot ) {
+                shootCooldownTimer.StartTimer ( maxTime: Data.ShootCooldown, onTimerFinish: () => { } );
 
-            canShoot = false;
-            shootCooldownTimer.StartTimer ( maxTime: Data.ShootCooldown, onTimerFinish: () => {
-                canShoot = true;
-            } );
+                Shoot ( );
 
-            OnPlayerShoot?.Invoke ( );
+                OnShootAction?.Invoke ( );
+            }
+
+            currentShootEnergyRegenMultiplier = 1;
+            if ( shootEnergy < Data.ShootEnergyPerBullet && !shootEnergyRegenTimer.IsRunning )
+                    shootEnergyRegenTimer.StartTimer ( maxTime: Data.ShootEnergyRegenCycleSizeInSeconds, onTimerFinish: OnShootEnergyRegenTimerFinished );
+        }
+        else {
+            if ( !shootEnergyRegenTimer.IsRunning )
+                shootEnergyRegenTimer.StartTimer ( maxTime: Data.ShootEnergyRegenCycleSizeInSeconds / currentShootEnergyRegenMultiplier, onTimerFinish: ( ) => {
+                    currentShootEnergyRegenMultiplier = Mathf.Clamp ( currentShootEnergyRegenMultiplier + shootEnergyRegenMultiplierTickValue, 1, shootEnergyRegenMultiplierMax );
+
+                    OnShootEnergyRegenTimerFinished ( );
+                } );    
         }
     }
 
     public void Shoot ( ) {
+        SetShootEnergy ( shootEnergy - Data.ShootEnergyPerBullet );
+
         GameObject bulletInstance = Instantiate ( original: Data.BulletObjects [ UnityEngine.Random.Range ( 0, Data.BulletObjects.Length ) ], position: pivot.position, rotation: Quaternion.identity );
 
         Bullet bullet = bulletInstance.GetComponent<Bullet> ( );
@@ -161,9 +195,17 @@ public class Player : Character
             shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ), 
             speed: Data.BulletSpeed,
             damage: Data.BulletDamage * damageMultiplier,
-            bulletColor: Constants.CalculateColorForDamageMultiplier ( Constants.COLOR_PLAYER_BULLET_BASE, Constants.COLOR_PLAYER_BULLET_FINAL, damageMultiplier ),
-            bulletBorderColor: Constants.CalculateColorForDamageMultiplier ( Constants.COLOR_PLAYER_BASE, Constants.COLOR_PLAYER_FINAL, damageMultiplier )
+            bulletColor: Constants.CalculateColorForDamageMultiplier ( Data.BulletColorBaseDamage, Data.BulletColorMaxDamage, damageMultiplier ),
+            bulletBorderColor: Constants.CalculateColorForDamageMultiplier ( Data.BulletBorderColorBaseDamage, Data.BulletBorderColorMaxDamage, damageMultiplier )
         );
+    }
+
+    private void OnShootEnergyRegenTimerFinished ( ) => SetShootEnergy ( shootEnergy + Data.ShootEnergyRegenPerCycle );
+
+    private void SetShootEnergy ( float newShootEnergy ) {
+        shootEnergy = Mathf.Clamp ( newShootEnergy, 0, Data.ShootEnergy );
+
+        OnShootEnergyChanged?.Invoke ( shootEnergy );
     }
 
     #endregion
@@ -230,7 +272,7 @@ public class Player : Character
                 canFireAbility1 = true;
             } );
 
-            OnPlayerFiredAbility1?.Invoke ( ability1Count );
+            OnFiredAbility1?.Invoke ( ability1Count );
         }
     }
 
@@ -256,7 +298,7 @@ public class Player : Character
                 canFireAbility2 = true;
             } );
 
-            OnPlayerFiredAbility2?.Invoke ( ability2Count );
+            OnFiredAbility2?.Invoke ( ability2Count );
         }
     }
 

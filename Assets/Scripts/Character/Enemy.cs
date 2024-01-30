@@ -7,6 +7,12 @@ public abstract class Enemy : Character
     [ SerializeField ] protected EnemyData data;
     public EnemyData Data { get => data; }
 
+    [ SerializeField ] protected LineRenderer heightIndicatorTop;
+
+    [ SerializeField ] protected LineRenderer heightIndicatorBottom;
+
+    [ SerializeField ] protected LineRenderer attackLineIndicator;
+
     #endregion
 
 
@@ -95,6 +101,9 @@ public abstract class Enemy : Character
 
     public override void ToggleAsCurrent ( bool isCurrent ) {
         base.ToggleAsCurrent ( isCurrent );
+
+        heightIndicatorTop.gameObject.SetActive ( isCurrent );
+        heightIndicatorBottom.gameObject.SetActive ( isCurrent );
 
         ChangeState ( this.isCurrent ? State.Idle : State.Chatting );
     }

@@ -48,6 +48,7 @@ public class SceneManager : MonoBehaviour
     #endregion
 
 
+
     #region Fields
 
     private Timer transitionDelayTimer;
@@ -58,7 +59,9 @@ public class SceneManager : MonoBehaviour
 
     private const float fightMaxTime = 9999f;
 
-    private float [ ] fightScores;
+    private float [ ] bestFightScores;
+
+    private float currentTransitionFadeOutDelay;
 
 
     #region Current run data
@@ -70,6 +73,10 @@ public class SceneManager : MonoBehaviour
     private Enemy currentEnemy;
 
     private List<Character> currentOtherCharacters = new List<Character> ( );
+
+    private float [ ] currentRunFightScores;
+
+    private bool [ ] currentRunFightStatuses;
 
     #endregion
     
@@ -87,6 +94,9 @@ public class SceneManager : MonoBehaviour
     private static GameDifficulty currentGameDifficulty;
     public static GameDifficulty CurrentGameDifficulty { get => currentGameDifficulty; }
 
+    private static bool isTryhardModeActive;
+    public static bool IsTryhardModeActive { get => isTryhardModeActive; }
+
     #endregion
 
 
@@ -100,6 +110,7 @@ public class SceneManager : MonoBehaviour
     #endregion
 
 
+
     #region Actions
 
     public static event Action<GameState> OnGameStateChanged;
@@ -110,7 +121,9 @@ public class SceneManager : MonoBehaviour
 
     public static event Action ShowTutorial;
 
-    public static event Action<float, int, int, int, float, float> OnFightStarted;
+    public static event Action<float, float, int, int, int, float, float> OnFightStarted;
+
+    public static event Action<float> OnCurrentPlayerShootEnergyChanged;
 
     public static event Action<float> OnCurrentPlayerHit;
 
@@ -148,18 +161,27 @@ public class SceneManager : MonoBehaviour
 
     public static event Action OnChaosDifficultyUnlocked;
 
+    public static event Action OnTryhardModeUnlocked;
+
     public static event Action<GameState> ChangeGameStateOnHUD;
 
     public static event Action<string> UpdateFightTimer;
 
-    public static event Action<int, string> UpdateScore;
+    public static event Action<int, string, string> UpdateScore;
 
     #endregion
+
 
 
     #region Methods
 
     private void Start ( ) {
+        IsAchievementUnlockedDict [ Achievement.Chaos_Difficulty ] = true;
+        OnAchievementUnlockActions [ Achievement.Chaos_Difficulty ]?.Invoke ( );
+
+        IsAchievementUnlockedDict [ Achievement.Skip_Dialogues_Mode ] = true;
+        OnAchievementUnlockActions [ Achievement.Skip_Dialogues_Mode ]?.Invoke ( );
+
         ChangeGameState ( newState: GameState.MainMenu );
         ChangeInGameState ( newState: InGameState.MainMenu );
     }
@@ -178,10 +200,13 @@ public class SceneManager : MonoBehaviour
         transitionDelayTimer = gameObject.AddComponent<Timer> ( );
         delayTimer = gameObject.AddComponent<Timer> ( );
         fightTimer = gameObject.AddComponent<Timer> ( );
-        fightScores = new float [ ] {
+        currentTransitionFadeOutDelay = transitionFadeOutDelay;
+        bestFightScores = new float [ ] {
             Mathf.Infinity,
             Mathf.Infinity,
         };
+
+        ResetCurrentGameStats ( );
 
         InputManager.PopDialogueAction += OnDialoguePopped;
 
@@ -195,6 +220,7 @@ public class SceneManager : MonoBehaviour
         HUD.OnDialogueSequenceCompleted += OnDialogueSequenceComplete;
 
         MainMenuPanel.OnChaosDifficultyToggledAction += OnChaosDifficultyToggled;
+        MainMenuPanel.OnTryhardModeToggledAction += OnTryhardModeToggled;
     }
 
     private void OnDestroy ( ) {
@@ -210,6 +236,7 @@ public class SceneManager : MonoBehaviour
         HUD.OnDialogueSequenceCompleted -= OnDialogueSequenceComplete;
 
         MainMenuPanel.OnChaosDifficultyToggledAction -= OnChaosDifficultyToggled;
+        MainMenuPanel.OnTryhardModeToggledAction -= OnTryhardModeToggled;
     }
 
     #endregion
@@ -229,8 +256,6 @@ public class SceneManager : MonoBehaviour
         switch ( currentInGameState ) {
             case InGameState.MainMenu:
                 PlaySound?.Invoke ( Constants.MAIN_MENU_MUSIC );
-                
-                currentFightIndex = 0;
                 
                 break;
 
@@ -257,7 +282,7 @@ public class SceneManager : MonoBehaviour
             case InGameState.MainMenu:
                 StopSound?.Invoke ( Constants.MAIN_MENU_MUSIC );
 
-                transitionDelayTimer.StartTimer ( maxTime: transitionFadeOutDelay, onTimerFinish: ( ) => {             
+                transitionDelayTimer.StartTimer ( maxTime: currentTransitionFadeOutDelay, onTimerFinish: ( ) => {             
                     PlaySound?.Invoke ( Constants.CHATTING_MUSIC );
 
                     ChangeInGameState ( newState: InGameState.PreExplosion );
@@ -276,7 +301,7 @@ public class SceneManager : MonoBehaviour
             case InGameState.PostFight1Branch2:
                 ClearAllCharacters ( );
 
-                transitionDelayTimer.StartTimer ( maxTime: transitionFadeOutDelay, onTimerFinish: ( ) => {           
+                transitionDelayTimer.StartTimer ( maxTime: currentTransitionFadeOutDelay, onTimerFinish: ( ) => {           
                     StopSound?.Invoke ( Constants.SCENE_01_MUSIC );
 
                     ChangeBackgroundScene?.Invoke ( 1 );
@@ -471,9 +496,10 @@ public class SceneManager : MonoBehaviour
 
         currentPlayer.ToggleAsCurrent ( true );
         currentPlayer.OnLose += ( ) => { OnFightComplete ( didWin: false ); };
-        currentPlayer.OnPlayerShoot += CurrentPlayerShoot;
-        currentPlayer.OnPlayerFiredAbility1 += CurrentPlayerFiredAbility1;
-        currentPlayer.OnPlayerFiredAbility2 += CurrentPlayerFiredAbility2;
+        currentPlayer.OnShootAction += CurrentPlayerShoot;
+        currentPlayer.OnShootEnergyChanged += CurrentPlayerShootEnergyChanged;
+        currentPlayer.OnFiredAbility1 += CurrentPlayerFiredAbility1;
+        currentPlayer.OnFiredAbility2 += CurrentPlayerFiredAbility2;
         currentPlayer.OnHit += CurrentPlayerHit;
         currentPlayer.OnGrazed += CurrentPlayerGrazed;
         currentPlayer.OnDamageMultiplierIncreased += OnCurrentPlayerDamageMultiplierIncreased;
@@ -483,7 +509,7 @@ public class SceneManager : MonoBehaviour
         currentEnemy.OnLose += ( ) => { OnFightComplete ( didWin: true ); };
         currentEnemy.OnHit += CurrentEnemyHit;
         
-        OnFightStarted ( currentPlayer.Health, currentPlayer.Data.BombCount, currentPlayer.Data.Ability2Count, 0, 1, currentEnemy.Data.Health );
+        OnFightStarted ( currentPlayer.Health, currentPlayer.ShootEnergy, currentPlayer.Data.BombUseCount, currentPlayer.Data.Ability2UseCount, 0, 1, currentEnemy.Data.Health );
     }
 
     private void OnFightComplete ( bool didWin ) {
@@ -491,9 +517,10 @@ public class SceneManager : MonoBehaviour
 
         currentPlayer.ToggleAsCurrent ( false );
         currentPlayer.OnLose -= ( ) => { OnFightComplete ( didWin: false ); };
-        currentPlayer.OnPlayerShoot -= CurrentPlayerShoot;
-        currentPlayer.OnPlayerFiredAbility1 -= CurrentPlayerFiredAbility1;
-        currentPlayer.OnPlayerFiredAbility2 -= CurrentPlayerFiredAbility2;
+        currentPlayer.OnShootAction -= CurrentPlayerShoot;
+        currentPlayer.OnShootEnergyChanged -= CurrentPlayerShootEnergyChanged;
+        currentPlayer.OnFiredAbility1 -= CurrentPlayerFiredAbility1;
+        currentPlayer.OnFiredAbility2 -= CurrentPlayerFiredAbility2;
         currentPlayer.OnHit -= CurrentPlayerHit;
         currentPlayer.OnGrazed -= CurrentPlayerGrazed;
         currentPlayer.OnDamageMultiplierIncreased -= OnCurrentPlayerDamageMultiplierIncreased;
@@ -502,17 +529,7 @@ public class SceneManager : MonoBehaviour
         currentEnemy.ToggleAsCurrent ( false );
         currentEnemy.OnLose -= ( ) => { OnFightComplete ( didWin: true ); };
         currentEnemy.OnHit -= CurrentEnemyHit;
-
-        fightTimer.PauseTimer ( );
-        if ( didWin ) {
-            float newScore = fightMaxTime - fightTimer.TimeRemaining;
-            
-            if ( newScore < fightScores [ currentFightIndex ] ) {
-                fightScores [ currentFightIndex ] = newScore;
-                UpdateScore ( currentFightIndex, Timer.DisplayTime ( fightScores [ currentFightIndex ] ) );
-            }
-        }
-        
+ 
         switch ( currentFightIndex ) {
             case 0:
                 if ( didWin )
@@ -533,11 +550,20 @@ public class SceneManager : MonoBehaviour
                 break;
         }
 
-        ++currentFightIndex;
+        fightTimer.PauseTimer ( );
+        currentRunFightScores [ currentFightIndex ] = fightMaxTime - fightTimer.TimeRemaining;
+        currentRunFightStatuses [ currentFightIndex ] = didWin;
+       
+        if ( didWin )
+            ++currentFightIndex;
     }
 
     private void CurrentPlayerShoot ( ) {
         PlaySound?.Invoke ( Constants.ON_PLAYER_SHOOT_SOUND );
+    }
+
+    private void CurrentPlayerShootEnergyChanged ( float shootEnergy ) {
+        OnCurrentPlayerShootEnergyChanged?.Invoke ( shootEnergy );
     }
 
     private void CurrentPlayerFiredAbility1 ( int abilityCount ) {
@@ -654,43 +680,31 @@ public class SceneManager : MonoBehaviour
 
     #region Achievements
 
-    private Dictionary<Achievement, bool> AchievementStatuses = new Dictionary<Achievement, bool> {
+    private Dictionary<Achievement, bool> IsAchievementUnlockedDict = new Dictionary<Achievement, bool> {
         { Achievement.Chaos_Difficulty, false },
         { Achievement.Skip_Dialogues_Mode, false }
     };
 
-    private Dictionary<Achievement, bool> AchievementUnlockableStatuses { get {
+    private Dictionary<Achievement, bool> IsAchievementUnlockableDict { get {
         return new Dictionary<Achievement, bool> {
             { 
                 Achievement.Chaos_Difficulty, 
                 currentRunCount == Constants.SCENEMANAGER_CHAOS_MODE_RUN_COUNT_THRESHOLD && 
-                    !AchievementStatuses [ Achievement.Chaos_Difficulty ]
+                    !IsAchievementUnlockedDict [ Achievement.Chaos_Difficulty ]
             },
             { 
                 Achievement.Skip_Dialogues_Mode, 
                 currentRunCount >= Constants.SCENEMANAGER_SKIP_DIALOGUES_MODE_RUN_COUNT_THRESHOLD && 
                     currentWinCount > 0 && 
-                        !AchievementStatuses [ Achievement.Skip_Dialogues_Mode ] 
+                        !IsAchievementUnlockedDict [ Achievement.Skip_Dialogues_Mode ] 
             },
         };
     } }
     
     private Dictionary<Achievement, Action> OnAchievementUnlockActions { get {
         return new Dictionary<Achievement, Action> {
-            { 
-                Achievement.Chaos_Difficulty, 
-                ( ) => { 
-                    OnChaosDifficultyUnlocked?.Invoke ( ); 
-                }
-            },
-            { 
-                Achievement.Skip_Dialogues_Mode, 
-                ( ) => {
-                    foreach ( List<Dialogue> dialogueSequence in Constants.INGAME_DIALOGUE_SEQUENCES )
-                        dialogueSequence.Clear ( );
-                    transitionFadeOutDelay = 0;
-                } 
-            },
+            { Achievement.Chaos_Difficulty, OnChaosDifficultyUnlocked },
+            { Achievement.Skip_Dialogues_Mode, OnTryhardModeUnlocked },
         };
     } }
 
@@ -715,28 +729,26 @@ public class SceneManager : MonoBehaviour
 
         Constants.DIALOGUE_SEQUENCE_GAME_ENDED.Remove ( Constants.DIALOGUES_ACHIEVEMENTS [ achievement ] );
 
-        AchievementStatuses [ achievement ] = true;
+        IsAchievementUnlockedDict [ achievement ] = true;
     }
 
     #endregion
 
 
-    private void OnChaosDifficultyToggled ( bool chaosDifficultyToggleFlag ) {
-        currentGameDifficulty = chaosDifficultyToggleFlag ? GameDifficulty.Chaos : GameDifficulty.Default;
-    }
+    #region Game End Handlers
 
     private void EndGame ( Ending ending ) {
         ++currentRunCount;
         if ( ending == Ending.AyaWin) 
             ++currentWinCount;
 
-        foreach ( KeyValuePair<Achievement, bool> achievement in AchievementUnlockableStatuses )
+        foreach ( KeyValuePair<Achievement, bool> achievement in IsAchievementUnlockableDict )
             if ( achievement.Value ) ShowAchievement ( achievement.Key );
 
         ChangeGameState ( newState: GameState.Ended );
         ChangeInGameState ( newState: InGameState.EndGame );
         
-        foreach ( KeyValuePair<Achievement, bool> achievement in AchievementUnlockableStatuses )
+        foreach ( KeyValuePair<Achievement, bool> achievement in IsAchievementUnlockableDict )
             if ( achievement.Value ) HideAchievement ( achievement.Key );
 
         float winnerHP;
@@ -758,10 +770,56 @@ public class SceneManager : MonoBehaviour
                 break;
         }
         OnEndGame?.Invoke ( ending, winnerHP );
+
+        UpdateTimeScores ( );
+
+        ResetCurrentGameStats ( );
         
         ClearAllCharacters ( );
 
         ClearAllBullets?.Invoke ( );
+    }
+
+    private void UpdateTimeScores ( ) {
+        for ( int i = 0; i < currentRunFightScores.Length; i++ ) {
+            if ( currentRunFightStatuses [ i ] ) {
+                if ( currentRunFightScores [ i ] < bestFightScores [ i ] )
+                    bestFightScores [ i ] = currentRunFightScores [ i ];
+
+                UpdateScore ( i, Timer.DisplayTime ( currentRunFightScores [ i ] ), Timer.DisplayTime ( bestFightScores [ i ] ) );
+            }
+            else {
+                if ( bestFightScores [ i ] == Mathf.Infinity )
+                    UpdateScore ( i, Constants.TIMER_EMPTY, Constants.TIMER_EMPTY );
+                else
+                    UpdateScore ( i, Constants.TIMER_EMPTY, Timer.DisplayTime ( bestFightScores [ i ] ) );
+            }
+        }
+    }
+
+    private void ResetCurrentGameStats ( ) {
+        currentFightIndex = 0;
+
+        currentRunFightScores = new float [ ] {
+            Mathf.Infinity,
+            Mathf.Infinity,
+        };
+        currentRunFightStatuses = new bool [ ] {
+            false,
+            false
+        };
+    }
+
+    #endregion
+
+    private void OnChaosDifficultyToggled ( bool toggleFlag ) {
+        currentGameDifficulty = toggleFlag ? GameDifficulty.Chaos : GameDifficulty.Default;
+    }
+
+    private void OnTryhardModeToggled ( bool toggleFlag ) {
+        currentTransitionFadeOutDelay = toggleFlag ? 0 : transitionFadeOutDelay;
+
+        isTryhardModeActive = toggleFlag;
     }
 
     #endregion

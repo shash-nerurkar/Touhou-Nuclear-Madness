@@ -49,10 +49,12 @@ public class HUD : MonoBehaviour
         SceneManager.ChangeGameStateOnHUD += ChangeGameStateOnHUD;
 
         SceneManager.OnChaosDifficultyUnlocked += mainMenuPanel.OnChaosDifficultyUnlocked;
+        SceneManager.OnTryhardModeUnlocked += mainMenuPanel.OnTryhardModeUnlocked;
         SceneManager.UpdateScore += mainMenuPanel.UpdateScore;
 
         SceneManager.ShowTutorial += inGamePanel.ShowTutorial;
         SceneManager.OnFightStarted += inGamePanel.SetPanelValues;
+        SceneManager.OnCurrentPlayerShootEnergyChanged += inGamePanel.UpdatePlayerShootEnergy;
         SceneManager.OnCurrentPlayerHit += inGamePanel.UpdatePlayerHealth;
         SceneManager.OnCurrentPlayerGrazed += inGamePanel.UpdatePlayerGraze;
         SceneManager.OnCurrentPlayerDamageMultiplierChanged += inGamePanel.UpdatePlayerDamageMultiplier;
@@ -79,10 +81,12 @@ public class HUD : MonoBehaviour
         SceneManager.ChangeGameStateOnHUD -= ChangeGameStateOnHUD;
 
         SceneManager.OnChaosDifficultyUnlocked -= mainMenuPanel.OnChaosDifficultyUnlocked;
+        SceneManager.OnTryhardModeUnlocked -= mainMenuPanel.OnTryhardModeUnlocked;
         SceneManager.UpdateScore -= mainMenuPanel.UpdateScore;
 
         SceneManager.ShowTutorial -= inGamePanel.ShowTutorial;
         SceneManager.OnFightStarted -= inGamePanel.SetPanelValues;
+        SceneManager.OnCurrentPlayerShootEnergyChanged -= inGamePanel.UpdatePlayerShootEnergy;
         SceneManager.OnCurrentPlayerHit -= inGamePanel.UpdatePlayerHealth;
         SceneManager.OnCurrentPlayerGrazed -= inGamePanel.UpdatePlayerGraze;
         SceneManager.OnCurrentPlayerDamageMultiplierChanged -= inGamePanel.UpdatePlayerDamageMultiplier;
@@ -123,7 +127,7 @@ public class HUD : MonoBehaviour
     private void OnInGameStateChanged ( InGameState inGameState ) {
         switch ( inGameState ) {
             case InGameState.MainMenu:
-                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_MAIN_MENU );
+                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_MAIN_MENU, isInGame: false );
                 break;
 
             case InGameState.PreExplosion:
@@ -155,7 +159,7 @@ public class HUD : MonoBehaviour
                 break;
                 
             case InGameState.EndGame:
-                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_GAME_ENDED );
+                BeginDialogueSequence ( Constants.DIALOGUE_SEQUENCE_GAME_ENDED, isInGame: false );
                 break;
         }
     }
@@ -165,8 +169,8 @@ public class HUD : MonoBehaviour
 
     #region Dialogue Sequence Managers
 
-    private void BeginDialogueSequence ( List<Dialogue> dialogues ) {
-        if ( dialogues.Count == 0 ) {
+    private void BeginDialogueSequence ( List<Dialogue> dialogues, bool isInGame = true ) {
+        if ( dialogues.Count == 0 || (isInGame && SceneManager.IsTryhardModeActive ) ) {
             OnDialogueSequenceComplete ( );
         }
         else {

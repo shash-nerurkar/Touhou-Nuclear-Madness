@@ -86,8 +86,8 @@ public class EnemyUtsuho : Enemy
                 shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
                 speed: UtsuhoData.BasicAttackBulletSpeed,
                 damage: UtsuhoData.BasicAttackBulletDamage,
-                bulletColor: Constants.COLOR_ENEMY_BULLET_BASE,
-                bulletBorderColor: Constants.COLOR_ENEMY_FINAL,
+                bulletColor: UtsuhoData.BasicAttackBulletColor1,
+                bulletBorderColor: UtsuhoData.BasicAttackBulletBorderColor1,
                 scale: UtsuhoData.BasicAttackBulletScale
             );
 
@@ -98,8 +98,8 @@ public class EnemyUtsuho : Enemy
                 shootDir: new Vector3 ( Mathf.Sign ( transform.localScale.x ), 0, 0 ),
                 speed: UtsuhoData.BasicAttackBulletSpeed,
                 damage: UtsuhoData.BasicAttackBulletDamage,
-                bulletColor: Constants.COLOR_ENEMY_BULLET_BASE,
-                bulletBorderColor: Constants.COLOR_ENEMY_FINAL,
+                bulletColor: UtsuhoData.BasicAttackBulletColor2,
+                bulletBorderColor: UtsuhoData.BasicAttackBulletBorderColor2,
                 scale: UtsuhoData.BasicAttackBulletScale
             );
             
@@ -116,8 +116,8 @@ public class EnemyUtsuho : Enemy
                 shootDir: shootDir,
                 speed: UtsuhoData.SunAttackBulletSpeed,
                 damage: UtsuhoData.SunAttackBulletDamage,
-                bulletColor: Constants.COLOR_ENEMY_BULLET_BASE,
-                bulletBorderColor: Constants.COLOR_ENEMY_FINAL,
+                bulletColor: UtsuhoData.SunAttackBulletColor,
+                bulletBorderColor: UtsuhoData.SunAttackBulletBorderColor,
                 scale: UtsuhoData.SunAttackBulletScale,
                 scaleGradually: true,
                 scalingUpDuration: UtsuhoData.SunAttackBulletScalingUpDuration,

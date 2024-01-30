@@ -31,6 +31,8 @@ public class Constants {
     public const string INFINITY_TEXT = "ꝏ";
     
     public const string ACHIEVEMENT_UNLOCKED_TEXT = "Achievement!";
+
+    public const string TIMER_EMPTY = "--:--";
     
     #endregion
 
@@ -56,21 +58,6 @@ public class Constants {
     public static Color COLOR_PLAYER_BASE           = new ( 0.251f, 0.788f, 1.000f );
     // 0000FF
     public static Color COLOR_PLAYER_FINAL          = new ( 0.000f, 0.000f, 1.000f );
-
-    // 804040
-    public static Color COLOR_ENEMY_BASE     = new Color ( 0.620f, 0.000f, 0.000f );
-    // FF0000
-    public static Color COLOR_ENEMY_FINAL    = new Color ( 1.000f, 0.000f, 0.000f );
-
-    // 4C7190
-    public static Color COLOR_PLAYER_BULLET_BASE    = new ( 0.300f, 0.443f, 0.566f );
-    // 4C71FF
-    public static Color COLOR_PLAYER_BULLET_FINAL   = new ( 0.300f, 0.443f, 1.000f );
-
-    // 804040
-    public static Color COLOR_ENEMY_BULLET_BASE     = new Color ( 0.620f, 0.251f, 0.251f );
-    // FF4040
-    public static Color COLOR_ENEMY_BULLET_FINAL    = new Color ( 1.000f, 0.251f, 0.251f );
 
     
     public static Color CalculateColorForDamageMultiplier ( Color baseColor, Color destColor, float damageMultiplier ) {
@@ -154,7 +141,19 @@ public class Constants {
         new ( "...", Characters.Sagume ),
         new ( "... lest it consume you.", Characters.Utsuho ),
         new ( "It looks quite secure to me ...", Characters.Sagume ),
-        new ( "... Oops", Characters.Sagume ),
+        new ( "I guard it with my life, rube. It is bound to be that.", Characters.Utsuho ),
+        new ( "...", Characters.Sagume ),
+        new ( "Are you in disagreement?", Characters.Utsuho ),
+        new ( "...", Characters.Sagume ),
+        new ( "Comment on it's safety.", Characters.Utsuho ),
+        new ( "...", Characters.Sagume ),
+        new ( "Say it.", Characters.Utsuho ),
+        new ( "Do not test me, earthling ...", Characters.Sagume ),
+        new ( "Utter it!", Characters.Utsuho ),
+        new ( "... Bear in your mind, the only choice you left me here today ...", Characters.Sagume ),
+        new ( "*glowers testily*", Characters.Utsuho ),
+        new ( "This nuclear plant is an indestructible structure. It shall remain erect, steadfast and unabated, for a thousand years to come.", Characters.Sagume ),
+        new ( "*smirks triumphantly*", Characters.Utsuho ),
     };
 
     public static List<Dialogue> DIALOGUE_SEQUENCE_2 = new List<Dialogue> {

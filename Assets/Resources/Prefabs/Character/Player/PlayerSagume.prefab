@@ -63,13 +63,25 @@ PrefabInstance:
       propertyPath: data
       value: 
       objectReference: {fileID: 11400000, guid: 76c3253534c0ffc44a5029970dc32d4a, type: 2}
+    - target: {fileID: 2351583975198027985, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
+      propertyPath: shootEnergyRegenMultiplierMax
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2351583975198027985, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
+      propertyPath: shootEnergyRegenMultiplierTickValue
+      value: 0.75
+      objectReference: {fileID: 0}
+    - target: {fileID: 2656592515181575647, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0.37
+      objectReference: {fileID: 0}
     - target: {fileID: 7027688899548137187, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
       propertyPath: m_Size.x
-      value: 0.72
+      value: 0.64
       objectReference: {fileID: 0}
     - target: {fileID: 7027688899548137187, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
       propertyPath: m_Size.y
-      value: 0.72
+      value: 0.64
       objectReference: {fileID: 0}
     - target: {fileID: 7027688899548137187, guid: 12c6cf27d66848f4f9fd81975433c506, type: 3}
       propertyPath: m_Sprite
